@@ -538,3 +538,10 @@
 .gallery-add input { max-width: 100%; font-size: 13px; }
 .gallery-item-actions { display: flex; gap: 12px; }
 .gallery-item-actions button:disabled { opacity: 0.35; }
+.password-editor { max-width: 600px; }
+.password-editor fieldset { border: 0; padding: 0; margin: 0 0 24px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.password-editor label { font-size: 13px; font-weight: 600; margin-top: 12px; }
+.password-editor input:not([type="checkbox"]) { width: 100%; min-width: 0; border: 1px solid #b8a392; padding: 14px; background: #fffdf9; }
+.password-editor p { font-size: 12px; line-height: 1.7; color: #70665e; }
+.password-editor .password-visibility { display: flex; align-items: center; gap: 10px; }
+.password-editor .password-visibility input { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; }

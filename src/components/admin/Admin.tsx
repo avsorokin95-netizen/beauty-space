@@ -17,10 +17,13 @@ import { validPrice, type PriceDocument } from "../../../shared/pricing";
 import { cn } from "../../lib/utils";
 import { GalleryEditor, type GalleryModel } from "./GalleryEditor";
 import { ContactsEditor, type ContactsModel } from "./ContactsEditor";
+import { PasswordEditor } from "./PasswordEditor";
 import "./admin.css";
 
 export default function Admin() {
-  const [section, setSection] = useState<"prices" | "gallery" | "contacts">("prices");
+  const [section, setSection] = useState<"prices" | "gallery" | "contacts" | "security">("prices");
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
   const [contactsModel, setContactsModel] = useState<ContactsModel | null>(null);
   const [contactsBusy, setContactsBusy] = useState(false);
   const contactsDirty = !!contactsModel && JSON.stringify(contactsModel.draft.contacts) !== JSON.stringify(contactsModel.published.contacts);
@@ -101,6 +104,7 @@ export default function Admin() {
         setDraft(structuredClone(value));
       }
       setAuthenticated(true);
+      setPasswordChanged(false);
       setPassword("");
     } catch (cause) {
       setError(
@@ -210,6 +214,7 @@ export default function Admin() {
             <em>Твої правила.</em>
           </h1>
           <p className="login-intro">Увійди, щоб оновити ціни, фото робіт і контакти.</p>
+          {passwordChanged && <p className="admin-success" role="status">Пароль змінено. Увійди з новим паролем.</p>}
           <form onSubmit={login}>
             <label htmlFor="admin-password">Пароль</label>
             <div className="password-wrap">
@@ -285,7 +290,7 @@ export default function Admin() {
           <a href="/#services" target="_blank" rel="noopener noreferrer">
             Відкрити сайт <ArrowUpRight size={16} />
           </a>
-          <button onClick={logout} disabled={busy || galleryBusy || galleryDirty || contactsBusy || contactsDirty} title={galleryDirty || contactsDirty ? "Опублікуй або скасуй зміни перед виходом" : undefined}>
+          <button onClick={logout} disabled={busy || galleryBusy || galleryDirty || contactsBusy || contactsDirty || passwordBusy} title={galleryDirty || contactsDirty ? "Опублікуй або скасуй зміни перед виходом" : undefined}>
             <LogOut size={16} /> Вийти
           </button>
         </div>
@@ -295,7 +300,11 @@ export default function Admin() {
           <button type="button" aria-pressed={section === "prices"} onClick={() => setSection("prices")}>Ціни{dirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "gallery"} onClick={() => setSection("gallery")}>Роботи{galleryDirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "contacts"} onClick={() => setSection("contacts")}>Контакти{contactsDirty ? " •" : ""}</button>
+          <button type="button" aria-pressed={section === "security"} onClick={() => setSection("security")}>Безпека</button>
         </nav>
+        <div hidden={section !== "security"}>
+          <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />
+        </div>
         <div hidden={section !== "contacts"}>
           <ContactsEditor model={contactsModel} onChange={setContactsModel} busy={contactsBusy} onBusy={setContactsBusy} onSessionExpired={() => setAuthenticated(false)} />
         </div>

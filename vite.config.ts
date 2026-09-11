@@ -18,6 +18,7 @@ export default defineConfig({
         "**/.data/**",
         "**/.test-data/**",
         "**/auth.json",
+        "**/owner-auth.json",
         "**/admin-access.txt",
         "**/*.sqlite*",
       ],

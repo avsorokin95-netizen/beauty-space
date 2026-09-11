@@ -5,19 +5,21 @@ import { join } from "node:path";
 import { PricingStore } from "./store.ts";
 import { registerGallery } from "./gallery.ts";
 import { registerContacts } from "./contacts.ts";
-import { readCredentials, sessionHash, verifyPassword } from "./auth.ts";
+import { registerSeo } from "./seo.ts";
+import { readAccessCredentials, replacePassword, sessionHash, verifyAccessPassword } from "./auth.ts";
+import { validNewPassword } from "../shared/password.ts";
 
 interface Options {
   directory: string;
   origins: string[];
   production?: boolean;
   staticDirectory?: string;
+  publicOrigin?: string;
 }
 
 export function createApp(options: Options) {
   const app = express();
   const store = new PricingStore(join(options.directory, "studio.sqlite"));
-  const credentials = readCredentials(options.directory);
   const cookie = "beauty_session";
   const cookieOptions = {
     httpOnly: true,
@@ -42,6 +44,7 @@ export function createApp(options: Options) {
   });
   app.use("/api", (_req, res, next) => {
     res.set("Cache-Control", "no-store");
+    res.set("X-Robots-Tag", "noindex, nofollow");
     next();
   });
   app.use("/api", (req, res, next) => {
@@ -67,11 +70,12 @@ export function createApp(options: Options) {
   });
 
   app.post("/api/login", limiter, (req, res) => {
+    const credentials = readAccessCredentials(options.directory);
     const password = req.body?.password;
     if (
       typeof password !== "string" ||
       password.length > 256 ||
-      !verifyPassword(password, credentials)
+      !verifyAccessPassword(password, credentials)
     ) {
       res.status(401).json({ message: "Неправильний пароль." });
       return;
@@ -81,8 +85,8 @@ export function createApp(options: Options) {
       .prepare("DELETE FROM sessions WHERE expires < ? OR hash = ?")
       .run(Date.now(), sessionHash(tokenFrom(req.headers.cookie)));
     store.db
-      .prepare("INSERT INTO sessions VALUES (?, ?)")
-      .run(sessionHash(token), Date.now() + 12 * 60 * 60 * 1000);
+      .prepare("INSERT INTO sessions (hash, expires, credential_hash) VALUES (?, ?, ?)")
+      .run(sessionHash(token), Date.now() + 12 * 60 * 60 * 1000, credentials.generation);
     res.cookie(cookie, token, {
       ...cookieOptions,
       maxAge: 12 * 60 * 60 * 1000,
@@ -95,9 +99,9 @@ export function createApp(options: Options) {
     const session =
       token &&
       store.db
-        .prepare("SELECT expires FROM sessions WHERE hash = ?")
+        .prepare("SELECT expires, credential_hash FROM sessions WHERE hash = ?")
         .get(sessionHash(token));
-    if (!session || Number(session.expires) <= Date.now()) {
+    if (!session || Number(session.expires) <= Date.now() || session.credential_hash !== readAccessCredentials(options.directory).generation) {
       res.status(401).json({ message: "Увійди, щоб керувати студією." });
       return;
     }
@@ -106,6 +110,26 @@ export function createApp(options: Options) {
   app.get("/api/admin/session", (_req, res) =>
     res.json({ authenticated: true }),
   );
+  const passwordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, limit: 10, skipSuccessfulRequests: true,
+    standardHeaders: "draft-8", legacyHeaders: false,
+    message: { message: "Забагато спроб зміни пароля. Спробуй через 15 хвилин." },
+  });
+  app.put("/api/admin/password", passwordLimiter, (req, res) => {
+    const { currentPassword, newPassword, confirmation } = req.body ?? {};
+    if (typeof currentPassword !== "string" || currentPassword.length > 256 || !validNewPassword(newPassword) || confirmation !== newPassword || currentPassword === newPassword) {
+      res.status(400).json({ message: "Новий пароль має містити від 12 до 256 символів, відрізнятися від поточного й збігатися з підтвердженням." });
+      return;
+    }
+    if (!verifyAccessPassword(currentPassword, readAccessCredentials(options.directory))) {
+      res.status(400).json({ message: "Поточний пароль неправильний." });
+      return;
+    }
+    replacePassword(options.directory, newPassword);
+    store.db.exec("DELETE FROM sessions");
+    res.clearCookie(cookie, cookieOptions);
+    res.status(204).end();
+  });
   app.post("/api/admin/logout", (req, res) => {
     store.db
       .prepare("DELETE FROM sessions WHERE hash = ?")
@@ -140,6 +164,7 @@ export function createApp(options: Options) {
     res.status(404).json({ message: "Сторінку не знайдено." }),
   );
   if (options.staticDirectory) {
+    registerSeo(app, store.db, options.staticDirectory, options.publicOrigin);
     app.use(
       "/assets",
       express.static(join(options.staticDirectory, "assets"), {
@@ -150,10 +175,6 @@ export function createApp(options: Options) {
     app.use(
       express.static(options.staticDirectory, { maxAge: "1h", index: false }),
     );
-    app.get(["/", "/admin", "/admin/"], (_req, res) => {
-      res.set("Cache-Control", "no-cache");
-      res.sendFile(join(options.staticDirectory!, "index.html"));
-    });
   }
   const onError: ErrorRequestHandler = (error, _req, res, _next) => {
     const status =

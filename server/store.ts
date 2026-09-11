@@ -17,6 +17,9 @@ export class PricingStore {
         revision INTEGER PRIMARY KEY, updated_at TEXT NOT NULL, prices TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS sessions (hash TEXT PRIMARY KEY, expires INTEGER NOT NULL);`);
+    if (!this.db.prepare("PRAGMA table_info(sessions)").all().some((column) => column.name === "credential_hash")) {
+      this.db.exec("ALTER TABLE sessions ADD COLUMN credential_hash TEXT NOT NULL DEFAULT ''");
+    }
     this.db
       .prepare("INSERT OR IGNORE INTO revisions VALUES (1, ?, ?)")
       .run(new Date().toISOString(), JSON.stringify(initialPrices));

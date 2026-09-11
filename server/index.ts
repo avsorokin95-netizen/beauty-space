@@ -29,6 +29,7 @@ const { app, store } = createApp({
   origins,
   production,
   staticDirectory: resolve("dist"),
+  publicOrigin: production ? origins[0] : undefined,
 });
 const server = app.listen(
   Number(process.env.API_PORT || 3001),

@@ -30,5 +30,6 @@ playwright-report/
 # Persistent private server data and credentials
 .data/
 .test-data/
+**/owner-auth.json
 .env*
 !.env.example

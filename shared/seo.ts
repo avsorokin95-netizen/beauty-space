@@ -1,0 +1,17 @@
+import type { ContactData } from './contacts.ts';
+
+export function studioSeo(contacts: ContactData, origin?: string) {
+  const title = `Beauty Space Victoriya — манікюр, брови та вії | ${contacts.city}`;
+  const description = `Манікюр, педикюр, оформлення брів та ламінування вій. Beauty Space Victoriya: ${contacts.city}, ${contacts.address}. Запис онлайн або за телефоном ${contacts.phone}.`;
+  const url = origin ? `${origin}/` : undefined;
+  const image = origin ? `${origin}/images/social-preview.jpg` : undefined;
+  const schema = {
+    '@context': 'https://schema.org', '@type': 'BeautySalon',
+    ...(url ? { '@id': `${url}#studio`, url, image } : {}),
+    name: 'Beauty Space Victoriya', description, telephone: contacts.phone,
+    address: { '@type': 'PostalAddress', streetAddress: contacts.address, addressLocality: contacts.city, addressCountry: 'UA' },
+    sameAs: [contacts.instagram, contacts.telegram],
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${contacts.address}, ${contacts.city}, Україна`)}`,
+  };
+  return { title, description, url, image, schema };
+}
