@@ -107,6 +107,13 @@ test("service disclosure and gallery keyboard lifecycle work", async ({
 test("navigation and accessibility", async ({ page }, testInfo) => {
   if (testInfo.project.name === "mobile") {
     await page.getByRole("button", { name: "Відкрити меню" }).click();
+    await expect(page.getByRole("dialog", { name: "Меню студії" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Закрити меню", exact: true })).toBeFocused();
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#mobile-nav")).toBeHidden();
+    await expect(page.getByRole("button", { name: "Відкрити меню" })).toBeFocused();
+    await page.getByRole("button", { name: "Відкрити меню" }).click();
     await page
       .getByRole("navigation", { name: "Мобільна навігація" })
       .getByRole("link", { name: "Контакти" })
