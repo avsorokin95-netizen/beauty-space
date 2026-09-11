@@ -1,3 +1,4 @@
+import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { ArrowUpRight, Camera, MapPin, Phone, Send } from "lucide-react";
 import { navigation } from "../data/studio";
@@ -24,7 +25,7 @@ export function Contacts() {
             </p>
             <BookingLink className="button-light" />
             <span className="contact-flower" aria-hidden="true">
-              ✳
+              <BrandStar />
             </span>
           </Reveal>
           <Reveal className="contact-details">

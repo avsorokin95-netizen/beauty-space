@@ -1,11 +1,12 @@
+import { BrandStar } from "./BrandStar";
 import { ArrowUpRight, Heart, Sparkles, Flower2 } from "lucide-react";
 import { Reveal, Eyebrow } from "./ui";
 export function About() {
   return (
     <>
       <div className="ribbon" aria-hidden="true">
-        <span>МАНІКЮР</span>✳<span>ПЕДИКЮР</span>✳<span>БРОВИ</span>✳
-        <span>ВІЇ</span>✳<span>ЧАС ДЛЯ СЕБЕ</span>
+        <span>МАНІКЮР</span><BrandStar /><span>ПЕДИКЮР</span><BrandStar /><span>БРОВИ</span><BrandStar />
+        <span>ВІЇ</span><BrandStar /><span>ЧАС ДЛЯ СЕБЕ</span>
       </div>
       <section id="about" className="section shell about-grid">
         <Reveal className="about-photo-wrap">

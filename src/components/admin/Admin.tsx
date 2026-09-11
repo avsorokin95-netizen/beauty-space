@@ -1,3 +1,4 @@
+import { BrandStar } from "../BrandStar";
 import { useEffect, useState, type FormEvent } from "react";
 import {
   ArrowLeft,
@@ -209,7 +210,7 @@ export default function Admin() {
           <ArrowLeft size={16} /> На сайт
         </a>
         <div className="login-card">
-          <div className="admin-mark">✳</div>
+          <div className="admin-mark"><BrandStar /></div>
           <p className="admin-eyebrow">BEAUTY SPACE · ДЛЯ ВЛАСНИЦІ</p>
           <h1>
             Твій простір.
@@ -299,7 +300,7 @@ export default function Admin() {
           rel="noopener noreferrer"
           className="admin-brand"
         >
-          beauty space <span>✳</span>
+          beauty space <span><BrandStar /></span>
           <small>КЕРУВАННЯ СТУДІЄЮ</small>
         </a>
         <div className="admin-header-actions">

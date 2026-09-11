@@ -1,3 +1,4 @@
+import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
@@ -11,7 +12,7 @@ export function Logo() {
       aria-label="Beauty Space Victoriya — головна"
     >
       <span>
-        beauty space<span className="logo-star">✳</span>
+        beauty space<span className="logo-star"><BrandStar /></span>
       </span>
       <small>BY VICTORIYA</small>
     </a>

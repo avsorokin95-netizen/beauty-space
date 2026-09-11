@@ -1,3 +1,4 @@
+import { BrandStar } from "./BrandStar";
 import { useRef } from "react";
 import {
   motion,
@@ -62,7 +63,7 @@ export function Hero() {
         </div>
         <div className="round-badge">
           <span>ТУРБОТА В КОЖНІЙ</span>
-          <span className="badge-star">✳</span>
+          <span className="badge-star"><BrandStar /></span>
           <span>МАЛЕНЬКІЙ ДЕТАЛІ</span>
         </div>
       </div>
