@@ -59,6 +59,7 @@ export function createApp(options: Options) {
   });
   app.use(express.json({ limit: "32kb", type: "application/json" }));
   app.get("/api/prices", (_req, res) => res.json(store.read()));
+  app.get("/api/auth/config", (_req, res) => res.json({ mode: "password" }));
 
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,

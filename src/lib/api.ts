@@ -13,11 +13,15 @@ export async function api<T>(
   const response = await fetch(path, {
     ...options,
     credentials: "same-origin",
+    redirect: "manual",
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...options.headers,
     },
   });
+  if (response.type === 'opaqueredirect' || response.redirected || response.headers.get('content-type')?.includes('text/html')) {
+    throw new ApiError('Сесію завершено. Підтвердь вхід ще раз.', 401);
+  }
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new ApiError(

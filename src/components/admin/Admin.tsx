@@ -21,6 +21,7 @@ import { PasswordEditor } from "./PasswordEditor";
 import "./admin.css";
 
 export default function Admin() {
+  const [accessMode, setAccessMode] = useState(false);
   const [section, setSection] = useState<"prices" | "gallery" | "contacts" | "security">("prices");
   const [passwordBusy, setPasswordBusy] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
@@ -56,7 +57,8 @@ export default function Admin() {
   useEffect(() => {
     document.title = "Керування студією — Beauty Space Victoriya";
     let active = true;
-    api("/api/admin/session")
+    api<{ mode: string }>("/api/auth/config")
+      .then((config) => { if (active) setAccessMode(config.mode === "access"); return api("/api/admin/session"); })
       .then(() => api<PriceDocument>("/api/prices"))
       .then((value) => {
         if (active) {
@@ -178,6 +180,7 @@ export default function Admin() {
   }
 
   async function logout() {
+    if (accessMode) { window.location.assign("/cdn-cgi/access/logout"); return; }
     setBusy(true);
     setError("");
     try {
@@ -215,7 +218,20 @@ export default function Admin() {
           </h1>
           <p className="login-intro">Увійди, щоб оновити ціни, фото робіт і контакти.</p>
           {passwordChanged && <p className="admin-success" role="status">Пароль змінено. Увійди з новим паролем.</p>}
-          <form onSubmit={login}>
+          {accessMode ? <div>
+            <p className="login-intro">Підтвердь свою пошту кодом через захищений вхід. Після підтвердження повернися в цю вкладку — чернетки залишаться тут.</p>
+            <a className="button" href="/admin" target="_blank" rel="noopener noreferrer">Підтвердити пошту <ArrowUpRight size={18} /></a>
+            <button className="admin-secondary" disabled={busy} onClick={async () => {
+              setBusy(true); setError("");
+              try {
+                await api("/api/admin/session");
+                if (!draft) { const value = await api<PriceDocument>("/api/prices"); setPublished(value); setDraft(structuredClone(value)); }
+                setAuthenticated(true);
+              } catch { setError("Спочатку підтвердь вхід своєю дозволеною поштою."); }
+              finally { setBusy(false); }
+            }}>Я підтвердив(-ла) вхід</button>
+            {error && <p className="admin-error" role="alert">{error}</p>}
+          </div> : <form onSubmit={login}>
             <label htmlFor="admin-password">Пароль</label>
             <div className="password-wrap">
               <input
@@ -248,7 +264,7 @@ export default function Admin() {
               {busy ? "Входимо…" : "Увійти в адмінку"}
               <ArrowUpRight size={18} />
             </button>
-          </form>
+          </form>}
           <p className="login-footnote">
             <LockKeyhole size={13} /> Доступ лише для керування студією
           </p>
@@ -290,7 +306,7 @@ export default function Admin() {
           <a href="/#services" target="_blank" rel="noopener noreferrer">
             Відкрити сайт <ArrowUpRight size={16} />
           </a>
-          <button onClick={logout} disabled={busy || galleryBusy || galleryDirty || contactsBusy || contactsDirty || passwordBusy} title={galleryDirty || contactsDirty ? "Опублікуй або скасуй зміни перед виходом" : undefined}>
+          <button onClick={logout} disabled={busy || dirty || galleryBusy || galleryDirty || contactsBusy || contactsDirty || passwordBusy} title={dirty || galleryDirty || contactsDirty ? "Опублікуй або скасуй зміни перед виходом" : undefined}>
             <LogOut size={16} /> Вийти
           </button>
         </div>
@@ -303,13 +319,13 @@ export default function Admin() {
           <button type="button" aria-pressed={section === "security"} onClick={() => setSection("security")}>Безпека</button>
         </nav>
         <div hidden={section !== "security"}>
-          <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />
+          {accessMode ? <section className="admin-page-heading"><div><h1>Захищений <em>доступ.</em></h1><p>Вхід за одноразовим кодом на дозволену пошту. Пароль для цього сайту не потрібен.</p><p>Щоб змінити список людей із доступом, звернися до власника сайту.</p></div></section> : <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />}
         </div>
         <div hidden={section !== "contacts"}>
           <ContactsEditor model={contactsModel} onChange={setContactsModel} busy={contactsBusy} onBusy={setContactsBusy} onSessionExpired={() => setAuthenticated(false)} />
         </div>
         <div hidden={section !== "gallery"}>
-          <GalleryEditor model={galleryModel} onChange={setGalleryModel} busy={galleryBusy} onBusy={setGalleryBusy} onSessionExpired={() => setAuthenticated(false)} />
+          <GalleryEditor optimizeUploads={accessMode} model={galleryModel} onChange={setGalleryModel} busy={galleryBusy} onBusy={setGalleryBusy} onSessionExpired={() => setAuthenticated(false)} />
         </div>
         <div hidden={section !== "prices"}>
         <div className="admin-page-heading">

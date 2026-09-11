@@ -1,4 +1,11 @@
+> **Онлайн:** https://victoriya-beauty.space · **Адмінка:** https://victoriya-beauty.space/admin
+> Production працює на Cloudflare з входом за кодом на пошту. Інструкції про
+> локальні паролі та Node-сервер нижче стосуються лише локального запуску.
+> Розгортання й обслуговування: [CLOUDFLARE.md](./CLOUDFLARE.md).
+
 # Beauty Space Victoriya
+
+Cloudflare deployment (Workers, D1, R2, email access): [CLOUDFLARE.md](./CLOUDFLARE.md).
 
 Адаптивний українськомовний landing page на React, TypeScript і Vite. Tailwind CSS v4, clsx / tailwind-merge, Framer Motion, Lucide React. Google Fonts: Cormorant Garamond і Manrope.
 

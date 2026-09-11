@@ -1,10 +1,12 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { ImagePlus, Save, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
+import { preparePhoto } from "../../lib/prepare-photo";
 import { MAX_GALLERY_ITEMS, validInstagram, type GalleryDocument, type GalleryItem } from "../../../shared/gallery";
 
 export interface GalleryModel { draft: GalleryDocument; published: GalleryDocument }
 interface Props {
+  optimizeUploads?: boolean;
   model: GalleryModel | null;
   onChange: (model: GalleryModel) => void;
   busy: boolean;
@@ -12,7 +14,7 @@ interface Props {
   onSessionExpired: () => void;
 }
 
-export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired }: Props) {
+export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired, optimizeUploads = false }: Props) {
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [conflict, setConflict] = useState(false);
@@ -62,7 +64,8 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired 
     }
     onBusy(true);
     try {
-      const result = await api<{ src: string }>("/api/admin/gallery/upload", { method: "POST", headers: { "Content-Type": file.type }, body: file });
+      const photo = optimizeUploads ? await preparePhoto(file) : file;
+      const result = await api<{ src: string }>("/api/admin/gallery/upload", { method: "POST", headers: { "Content-Type": photo.type }, body: photo });
       if (index === -1 && model) changeItems([...model.draft.items, { id: `work-${crypto.randomUUID()}`, src: result.src, instagram: "", title: "Нова робота", label: "МАНІКЮР" }]);
       else update(index, { src: result.src, instagram: "" });
     } catch (cause) { failure(cause); }

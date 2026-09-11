@@ -1,0 +1,52 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "beauty-space",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-11",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "none",
+    "not_found_handling": "none",
+    "run_worker_first": [
+      "/",
+      "/index.html",
+      "/admin",
+      "/admin/*",
+      "/api/*",
+      "/robots.txt",
+      "/sitemap.xml"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "beauty-space",
+      "database_id": "1a8960e0-9ef6-4b47-a36a-a93bfcd45ea0",
+      "migrations_dir": "worker/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "beauty-space-media"
+    }
+  ],
+  "vars": {
+    "APP_ORIGIN": "https://victoriya-beauty.space",
+    "ACCESS_TEAM_DOMAIN": "bold-moon-f565.cloudflareaccess.com",
+    "ACCESS_AUD": "9d6381d9973688d6eb34661d45903d1653714de961a73ad8f63e08767c1db629"
+  },
+  "routes": [
+    {
+      "pattern": "victoriya-beauty.space",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.victoriya-beauty.space",
+      "custom_domain": true
+    }
+  ]
+}

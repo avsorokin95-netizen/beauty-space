@@ -13,7 +13,13 @@
     "dev:web": "vite",
     "start": "NODE_ENV=production node server/index.ts",
     "admin:setup": "node server/setup.ts",
-    "test:server": "node --test server/*.test.ts"
+    "test:server": "node --test server/*.test.ts",
+    "cf:check": "tsc -p tsconfig.worker.json",
+    "cf:dev": "wrangler dev",
+    "cf:export": "node scripts/cloudflare-export.ts",
+    "cf:media": "node scripts/cloudflare-media.ts",
+    "cf:deploy": "node scripts/cloudflare-preflight.ts && npm run cf:check && npm run build && wrangler deploy",
+    "test:worker": "node --test worker/*.test.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
@@ -22,6 +28,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
     "framer-motion": "^13.2.0",
+    "jose": "^6.2.12",
     "lucide-react": "^1.45.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -31,6 +38,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@cloudflare/workers-types": "^5.20260911.1",
     "@playwright/test": "^1.63.0",
     "@types/express": "^5.0.6",
     "@types/node": "^24.13.3",
@@ -38,9 +46,12 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^10.0.5",
+    "esbuild": "^0.28.2",
+    "miniflare": "^5.20260911.0-alpha",
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "wrangler": "^4.131.1"
   },
   "engines": {
     "node": ">=24.0.0"
