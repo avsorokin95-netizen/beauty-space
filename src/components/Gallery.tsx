@@ -44,7 +44,7 @@ export function Gallery() {
   }, []);
   useEffect(() => {
     if (!carousel || posts.length < 2 || paused || hovered || focused || dragging || !inView || !visible || reduced || selected !== null) return;
-    const timer = window.setInterval(() => carousel.scrollNext(), 6000);
+    const timer = window.setInterval(() => carousel.scrollNext(), 4000);
     return () => clearInterval(timer);
   }, [carousel, posts.length, paused, hovered, focused, dragging, inView, visible, reduced, selected]);
   const advance = (direction: number) => {
@@ -102,7 +102,7 @@ export function Gallery() {
         }}
         onKeyDownCapture={() => { touchInteraction.current = false; setFocused(true); }}
         onFocusCapture={() => { if (!touchInteraction.current) setFocused(true); }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-      <div ref={viewport} className="gallery-viewport" id="gallery-track" onPointerDown={(event) => { if (event.pointerType !== "touch") setPaused(true); }}>
+      <div ref={viewport} className="gallery-viewport" id="gallery-track">
       <div className="gallery-grid" style={{ "--gallery-columns": Math.min(3, Math.max(1, posts.length - 1)) } as CSSProperties}>
         {posts.map((post, index) => (
           <div key={post.id} className="gallery-slide" role="group" aria-roledescription="слайд" aria-label={`${index + 1} з ${posts.length}`}>

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('autoplay advances slowly and can be paused', async ({ page }) => {
+test('autoplay starts enabled, advances within five seconds and can be paused', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
   const region = page.getByRole('region', { name: 'Роботи студії' });
@@ -8,18 +8,19 @@ test('autoplay advances slowly and can be paused', async ({ page }) => {
   await region.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   const counter = page.locator('.gallery-controls span');
+  await expect(page.getByLabel('Призупинити автоматичне гортання')).toHaveAttribute('aria-pressed', 'false');
   await expect(counter).toContainText('1 /');
-  await expect(counter).toContainText('2 /', { timeout: 9000 });
+  await expect(counter).toContainText('2 /', { timeout: 5500 });
   await page.getByLabel('Призупинити автоматичне гортання').click();
   const current = await counter.textContent();
   await page.mouse.move(0, 0);
   await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
-  await page.waitForTimeout(6500);
+  await page.waitForTimeout(4500);
   await expect(counter).toHaveText(current!);
   await page.getByLabel('Увімкнути автоматичне гортання').click();
   await page.mouse.move(0, 0);
   await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
-  await expect(counter).not.toHaveText(current!, { timeout: 9000 });
+  await expect(counter).not.toHaveText(current!, { timeout: 5500 });
 });
 
 test('touch interaction keeps mobile autoplay enabled', async ({ browser }) => {
@@ -32,10 +33,10 @@ test('touch interaction keeps mobile autoplay enabled', async ({ browser }) => {
     await page.getByLabel('Наступний слайд').tap();
     await expect(page.locator('.gallery-controls span')).toContainText('2 /');
     await expect(page.getByLabel('Призупинити автоматичне гортання')).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('.gallery-controls span')).toContainText('3 /', { timeout: 9000 });
+    await expect(page.locator('.gallery-controls span')).toContainText('3 /', { timeout: 5500 });
     await page.getByRole('button', { name: 'Відкрити роботу 3', exact: true }).tap();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.getByLabel('Закрити галерею').tap();
-    await expect(page.locator('.gallery-controls span')).toContainText('4 /', { timeout: 9000 });
+    await expect(page.locator('.gallery-controls span')).toContainText('4 /', { timeout: 5500 });
   } finally { await context.close(); }
 });
