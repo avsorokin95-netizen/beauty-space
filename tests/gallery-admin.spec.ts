@@ -1,0 +1,68 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import AxeBuilder from '@axe-core/playwright';
+import type { GalleryDocument } from '../shared/gallery';
+
+test('owner replaces gallery photo and publishes it for visitors', async ({ page, browser }, testInfo) => {
+  const password = readFileSync('.test-data/admin-access.txt', 'utf8').match(/Password: (.+)/)![1];
+  const initial = await (await page.request.get('/api/gallery')).json() as GalleryDocument;
+  await page.goto('/admin');
+  await page.getByLabel('Пароль', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Увійти в адмінку' }).click();
+  await page.getByRole('button', { name: 'Роботи', exact: true }).click();
+  await expect(page.getByLabel('Назва роботи 1')).toBeVisible();
+  try {
+    await page.getByLabel('Замінити фото 1').setInputFiles('public/images/DNm6R3Qo2oO.webp');
+    await expect(page.locator('.gallery-admin-preview img').first()).toHaveAttribute('src', /^\/api\/media\//);
+    await expect.poll(() => page.locator('.gallery-admin-preview img').first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBeTruthy();
+    await expect(page.getByLabel('Instagram роботи 1')).toHaveValue('');
+    expect(await (await page.request.get('/api/gallery')).json()).toEqual(initial);
+    await page.getByLabel('Назва роботи 1').fill('Тестова робота');
+    await page.getByRole('button', { name: 'Ціни', exact: true }).click();
+    await page.getByRole('button', { name: 'Роботи •', exact: true }).click();
+    await expect(page.getByLabel('Назва роботи 1')).toHaveValue('Тестова робота');
+    await page.getByRole('button', { name: 'Опублікувати роботи' }).click();
+    await expect(page.getByText('Роботи збережено й опубліковано.', { exact: true })).toBeVisible();
+    const context = await browser.newContext();
+    try {
+      const visitor = await context.newPage();
+      await visitor.goto('http://127.0.0.1:4173/#gallery');
+      await expect(visitor.locator('#gallery h3').first()).toHaveText('Тестова робота');
+      await expect(visitor.locator('.gallery-card img').first()).toHaveAttribute('src', /^\/api\/media\//);
+      await visitor.getByRole('button', { name: 'Збільшити фото: Тестова робота' }).click();
+      await expect(visitor.locator('.lightbox-image')).toBeVisible();
+      await expect.poll(() => visitor.locator('.lightbox-image').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBeTruthy();
+    } finally { await context.close(); }
+    await page.reload();
+    await page.getByRole('button', { name: 'Роботи', exact: true }).click();
+    await expect(page.getByLabel('Назва роботи 1')).toHaveValue('Тестова робота');
+    await expect.poll(() => page.locator('.gallery-admin-preview img').first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBeTruthy();
+    await page.getByLabel('Instagram роботи 1').fill('https://example.com/no');
+    await expect(page.getByRole('button', { name: 'Опублікувати роботи' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Скасувати зміни робіт' }).click();
+    await page.getByRole('button', { name: 'Так, завантажити роботи' }).click();
+    await expect(page.getByLabel('Instagram роботи 1')).toHaveValue('');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
+    const count = initial.items.length;
+    await page.getByLabel(`Додати роботу (${count} / 30)`).setInputFiles('public/images/lashes-detail.webp');
+    await expect(page.locator('.gallery-admin-card')).toHaveCount(count + 1);
+    await page.getByLabel(`Назва роботи ${count + 1}`, { exact: true }).fill('Додана робота');
+    await page.getByRole('button', { name: `Перемістити роботу ${count + 1} раніше`, exact: true }).click();
+    await expect(page.getByLabel(`Назва роботи ${count}`, { exact: true })).toHaveValue('Додана робота');
+    await page.getByRole('button', { name: 'Опублікувати роботи' }).click();
+    await expect(page.getByText('Роботи збережено й опубліковано.', { exact: true })).toBeVisible();
+    await page.reload();
+    await page.getByRole('button', { name: 'Роботи', exact: true }).click();
+    await expect(page.getByLabel(`Назва роботи ${count}`, { exact: true })).toHaveValue('Додана робота');
+    await page.getByRole('button', { name: `Видалити роботу ${count}`, exact: true }).click();
+    await expect(page.locator('.gallery-admin-card')).toHaveCount(count);
+    await page.getByRole('button', { name: 'Опублікувати роботи' }).click();
+    await expect(page.getByText('Роботи збережено й опубліковано.', { exact: true })).toBeVisible();
+    await page.screenshot({ path: `test-results/${testInfo.project.name}-gallery-admin.png`, fullPage: true });
+  } finally {
+    const latest = await (await page.request.get('/api/gallery')).json() as GalleryDocument;
+    const response = await page.request.put('/api/admin/gallery', { data: { ...initial, revision: latest.revision }, headers: { Origin: 'http://127.0.0.1:4173' } });
+    expect(response.ok()).toBeTruthy();
+  }
+});
