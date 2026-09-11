@@ -82,6 +82,9 @@ test("renders content without overflow and loads local imagery", async ({
 test("service disclosure and gallery keyboard lifecycle work", async ({
   page,
 }) => {
+  await expect(page.locator(".service-toggle")).toHaveCount(6);
+  await expect(page.locator('.service-toggle[aria-expanded="true"]')).toHaveCount(0);
+  await expect(page.locator(".service-detail:visible")).toHaveCount(0);
   const brows = page.getByRole("button", { name: /03 Брови/ });
   await brows.click();
   await expect(brows).toHaveAttribute("aria-expanded", "true");
@@ -133,6 +136,7 @@ test("all pricing categories remain readable on narrow screens", async ({
 }, testInfo) => {
   if (testInfo.project.name === "mobile")
     await page.setViewportSize({ width: 320, height: 844 });
+  await page.locator('[aria-controls="service-nails"]').click();
   await expect(page.locator("#service-nails .price-item")).toHaveCount(7);
   await expect(page.locator("#service-nails")).toContainText("50/70 грн");
   for (const id of ["pedicure", "brows", "lashes", "sets", "depilation"]) {

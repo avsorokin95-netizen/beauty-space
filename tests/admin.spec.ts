@@ -91,5 +91,6 @@ test("public price failure shows recovery instead of invented prices", async ({
   );
   await page.unroute("**/api/prices");
   await page.getByRole("button", { name: "Спробувати ще раз" }).click();
+  await page.locator('[aria-controls="service-nails"]').click();
   await expect(page.locator("#service-nails")).toBeVisible();
 });

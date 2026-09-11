@@ -6,7 +6,7 @@ import { usePrices } from "../hooks/usePrices";
 import { Eyebrow, Reveal } from "./ui";
 export function Services() {
   const studio = useContacts();
-  const [active, setActive] = useState<string | null>("nails");
+  const [active, setActive] = useState<string | null>(null);
   const { prices, error, retry } = usePrices();
   return (
     <section id="services" className="services-section section">
