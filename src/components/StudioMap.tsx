@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { useContacts } from "../hooks/useContacts";
 import { Reveal } from "./ui";
+import { studioWayfinding } from "../../shared/wayfinding";
 
 export function StudioMap() {
   const studio = useContacts();
@@ -25,8 +26,11 @@ export function StudioMap() {
         allowFullScreen
       />
       <p className="map-caption">
-        {studio.address} · {studio.city}
+        {studio.address} · {studio.city} · {studioWayfinding.floor}
       </p>
+      <a className="map-video" href={studioWayfinding.video} target="_blank" rel="noopener noreferrer">
+        Як нас знайти — відео в Instagram <ArrowUpRight size={16} aria-hidden="true" />
+      </a>
     </Reveal>
   );
 }

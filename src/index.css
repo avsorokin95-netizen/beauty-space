@@ -1156,6 +1156,16 @@ h1 em {
   margin: 14px 0 0 !important;
   color: #e6d9cd;
 }
+.map-video {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 8px;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 @media (max-width: 767px) {
   .studio-map {
     margin-top: 45px;
