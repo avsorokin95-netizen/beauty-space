@@ -1,3 +1,4 @@
+import { studioHours } from './hours.ts';
 import type { ContactData } from './contacts.ts';
 
 export function studioSeo(contacts: ContactData, origin?: string) {
@@ -10,6 +11,7 @@ export function studioSeo(contacts: ContactData, origin?: string) {
     ...(url ? { '@id': `${url}#studio`, url, image } : {}),
     name: 'Beauty Space Victoriya', description, telephone: contacts.phone,
     address: { '@type': 'PostalAddress', streetAddress: contacts.address, addressLocality: contacts.city, addressCountry: 'UA' },
+    openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: studioHours.days, opens: studioHours.opens, closes: studioHours.closes }],
     sameAs: [contacts.instagram, contacts.telegram],
     hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${contacts.address}, ${contacts.city}, Україна`)}`,
   };

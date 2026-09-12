@@ -1,3 +1,4 @@
+import { studioHours } from '../../shared/hours';
 import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { ArrowUpRight, Camera, MapPin, Phone, Send } from "lucide-react";
@@ -29,6 +30,7 @@ export function Contacts() {
             </span>
           </Reveal>
           <Reveal className="contact-details">
+            <p className="contact-hours">{studioHours.display} · За попереднім записом</p>
             <a href={`tel:${studio.phone}`} className="contact-item">
               <Phone size={21} />
               <div>

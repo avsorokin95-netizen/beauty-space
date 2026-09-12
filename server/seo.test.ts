@@ -34,6 +34,10 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
     assert.equal(schema.aggregateRating, undefined);
+    assert.equal(schema.openingHoursSpecification[0].dayOfWeek.length, 7);
+    assert.equal(schema.openingHoursSpecification[0].opens, '09:00');
+    assert.equal(schema.openingHoursSpecification[0].closes, '18:00');
+    assert.match(html, /Щодня, 09:00–18:00/);
     assert.match(await (await fetch(base + '/robots.txt')).text(), /Sitemap: https:\/\/beauty.example\/sitemap.xml/);
     const sitemap = await (await fetch(base + '/sitemap.xml')).text();
     assert.match(sitemap, /<loc>https:\/\/beauty.example\/<\/loc>/);
