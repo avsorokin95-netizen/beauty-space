@@ -30,9 +30,13 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.match(html, /Шукаєш манікюр у Вишневому/);
     assert.match(html, /ЖК «Софія»/);
     assert.match(html, /Скільки коштує манікюр/);
+    assert.match(html, /Манікюр для мешканців Вишневого та ЖК «Софія»/);
+    assert.match(html, /Як приїхати з Вишневого або ЖК «Софія»/);
     const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
+    assert.equal(schema.address.addressLocality, 'Софіївська Борщагівка');
+    assert.match(schema.description, /біля Вишневого чи ЖК «Софія»/);
     assert.equal(schema.aggregateRating, undefined);
     assert.equal(schema.openingHoursSpecification[0].dayOfWeek.length, 7);
     assert.equal(schema.openingHoursSpecification[0].opens, '09:00');
@@ -57,6 +61,8 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.match(updated, /Київ \| Beauty Space Victoriya<\/title>/);
     assert.ok(!updated.includes('<script>alert(1)</script>'));
     assert.ok(updated.includes('&lt;script&gt;alert(1)&lt;/script&gt; $&amp;'));
+    assert.ok(!updated.includes('Вишневого'));
+    assert.ok(!updated.includes('ЖК «Софія»'));
   } finally {
     await new Promise<void>((resolve) => server.close(() => resolve()));
     store.db.close(); rmSync(directory, { recursive: true, force: true });

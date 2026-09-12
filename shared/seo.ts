@@ -3,7 +3,9 @@ import type { ContactData } from './contacts.ts';
 
 export function studioSeo(contacts: ContactData, origin?: string) {
   const title = `Манікюр · ${contacts.city} | Beauty Space Victoriya`;
-  const description = `Манікюр, педикюр, брови та ламінування вій у Beauty Space Victoriya. Ціни й фото робіт. Адреса: ${contacts.city}, ${contacts.address}. Запис онлайн або за телефоном ${contacts.phone}.`;
+  const description = contacts.city === 'Софіївська Борщагівка'
+    ? `Шукаєте манікюр біля Вишневого чи ЖК «Софія»? Beauty Space Victoriya: ${contacts.city}, ${contacts.address}. Прайс, фото робіт, педикюр, брови та вії. Запис: ${contacts.phone}.`
+    : `Манікюр, педикюр, брови та ламінування вій у Beauty Space Victoriya. Ціни й фото робіт. Адреса: ${contacts.city}, ${contacts.address}. Запис онлайн або за телефоном ${contacts.phone}.`;
   const url = origin ? `${origin}/` : undefined;
   const image = origin ? `${origin}/images/social-preview.jpg` : undefined;
   const schema = {

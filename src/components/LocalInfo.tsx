@@ -13,6 +13,7 @@ export function LocalInfo() {
         <Eyebrow>ПЕРЕД ТВОЇМ ВІЗИТОМ</Eyebrow>
         <h2 id="local-info-title">{content.heading}</h2>
         <p>{content.intro}</p>
+        <p><a className="text-link" href="#services">Послуги та ціни</a> · <a className="text-link" href="#gallery">Фото робіт</a></p>
         <a className="text-link" href={studio.map} target="_blank" rel="noopener noreferrer">Прокласти маршрут ↗</a>
       </div>
       <div className="local-questions">

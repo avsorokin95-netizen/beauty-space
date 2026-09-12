@@ -20,6 +20,9 @@ export function Reviews() {
               <br />
               Дякуємо, що ділитеся враженнями.
             </p>
+            <a className="text-link" href="https://g.page/r/CbpN6XRa6ZCdEBM/review" target="_blank" rel="noopener noreferrer">
+              Залишити відгук у Google <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
           </div>
           <a
             href={studio.reviews}
