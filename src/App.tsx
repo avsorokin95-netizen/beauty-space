@@ -5,6 +5,7 @@ import { About } from "./components/About";
 import { Services } from "./components/Services";
 import { Gallery } from "./components/Gallery";
 import { Contacts } from "./components/Contacts";
+import { LocalInfo } from "./components/LocalInfo";
 import { Reviews } from "./components/Reviews";
 import { lazy, Suspense } from "react";
 import { ContactsProvider } from "./components/ContactsProvider";
@@ -35,6 +36,7 @@ export default function App() {
         <Services />
         <Gallery />
         <Reviews />
+        <LocalInfo />
         <Contacts />
       </main>
     </MotionConfig></ContactsProvider>

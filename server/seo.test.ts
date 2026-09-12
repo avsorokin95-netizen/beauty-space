@@ -20,13 +20,16 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     const response = await fetch(base + '/');
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /<title>Beauty Space Victoriya.*Софіївська Борщагівка<\/title>/);
+    assert.match(html, /<title>Манікюр.*Софіївська Борщагівка.*Beauty Space Victoriya<\/title>/);
     assert.match(html, /rel="canonical" href="https:\/\/beauty.example\/"/);
     assert.match(html, /property="og:image" content="https:\/\/beauty.example\/images\/social-preview.jpg"/);
     assert.match(html, /name="twitter:card" content="summary_large_image"/);
     assert.equal((html.match(/name="description"/g) ?? []).length, 1);
     assert.match(html, /<noscript><main><h1>/);
     assert.match(html, /Манікюр без покриття/);
+    assert.match(html, /Шукаєш манікюр у Вишневому/);
+    assert.match(html, /ЖК «Софія»/);
+    assert.match(html, /Скільки коштує манікюр/);
     const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
@@ -47,7 +50,7 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     contacts.city = 'Київ'; contacts.address = 'вул. <script>alert(1)</script> $&';
     store.db.prepare('INSERT INTO contact_revisions VALUES (?, ?, ?)').run(Number(row.revision) + 1, new Date().toISOString(), JSON.stringify(contacts));
     const updated = await (await fetch(base + '/')).text();
-    assert.match(updated, /\| Київ<\/title>/);
+    assert.match(updated, /Київ \| Beauty Space Victoriya<\/title>/);
     assert.ok(!updated.includes('<script>alert(1)</script>'));
     assert.ok(updated.includes('&lt;script&gt;alert(1)&lt;/script&gt; $&amp;'));
   } finally {

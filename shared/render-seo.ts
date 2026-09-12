@@ -1,3 +1,4 @@
+import { localStudioContent } from './local-seo.ts';
 import { studioSeo } from './seo.ts';
 import type { ContactDocument } from './contacts.ts';
 import type { PriceDocument } from './pricing.ts';
@@ -31,7 +32,9 @@ export function renderSeo(template: string, snapshot: ContactDocument, prices: P
       '<link rel="preload" as="image" href="/images/manicure.webp" fetchpriority="high">',
     ].join('\n');
     const items = Object.values(prices).flatMap((category) => category.items).map((item) => `<li>${escape(item.name)} — ${escape(item.price)}</li>`).join('');
-    const fallback = `<noscript><main><h1>${escape(seo.title)}</h1><p>${escape(seo.description)}</p><h2>Послуги та ціни</h2><ul>${items}</ul><h2>Контакти й запис</h2><p>${escape(contacts.address)}, ${escape(contacts.city)}</p><p><a href="tel:${escape(contacts.phone)}">${escape(contacts.phone)}</a></p><a href="${escape(contacts.direct)}">Записатися онлайн</a> · <a href="${escape(contacts.instagram)}">Instagram</a> · <a href="${escape(contacts.telegram)}">Telegram</a></main></noscript>`;
+    const local = localStudioContent(contacts, prices);
+    const localHtml = `<h2>${escape(local.heading)}</h2><p>${escape(local.intro)}</p>${local.questions.map(({ question, answer }) => `<h3>${escape(question)}</h3><p>${escape(answer)}</p>`).join('')}`;
+    const fallback = `<noscript><main><h1>${escape(seo.title)}</h1><p>${escape(seo.description)}</p><h2>Послуги та ціни</h2><ul>${items}</ul>${localHtml}<h2>Контакти й запис</h2><p>${escape(contacts.address)}, ${escape(contacts.city)}</p><p><a href="tel:${escape(contacts.phone)}">${escape(contacts.phone)}</a></p><a href="${escape(contacts.direct)}">Записатися онлайн</a> · <a href="${escape(contacts.instagram)}">Instagram</a> · <a href="${escape(contacts.telegram)}">Telegram</a></main></noscript>`;
     const html = template
       .replace(/<title>[\s\S]*?<\/title>/, '')
       .replace(/<meta\s+(?:name="description"|property="og:[^"]+")[\s\S]*?>/g, '')

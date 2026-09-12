@@ -1258,3 +1258,11 @@ h1 em {
     font-size: 30px;
   }
 }
+
+.local-info { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.local-info h2 { font-size: clamp(32px, 4vw, 48px); }
+.local-info p { margin: 20px 0; font-size: 14px; line-height: 1.85; color: #776b60; }
+.local-questions details { border-bottom: 1px solid #ddd6cf; padding: 20px 0; }
+.local-questions summary { cursor: pointer; font-size: 16px; }
+.local-questions summary:focus-visible { outline: 2px solid #93685c; outline-offset: 5px; }
+@media (max-width: 767px) { .local-info { grid-template-columns: 1fr; gap: 24px; } }
