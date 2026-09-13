@@ -42,9 +42,9 @@ export function createApp(options: Options) {
     });
     next();
   });
-  app.use("/api", (_req, res, next) => {
+  app.use("/api", (req, res, next) => {
     res.set("Cache-Control", "no-store");
-    res.set("X-Robots-Tag", "noindex, nofollow");
+    if (!req.path.startsWith('/media/')) res.set("X-Robots-Tag", "noindex, nofollow");
     next();
   });
   app.use("/api", (req, res, next) => {

@@ -86,6 +86,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.equal(media.status, 200);
     assert.equal(media.headers.get('content-type'), 'image/webp');
     assert.deepEqual(Buffer.from(await media.arrayBuffer()), photo);
+    assert.equal(media.headers.get('x-robots-tag'), null);
     const gallery = await (await send('/api/gallery')).json() as { revision: number; items: typeof initialGallery };
     gallery.items[0].src = src;
     assert.equal((await send('/api/admin/gallery', 'PUT', gallery)).status, 200);
@@ -98,13 +99,22 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     try {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       let expired = false;
+      let publicApiUnavailable = false;
       await page.route('**/*', async (route) => {
         const request = route.request();
         if (!request.url().startsWith(origin + '/')) return route.abort();
+        if (publicApiUnavailable && /^\/api\/(prices|gallery|contacts)$/.test(new URL(request.url()).pathname)) return route.abort();
         if (expired && request.url().includes('/api/admin/')) return route.fulfill({ status: 302, headers: { Location: `${issuer}/cdn-cgi/access/login` } });
         const response = await mf.dispatchFetch(request.url(), { method: request.method(), headers: { ...request.headers(), 'Cf-Access-Jwt-Assertion': jwt }, body: request.postDataBuffer() ?? undefined });
         await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
       });
+      publicApiUnavailable = true;
+      await page.goto(origin + '/');
+      await page.getByRole('button', { name: /01 Манікюр/ }).click();
+      await page.getByText('777 грн', { exact: true }).waitFor();
+      assert.ok(await page.locator('.gallery-slide').count() >= initialGallery.length);
+      await page.locator('.gallery-slide img').first().evaluate((image: HTMLImageElement) => image.decode());
+      publicApiUnavailable = false;
       await page.goto(origin + '/admin');
       await page.getByRole('button', { name: 'Безпека', exact: true }).click();
       await page.getByText('Вхід за одноразовим кодом на дозволену пошту.', { exact: false }).waitFor();

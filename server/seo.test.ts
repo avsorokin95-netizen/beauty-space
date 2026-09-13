@@ -26,6 +26,10 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.match(html, /name="twitter:card" content="summary_large_image"/);
     assert.equal((html.match(/name="description"/g) ?? []).length, 1);
     assert.match(html, /<noscript><main><h1>/);
+    const bootPrices = JSON.parse(html.match(/id="studio-prices">(.*?)<\/script>/)![1]);
+    assert.equal(bootPrices.prices.nails.items[0].price, '550 грн');
+    const bootGallery = JSON.parse(html.match(/id="studio-gallery">(.*?)<\/script>/)![1]);
+    assert.ok(bootGallery.items.length > 0);
     assert.match(html, /Манікюр без покриття/);
     assert.match(html, /Шукаєш манікюр у Вишневому/);
     assert.match(html, /ЖК «Софія»/);
@@ -43,6 +47,10 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.equal(schema.openingHoursSpecification[0].closes, '18:00');
     assert.match(html, /Щодня, 09:00–18:00/);
     assert.match(await (await fetch(base + '/robots.txt')).text(), /Sitemap: https:\/\/beauty.example\/sitemap.xml/);
+    const robots = await (await fetch(base + '/robots.txt')).text();
+    for (const resource of ['prices', 'contacts', 'gallery']) assert.ok(robots.includes(`Allow: /api/${resource}$`));
+    assert.ok(robots.includes('Allow: /api/media/'));
+    assert.ok(robots.includes('Disallow: /admin'));
     const sitemap = await (await fetch(base + '/sitemap.xml')).text();
     assert.match(sitemap, /<loc>https:\/\/beauty.example\/<\/loc>/);
     assert.ok(!sitemap.includes('admin'));

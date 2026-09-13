@@ -5,6 +5,8 @@ import { boundedBody, validWebp } from './upload';
 import { renderSeo } from '../shared/render-seo';
 import type { ContactDocument } from '../shared/contacts';
 import type { PriceDocument } from '../shared/pricing';
+import type { GalleryDocument } from '../shared/gallery';
+import { robotsText } from '../shared/robots';
 
 const json = (value: unknown, status = 200) => Response.json(value, { status });
 const text = (value: string, type = 'text/html; charset=utf-8', status = 200) => new Response(value, { status, headers: { 'Content-Type': type } });
@@ -61,17 +63,19 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (path.startsWith('/api/')) throw new HttpError(404, 'Сторінку не знайдено.');
   if (!get) throw new HttpError(405, 'Метод не підтримується.');
   if (path === '/index.html') return Response.redirect(`${url.origin}/`, 301);
-  if (path === '/robots.txt') return text(origin ? `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin\nSitemap: ${origin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n', 'text/plain; charset=utf-8');
+  if (path === '/robots.txt') return text(robotsText(origin), 'text/plain; charset=utf-8');
   if (path === '/sitemap.xml') {
     if (!origin) throw new HttpError(404, 'Домен ще не налаштовано.');
     return text(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${origin.replaceAll('&', '&amp;')}/</loc></url></urlset>`, 'application/xml');
   }
   if (path === '/') {
-    const [template, contacts, prices] = await Promise.all([
+    const [template, contacts, prices, gallery] = await Promise.all([
       env.ASSETS.fetch(new Request(new URL('/index.html', url))).then((res) => res.text()),
-      readDocument(env.DB, 'contacts'), readDocument(env.DB, 'prices'),
+      readDocument(env.DB, 'contacts'), readDocument(env.DB, 'prices'), readDocument(env.DB, 'gallery'),
     ]);
-    return text(renderSeo(template, contacts as unknown as ContactDocument, prices.prices as PriceDocument['prices'], origin));
+    return text(renderSeo(template, contacts as unknown as ContactDocument, prices.prices as PriceDocument['prices'], origin, {
+      prices: prices as unknown as PriceDocument, gallery: gallery as unknown as GalleryDocument,
+    }));
   }
   return env.ASSETS.fetch(request);
 }
@@ -87,7 +91,7 @@ export default {
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     const path = new URL(request.url).pathname;
     if (path.startsWith('/api/') || path.startsWith('/admin')) {
-      response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+      if (!path.startsWith('/api/media/')) response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
       if (!path.startsWith('/api/media/')) response.headers.set('Cache-Control', 'no-store');
     } else if (path === '/') {
       response.headers.set('Cache-Control', 'no-cache');

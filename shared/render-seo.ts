@@ -2,10 +2,11 @@ import { localStudioContent } from './local-seo.ts';
 import { studioSeo } from './seo.ts';
 import type { ContactDocument } from './contacts.ts';
 import type { PriceDocument } from './pricing.ts';
+import type { GalleryDocument } from './gallery.ts';
 const escape = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c');
 
-export function renderSeo(template: string, snapshot: ContactDocument, prices: PriceDocument['prices'], origin?: string) {
+export function renderSeo(template: string, snapshot: ContactDocument, prices: PriceDocument['prices'], origin?: string, published?: { prices: PriceDocument; gallery: GalleryDocument }) {
     const { contacts } = snapshot;
     const seo = studioSeo(contacts, origin);
     const meta = [
@@ -29,12 +30,17 @@ export function renderSeo(template: string, snapshot: ContactDocument, prices: P
       ] : []),
       `<script type="application/ld+json" id="studio-schema">${json(seo.schema)}</script>`,
       `<script type="application/json" id="studio-contacts">${json(snapshot)}</script>`,
+      ...(published ? [
+        `<script type="application/json" id="studio-prices">${json(published.prices)}</script>`,
+        `<script type="application/json" id="studio-gallery">${json(published.gallery)}</script>`,
+      ] : []),
       '<link rel="preload" as="image" href="/images/manicure.webp" fetchpriority="high">',
     ].join('\n');
-    const items = Object.values(prices).flatMap((category) => category.items).map((item) => `<li>${escape(item.name)} — ${escape(item.price)}</li>`).join('');
+    const items = Object.values(prices).flatMap((category) => category.items).map((item) => `<li>${escape(item.name)} — ${escape(item.price)}${item.detail ? `. ${escape(item.detail)}` : ''}</li>`).join('');
+    const galleryHtml = published ? `<h2>Роботи Beauty Space Victoriya</h2>${published.gallery.items.map((item) => `<figure><img src="${escape(item.src)}" alt="${escape(`${item.label}: ${item.title} — Beauty Space Victoriya`)}" width="360" loading="lazy"><figcaption>${escape(item.title)}</figcaption></figure>`).join('')}` : '';
     const local = localStudioContent(contacts, prices);
     const localHtml = `<h2>${escape(local.heading)}</h2><p>${escape(local.intro)}</p>${local.questions.map(({ question, answer }) => `<h3>${escape(question)}</h3><p>${escape(answer)}</p>`).join('')}`;
-    const fallback = `<noscript><main><h1>${escape(seo.title)}</h1><p>${escape(seo.description)}</p><h2>Послуги та ціни</h2><ul>${items}</ul>${localHtml}<h2>Контакти й запис</h2><p>${escape(contacts.address)}, ${escape(contacts.city)}</p><p><a href="tel:${escape(contacts.phone)}">${escape(contacts.phone)}</a></p><a href="${escape(contacts.direct)}">Записатися онлайн</a> · <a href="${escape(contacts.instagram)}">Instagram</a> · <a href="${escape(contacts.telegram)}">Telegram</a></main></noscript>`;
+    const fallback = `<noscript><main><h1>${escape(seo.title)}</h1><p>${escape(seo.description)}</p><h2>Послуги та ціни</h2><ul>${items}</ul>${galleryHtml}${localHtml}<h2>Контакти й запис</h2><p>${escape(contacts.address)}, ${escape(contacts.city)}</p><p><a href="tel:${escape(contacts.phone)}">${escape(contacts.phone)}</a></p><a href="${escape(contacts.direct)}">Записатися онлайн</a> · <a href="${escape(contacts.instagram)}">Instagram</a> · <a href="${escape(contacts.telegram)}">Telegram</a></main></noscript>`;
     const html = template
       .replace(/<title>[\s\S]*?<\/title>/, '')
       .replace(/<meta\s+(?:name="description"|property="og:[^"]+")[\s\S]*?>/g, '')

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import type { PriceDocument } from "../../shared/pricing";
+import { readBootstrap } from "../lib/bootstrap";
 
 export function usePrices() {
-  const [snapshot, setSnapshot] = useState<PriceDocument | null>(null);
+  const [snapshot, setSnapshot] = useState<PriceDocument | null>(() => readBootstrap<PriceDocument>('studio-prices'));
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import type { GalleryDocument } from "../../shared/gallery";
+import { readBootstrap } from "../lib/bootstrap";
 
 export function useGallery() {
-  const [snapshot, setSnapshot] = useState<GalleryDocument | null>(null);
+  const [snapshot, setSnapshot] = useState<GalleryDocument | null>(() => readBootstrap<GalleryDocument>('studio-gallery'));
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
