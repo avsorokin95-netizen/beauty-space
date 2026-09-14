@@ -34,7 +34,9 @@
       "bucket_name": "beauty-space-media"
     }
   ],
+  "ratelimits": [{ "name": "ANALYTICS_LIMITER", "namespace_id": "9142026", "simple": { "limit": 30, "period": 60 } }],
   "vars": {
+    "WEB_ANALYTICS_TOKEN": "8d41b30a9ff545b0b885f0387148869b",
     "APP_ORIGIN": "https://victoriya-beauty.space",
     "ACCESS_TEAM_DOMAIN": "bold-moon-f565.cloudflareaccess.com",
     "ACCESS_AUD": "9d6381d9973688d6eb34661d45903d1653714de961a73ad8f63e08767c1db629"

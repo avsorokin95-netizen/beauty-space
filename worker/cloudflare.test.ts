@@ -1,3 +1,4 @@
+import { linkEvent } from '../shared/analytics.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -20,7 +21,8 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
   const mf = new Miniflare(convertV4MiniflareOptions({
     modules: true, script: bundle.outputFiles[0].text, compatibilityDate: '2026-09-11',
     d1Databases: ['DB'], r2Buckets: ['MEDIA'],
-    bindings: { APP_ORIGIN: origin, ACCESS_TEAM_DOMAIN: 'test-team.cloudflareaccess.com', ACCESS_AUD: 'test-aud', ADMIN_EMAILS: 'owner@example.com,studio@example.com' },
+    ratelimits: { ANALYTICS_LIMITER: { namespace_id: '9142026', simple: { limit: 30, period: 60 } } },
+    bindings: { WEB_ANALYTICS_TOKEN: '8d41b30a9ff545b0b885f0387148869b', APP_ORIGIN: origin, ACCESS_TEAM_DOMAIN: 'test-team.cloudflareaccess.com', ACCESS_AUD: 'test-aud', ADMIN_EMAILS: 'owner@example.com,studio@example.com' },
     serviceBindings: { ASSETS: (request) => {
       const path = new URL(request.url).pathname;
       const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.jpg': 'image/jpeg' }[extname(path)] || 'application/octet-stream';
@@ -35,6 +37,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
   try {
     const db = await mf.getD1Database('DB');
     await db.exec(readFileSync('worker/migrations/0001_documents.sql', 'utf8').replaceAll('\n', ' '));
+    await db.exec(readFileSync('worker/migrations/0002_analytics.sql', 'utf8').replace(/--[^\n]*/g, '').replaceAll('\n', ' '));
     for (const [kind, data] of Object.entries({ prices, contacts: studio, gallery: initialGallery })) {
       await db.prepare('INSERT INTO documents VALUES (?, 1, ?, ?)').bind(kind, new Date().toISOString(), JSON.stringify(data)).run();
     }
@@ -57,6 +60,17 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.equal((await send('/api/admin/session')).status, 200);
     assert.equal((await send('/api/login', 'POST', { password: 'unused' })).status, 404);
     assert.equal((await send('/api/admin/password', 'PUT', {})).status, 404);
+    assert.equal((await mf.dispatchFetch(origin + '/api/admin/analytics')).status, 401);
+    assert.equal((await send('/api/analytics', 'POST', { event: 'booking' }, 'https://evil.example')).status, 403);
+    assert.equal((await send('/api/analytics', 'POST', { event: 'unknown' })).status, 400);
+    assert.equal((await send('/api/analytics', 'POST', { event: 'booking', email: 'private@example.com' })).status, 400);
+    assert.equal((await send('/api/analytics', 'POST', { event: 'x'.repeat(200) })).status, 413);
+    for (const event of ['booking', 'booking', 'phone']) assert.equal((await send('/api/analytics', 'POST', { event })).status, 204);
+    const clickStats = await (await send('/api/admin/analytics?days=7')).json() as { rows: { event: string; count: number }[] };
+    assert.equal(clickStats.rows.find((row) => row.event === 'booking')?.count, 2);
+    assert.equal(clickStats.rows.find((row) => row.event === 'phone')?.count, 1);
+    assert.equal((await send('/api/admin/analytics?days=999')).status, 400);
+    assert.ok(!(await (await send('/admin')).text()).includes('beacon.min.js'));
     const current = await (await send('/api/prices')).json() as { revision: number; prices: typeof prices };
     current.prices.nails.items[0].price = '777 грн';
     assert.equal((await send('/api/admin/prices', 'PUT', current, 'https://evil.example')).status, 403);
@@ -67,6 +81,8 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     contacts.contacts.city = 'Київ';
     assert.equal((await send('/api/admin/contacts', 'PUT', contacts)).status, 200);
     const html = await (await send('/')).text();
+    assert.equal((html.match(/beacon.min.js/g) ?? []).length, 1);
+    assert.ok(html.includes('"spa":false'));
     assert.ok(html.includes('777 грн') && html.includes('Київ') && html.includes('studio-schema'));
     assert.ok(html.includes(`href="${origin}/"`));
     const admin = await send('/admin');
@@ -115,7 +131,20 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       assert.ok(await page.locator('.gallery-slide').count() >= initialGallery.length);
       await page.locator('.gallery-slide img').first().evaluate((image: HTMLImageElement) => image.decode());
       publicApiUnavailable = false;
+      const clickResponse = page.waitForResponse('**/api/analytics');
+      await page.locator('.hero [data-analytics="booking"]').click();
+      assert.equal((await clickResponse).status(), 204);
       await page.goto(origin + '/admin');
+      await page.getByRole('button', { name: 'Статистика', exact: true }).click();
+      await page.getByRole('table').waitFor();
+      assert.ok((await page.locator('.analytics-totals').innerText()).includes('Записатися\n3'));
+      await page.getByLabel('Період').selectOption('7');
+      await page.getByRole('table').waitFor();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      await page.screenshot({ path: 'output/analytics-mobile.png', fullPage: true });
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page.screenshot({ path: 'output/analytics-desktop.png', fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
       await page.getByRole('button', { name: 'Безпека', exact: true }).click();
       await page.getByText('Вхід за одноразовим кодом на дозволену пошту.', { exact: false }).waitFor();
       assert.equal(await page.locator('input[type=password]:visible').count(), 0);
@@ -141,5 +170,18 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.locator('#price-nails-0').waitFor();
       assert.equal(await page.locator('#price-nails-0').inputValue(), '888 грн');
     } finally { await browser.close(); }
+    for (let n = 0; n < 30; n++) await send('/api/analytics', 'POST', { event: 'booking' });
+    assert.equal((await send('/api/analytics', 'POST', { event: 'booking' })).status, 429);
   } finally { await mf.dispose(); }
+});
+
+
+test('Analytics distinguishes contact actions and ignores unrelated links', () => {
+  assert.equal(linkEvent('https://example.com/book', true), 'booking');
+  assert.equal(linkEvent('tel:+380939314056', false), 'phone');
+  assert.equal(linkEvent('https://ig.me/m/studio', false), 'booking');
+  assert.equal(linkEvent('https://www.instagram.com/studio/', false), 'instagram');
+  assert.equal(linkEvent('https://t.me/studio', false), 'telegram');
+  assert.equal(linkEvent('https://www.google.com/maps/search/?api=1', false), 'directions');
+  for (const href of ['#services', 'https://example.com', 'https://instagram.com.evil.test', 'javascript:alert(1)']) assert.equal(linkEvent(href, false), undefined);
 });

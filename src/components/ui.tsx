@@ -39,7 +39,7 @@ export function BookingLink({
   return (
     <a
       className={cn("button", className)}
-      href={href ?? studio.direct}
+      data-analytics="booking" href={href ?? studio.direct}
       target="_blank"
       rel="noopener noreferrer"
     >

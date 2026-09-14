@@ -100,7 +100,7 @@ export function Services() {
                     )}
                     <a
                       className="text-link"
-                      href={studio.direct}
+                      data-analytics="booking" href={studio.direct}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

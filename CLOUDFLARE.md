@@ -133,3 +133,33 @@ References: [Access JWT verification](https://developers.cloudflare.com/cloudfla
 [R2 pricing](https://developers.cloudflare.com/r2/pricing/),
 [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/),
 [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/).
+
+## Analytics
+
+Cloudflare Web Analytics uses the existing site `ac736284c7bc428f896ce42c457c8687`.
+Dashboard: https://dash.cloudflare.com/7fa5e6d60edca4265f9829b6bc448d6b/web-analytics/overview?siteTag~in=ac736284c7bc428f896ce42c457c8687&excludeBots=Yes
+
+Set RUM to **Enable with JS Snippet installation** (automatic injection off).
+`WEB_ANALYTICS_TOKEN` is a public beacon token, not an API credential. The Worker
+inserts the beacon only into `/`, with SPA measurement disabled so section
+navigation does not inflate page views. Admin and local Node development do not
+include it. Existing Cloudflare history remains available.
+
+`/admin` → **Статистика** links to visits and shows contact clicks for 7/30/90 days.
+Booking, phone, Instagram, Telegram and directions are mutually exclusive click
+categories. These are clicks, not completed appointments or unique visitors.
+Collection began on 2026-09-14. UTC daily counts are stored in D1 `analytics_daily`;
+no cookies, visitor IDs, IP addresses, destination URLs or query parameters are
+stored there. Instagram includes gallery/review links. The browser suppresses
+repeat clicks of the same category within one second. Requests are best effort;
+blockers, failed requests and automated traffic can affect totals.
+
+The collector accepts only a small allowlisted payload from the site origin;
+Cloudflare rate limiting allows 30 accepted attempts per minute per IP per edge
+location (IP used transiently for limiting only). Reports require existing
+Cloudflare Access authentication. Aggregate rows are retained; no raw visitor
+history exists. This does not add paid analytics subscriptions.
+
+Before deploying this version, apply `0002_analytics.sql` with
+`npx wrangler d1 migrations apply beauty-space --remote`. Then use `npm run cf:deploy`.
+Do not enable automatic beacon injection as well: it can cause duplicate counts.

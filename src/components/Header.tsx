@@ -50,7 +50,7 @@ export function Header() {
         </nav>
         <a
           className="header-book"
-          href={studio.direct}
+          data-analytics="booking" href={studio.direct}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -94,7 +94,7 @@ export function Header() {
           ))}
         </nav>
         <div className="mobile-menu-bottom">
-          <a className="button" href={studio.direct} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Записатися онлайн <ArrowUpRight size={18} /></a>
+          <a className="button" data-analytics="booking" href={studio.direct} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Записатися онлайн <ArrowUpRight size={18} /></a>
           <a href={`tel:${studio.phone}`}>{studio.phoneDisplay}</a>
           <p>{studio.city}<br />{studio.address}</p>
         </div>

@@ -3,6 +3,8 @@
 > локальні паролі та Node-сервер нижче стосуються лише локального запуску.
 > Розгортання й обслуговування: [CLOUDFLARE.md](./CLOUDFLARE.md).
 
+Статистика: у `/admin` відкрийте «Статистика» — натискання на контакти та посилання на відвідування у Cloudflare.
+
 # Beauty Space Victoriya
 
 Cloudflare deployment (Workers, D1, R2, email access): [CLOUDFLARE.md](./CLOUDFLARE.md).

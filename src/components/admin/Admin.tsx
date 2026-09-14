@@ -1,5 +1,6 @@
+import { Analytics } from "./Analytics";
 import { BrandStar } from "../BrandStar";
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -23,7 +24,7 @@ import "./admin.css";
 
 export default function Admin() {
   const [accessMode, setAccessMode] = useState(false);
-  const [section, setSection] = useState<"prices" | "gallery" | "contacts" | "security">("prices");
+  const [section, setSection] = useState<"prices" | "gallery" | "contacts" | "security" | "analytics">("prices");
   const [passwordBusy, setPasswordBusy] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [contactsModel, setContactsModel] = useState<ContactsModel | null>(null);
@@ -34,6 +35,7 @@ export default function Admin() {
   const galleryDirty = !!galleryModel && JSON.stringify(galleryModel.draft.items) !== JSON.stringify(galleryModel.published.items);
   const [checking, setChecking] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const analyticsSessionExpired = useCallback(() => setAuthenticated(false), []);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [published, setPublished] = useState<PriceDocument | null>(null);
@@ -318,7 +320,9 @@ export default function Admin() {
           <button type="button" aria-pressed={section === "gallery"} onClick={() => setSection("gallery")}>Роботи{galleryDirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "contacts"} onClick={() => setSection("contacts")}>Контакти{contactsDirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "security"} onClick={() => setSection("security")}>Безпека</button>
+          {accessMode && <button type="button" aria-pressed={section === "analytics"} onClick={() => setSection("analytics")}>Статистика</button>}
         </nav>
+        {section === "analytics" && accessMode && <Analytics onSessionExpired={analyticsSessionExpired} />}
         <div hidden={section !== "security"}>
           {accessMode ? <section className="admin-page-heading"><div><h1>Захищений <em>доступ.</em></h1><p>Вхід за одноразовим кодом на дозволену пошту. Пароль для цього сайту не потрібен.</p><p>Щоб змінити список людей із доступом, звернися до власника сайту.</p></div></section> : <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />}
         </div>

@@ -545,3 +545,15 @@
 .password-editor p { font-size: 12px; line-height: 1.7; color: #70665e; }
 .password-editor .password-visibility { display: flex; align-items: center; gap: 10px; }
 .password-editor .password-visibility input { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; }
+
+.analytics-panel > p { color: #655f59; line-height: 1.6; }
+.analytics-controls { display: flex; gap: 20px; align-items: center; margin: 24px 0; flex-wrap: wrap; }
+.analytics-controls select, .analytics-controls button { padding: 10px 14px; border: 1px solid #d9d2ca; border-radius: 6px; background: #fff; font: inherit; }
+.analytics-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin: 24px 0; }
+.analytics-totals > div { padding: 20px; border: 1px solid #ded8d1; border-radius: 8px; background: #fff; }
+.analytics-totals dt { color: #655f59; }
+.analytics-totals dd { margin: 12px 0 0; font-size: 32px; }
+.analytics-table { overflow-x: auto; }
+.analytics-table table { width: 100%; border-collapse: collapse; text-align: left; }
+.analytics-table caption { text-align: left; font-weight: 600; padding: 16px 0; }
+.analytics-table th, .analytics-table td { padding: 12px; border-bottom: 1px solid #ded8d1; white-space: nowrap; }

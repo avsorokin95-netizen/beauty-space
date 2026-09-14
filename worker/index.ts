@@ -1,3 +1,4 @@
+import { analyticsHtml, collectClick, clickReport } from './analytics';
 import { authenticate } from './auth';
 import type { Env } from './env';
 import { HttpError, invalid, mediaName, readDocument, saveDocument, type Kind } from './store';
@@ -20,6 +21,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return Response.redirect(`${origin}${path}${url.search}`, 301);
   }
   if (path.startsWith('/api/') && !get && request.headers.get('Origin') !== (origin ?? url.origin)) throw new HttpError(403, 'Запит з іншого сайту відхилено.');
+  if (path === '/api/analytics' && request.method === 'POST') return collectClick(request, env);
   if (path === '/api/auth/config' && get) return json({ mode: 'access' });
   for (const kind of ['prices', 'contacts', 'gallery'] as const) {
     if (path === `/api/${kind}` && get) return json(await readDocument(env.DB, kind));
@@ -35,6 +37,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (adminPage || path === '/api/admin' || path.startsWith('/api/admin/')) {
     const user = await authenticate(request, env);
     if (!user) throw new HttpError(401, 'Увійди через Cloudflare Access, щоб керувати студією.');
+    if (path === '/api/admin/analytics' && get) return clickReport(url, env);
     if (path === '/api/admin/session' && get) return json({ authenticated: true, mode: 'access', email: user.email });
     if (request.method === 'PUT') {
       const kind = path.slice('/api/admin/'.length) as Kind;
@@ -73,9 +76,9 @@ async function handle(request: Request, env: Env): Promise<Response> {
       env.ASSETS.fetch(new Request(new URL('/index.html', url))).then((res) => res.text()),
       readDocument(env.DB, 'contacts'), readDocument(env.DB, 'prices'), readDocument(env.DB, 'gallery'),
     ]);
-    return text(renderSeo(template, contacts as unknown as ContactDocument, prices.prices as PriceDocument['prices'], origin, {
+    return text(analyticsHtml(renderSeo(template, contacts as unknown as ContactDocument, prices.prices as PriceDocument['prices'], origin, {
       prices: prices as unknown as PriceDocument, gallery: gallery as unknown as GalleryDocument,
-    }));
+    }), env.WEB_ANALYTICS_TOKEN));
   }
   return env.ASSETS.fetch(request);
 }
