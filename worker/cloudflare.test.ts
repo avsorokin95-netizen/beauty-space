@@ -18,18 +18,32 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
   const bundle = await build({ entryPoints: ['worker/index.ts'], bundle: true, write: false, format: 'esm', platform: 'browser', target: 'es2023' });
   const origin = 'https://studio.example';
   const issuer = 'https://test-team.cloudflareaccess.com';
+  let analyticsUnavailable = false;
+  let analyticsRequests = 0;
   const mf = new Miniflare(convertV4MiniflareOptions({
     modules: true, script: bundle.outputFiles[0].text, compatibilityDate: '2026-09-11',
     d1Databases: ['DB'], r2Buckets: ['MEDIA'],
     ratelimits: { ANALYTICS_LIMITER: { namespace_id: '9142026', simple: { limit: 30, period: 60 } } },
-    bindings: { WEB_ANALYTICS_TOKEN: '8d41b30a9ff545b0b885f0387148869b', APP_ORIGIN: origin, ACCESS_TEAM_DOMAIN: 'test-team.cloudflareaccess.com', ACCESS_AUD: 'test-aud', ADMIN_EMAILS: 'owner@example.com,studio@example.com' },
+    bindings: { CF_ANALYTICS_API_TOKEN: 'test-read-token', CF_ANALYTICS_ACCOUNT_ID: '7fa5e6d60edca4265f9829b6bc448d6b', CF_ANALYTICS_SITE_ID: 'ac736284c7bc428f896ce42c457c8687', WEB_ANALYTICS_TOKEN: '8d41b30a9ff545b0b885f0387148869b', APP_ORIGIN: origin, ACCESS_TEAM_DOMAIN: 'test-team.cloudflareaccess.com', ACCESS_AUD: 'test-aud', ADMIN_EMAILS: 'owner@example.com,studio@example.com' },
     serviceBindings: { ASSETS: (request) => {
       const path = new URL(request.url).pathname;
       const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.jpg': 'image/jpeg' }[extname(path)] || 'application/octet-stream';
       try { return new Response(readFileSync(join('dist', path)), { headers: { 'Content-Type': mime } }); }
       catch { return new Response('Not found', { status: 404 }); }
     } },
-    outboundService: (request) => {
+    outboundService: async (request) => {
+      if (request.url === 'https://api.cloudflare.com/client/v4/graphql') {
+        analyticsRequests++;
+        assert.equal(request.headers.get('Authorization'), 'Bearer test-read-token');
+        const body = await request.json() as { variables: { site: string }; query: string };
+        assert.equal(body.variables.site, 'ac736284c7bc428f896ce42c457c8687');
+        assert.ok(body.query.includes('bot: 0'));
+        if (analyticsUnavailable) return Response.json({ errors: [{ message: 'Unavailable' }] });
+        return Response.json({ data: { viewer: { accounts: [{ rumPageloadEventsAdaptiveGroups: [
+          { count: 12, sum: { visits: 8 }, dimensions: { date: new Date().toISOString().slice(0, 10) } },
+          { count: 5, sum: { visits: 4 }, dimensions: { date: new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10) } },
+        ] }] } }, errors: null });
+      }
       assert.equal(request.url, `${issuer}/cdn-cgi/access/certs`);
       return Response.json({ keys: [jwk] });
     },
@@ -38,6 +52,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     const db = await mf.getD1Database('DB');
     await db.exec(readFileSync('worker/migrations/0001_documents.sql', 'utf8').replaceAll('\n', ' '));
     await db.exec(readFileSync('worker/migrations/0002_analytics.sql', 'utf8').replace(/--[^\n]*/g, '').replaceAll('\n', ' '));
+    await db.exec(readFileSync('worker/migrations/0003_analytics_cache.sql', 'utf8').replace(/--[^\n]*/g, '').replaceAll('\n', ' '));
     for (const [kind, data] of Object.entries({ prices, contacts: studio, gallery: initialGallery })) {
       await db.prepare('INSERT INTO documents VALUES (?, 1, ?, ?)').bind(kind, new Date().toISOString(), JSON.stringify(data)).run();
     }
@@ -69,6 +84,24 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     const clickStats = await (await send('/api/admin/analytics?days=7')).json() as { rows: { event: string; count: number }[] };
     assert.equal(clickStats.rows.find((row) => row.event === 'booking')?.count, 2);
     assert.equal(clickStats.rows.find((row) => row.event === 'phone')?.count, 1);
+    const traffic = await (await send('/api/admin/analytics?days=7')).json() as { traffic: { status: string; rows: { visits: number }[] } };
+    assert.equal(traffic.traffic.status, 'ready');
+    assert.equal(traffic.traffic.rows.length, 1);
+    assert.equal(traffic.traffic.rows[0].visits, 8);
+    assert.equal(analyticsRequests, 1, 'Reports share a five-minute cache');
+    const saved = JSON.parse((await db.prepare('SELECT value FROM analytics_cache WHERE id=1').first<{ value: string }>())!.value);
+    saved.updatedAt = new Date(Date.now() - 600000).toISOString();
+    await db.prepare('UPDATE analytics_cache SET value=? WHERE id=1').bind(JSON.stringify(saved)).run();
+    analyticsUnavailable = true;
+    const stale = await (await send('/api/admin/analytics?days=30')).json() as { traffic: { status: string; rows: unknown[] }; rows: unknown[] };
+    assert.equal(stale.traffic.status, 'stale');
+    assert.equal(stale.traffic.rows.length, 2);
+    assert.ok(stale.rows.length, 'Click reports still work when Cloudflare fails');
+    await db.prepare('DELETE FROM analytics_cache').run();
+    const unavailable = await (await send('/api/admin/analytics?days=7')).json() as { traffic: { status: string; updatedAt: string | null } };
+    assert.equal(unavailable.traffic.status, 'unavailable');
+    assert.equal(unavailable.traffic.updatedAt, null, 'An upstream failure must not appear as zero visits');
+    analyticsUnavailable = false;
     assert.equal((await send('/api/admin/analytics?days=999')).status, 400);
     assert.ok(!(await (await send('/admin')).text()).includes('beacon.min.js'));
     const current = await (await send('/api/prices')).json() as { revision: number; prices: typeof prices };
@@ -136,14 +169,15 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       assert.equal((await clickResponse).status(), 204);
       await page.goto(origin + '/admin');
       await page.getByRole('button', { name: 'Статистика', exact: true }).click();
-      await page.getByRole('table').waitFor();
-      assert.ok((await page.locator('.analytics-totals').innerText()).includes('Записатися\n3'));
+      await page.getByRole('table').first().waitFor();
+      assert.ok((await page.locator('.analytics-totals').last().innerText()).includes('Записатися\n3'));
+      assert.ok((await page.locator('.analytics-totals').first().innerText()).includes('Візити\n12'));
       await page.getByLabel('Період').selectOption('7');
-      await page.getByRole('table').waitFor();
+      await page.getByRole('table').first().waitFor();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-      await page.screenshot({ path: 'output/analytics-mobile.png', fullPage: true });
+      await page.screenshot({ path: 'output/analytics-visits-mobile.png', fullPage: true });
       await page.setViewportSize({ width: 1440, height: 1000 });
-      await page.screenshot({ path: 'output/analytics-desktop.png', fullPage: true });
+      await page.screenshot({ path: 'output/analytics-visits-desktop.png', fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
       await page.getByRole('button', { name: 'Безпека', exact: true }).click();
       await page.getByText('Вхід за одноразовим кодом на дозволену пошту.', { exact: false }).waitFor();

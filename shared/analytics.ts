@@ -7,7 +7,8 @@ export const eventLabels = {
 } as const;
 
 export type AnalyticsEvent = keyof typeof eventLabels;
-export type AnalyticsReport = { days: number; rows: { day: string; event: AnalyticsEvent; count: number }[] };
+export type VisitReport = { status: 'ready' | 'stale' | 'not_configured' | 'unavailable'; updatedAt: string | null; rows: { day: string; visits: number; pageViews: number }[] };
+export type AnalyticsReport = { days: number; traffic: VisitReport; rows: { day: string; event: AnalyticsEvent; count: number }[] };
 export const analyticsDashboard = 'https://dash.cloudflare.com/7fa5e6d60edca4265f9829b6bc448d6b/web-analytics/overview?siteTag~in=ac736284c7bc428f896ce42c457c8687&excludeBots=Yes';
 
 export function linkEvent(href: string, booking: boolean): AnalyticsEvent | undefined {

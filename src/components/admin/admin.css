@@ -557,3 +557,6 @@
 .analytics-table table { width: 100%; border-collapse: collapse; text-align: left; }
 .analytics-table caption { text-align: left; font-weight: 600; padding: 16px 0; }
 .analytics-table th, .analytics-table td { padding: 12px; border-bottom: 1px solid #ded8d1; white-space: nowrap; }
+
+.analytics-contacts-heading { margin-top: 48px; }
+.analytics-updated { font-size: 13px; }

@@ -36,6 +36,8 @@
   ],
   "ratelimits": [{ "name": "ANALYTICS_LIMITER", "namespace_id": "9142026", "simple": { "limit": 30, "period": 60 } }],
   "vars": {
+    "CF_ANALYTICS_ACCOUNT_ID": "7fa5e6d60edca4265f9829b6bc448d6b",
+    "CF_ANALYTICS_SITE_ID": "ac736284c7bc428f896ce42c457c8687",
     "WEB_ANALYTICS_TOKEN": "8d41b30a9ff545b0b885f0387148869b",
     "APP_ORIGIN": "https://victoriya-beauty.space",
     "ACCESS_TEAM_DOMAIN": "bold-moon-f565.cloudflareaccess.com",

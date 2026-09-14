@@ -145,7 +145,7 @@ inserts the beacon only into `/`, with SPA measurement disabled so section
 navigation does not inflate page views. Admin and local Node development do not
 include it. Existing Cloudflare history remains available.
 
-`/admin` → **Статистика** links to visits and shows contact clicks for 7/30/90 days.
+`/admin` → **Статистика** shows Cloudflare visits, page views and contact clicks for 7/30/90 days.
 Booking, phone, Instagram, Telegram and directions are mutually exclusive click
 categories. These are clicks, not completed appointments or unique visitors.
 Collection began on 2026-09-14. UTC daily counts are stored in D1 `analytics_daily`;
@@ -163,3 +163,30 @@ history exists. This does not add paid analytics subscriptions.
 Before deploying this version, apply `0002_analytics.sql` with
 `npx wrangler d1 migrations apply beauty-space --remote`. Then use `npm run cf:deploy`.
 Do not enable automatic beacon injection as well: it can cause duplicate counts.
+
+### Visits inside admin
+
+Apply `0003_analytics_cache.sql` before deploying. Set `CF_ANALYTICS_API_TOKEN`
+as a **Worker secret**, using a dedicated token with **Account → Account Analytics
+→ Read**, limited to this Cloudflare account. Never store an API token in Git,
+frontend environment variables, or the public beacon token. The account and site
+IDs in `wrangler.jsonc` are public identifiers. Creation of this persistent API
+token requires confirmation when using browser automation.
+
+Upload the token using `npx wrangler secret put CF_ANALYTICS_API_TOKEN`, then
+`npm run cf:deploy`. The Worker calls the GraphQL `rumPageloadEventsAdaptiveGroups`
+dataset for the configured site, with `bot: 0`; `count` is page views and
+`sum.visits` is visits (not unique people). It fetches the last 90 UTC calendar
+days, including today, and shares the response through a five-minute D1 cache.
+The selected 7/30/90-day period filters the cached daily rows. This aligns with
+Cloudflare's site/bot filters, but dashboard ranges/timezones and adaptive
+sampling can produce different displayed totals.
+
+Cloudflare is queried when an authenticated admin opens or refreshes the report;
+there is no background polling. A timeout, API error or revoked token preserves
+the last good snapshot and shows its timestamp as stale. With no snapshot,
+failures display an unavailable state instead of misleading zero visits.
+If the key is absent, admin explicitly shows that automatic updates are not set
+up. Click collection remains independent of the Cloudflare reporting API.
+
+Token setup: https://developers.cloudflare.com/analytics/graphql-api/getting-started/authentication/api-token-auth/
