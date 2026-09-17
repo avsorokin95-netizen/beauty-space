@@ -176,11 +176,29 @@ token requires confirmation when using browser automation.
 Upload the token using `npx wrangler secret put CF_ANALYTICS_API_TOKEN`, then
 `npm run cf:deploy`. The Worker calls the GraphQL `rumPageloadEventsAdaptiveGroups`
 dataset for the configured site, with `bot: 0`; `count` is page views and
-`sum.visits` is visits (not unique people). It fetches the last 90 UTC calendar
-days, including today, and shares the response through a five-minute D1 cache.
-The selected 7/30/90-day period filters the cached daily rows. This aligns with
-Cloudflare's site/bot filters, but dashboard ranges/timezones and adaptive
-sampling can produce different displayed totals.
+`sum.visits` is visits (not unique people). The default is 7 days. Every request
+uses only the selected 7/30/90 UTC calendar days, including today, instead of
+filtering a shared 90-day response. The admin displays the actual query bounds
+so comparisons with the Cloudflare dashboard can use the same time range and
+site/bot filters. Calendar days differ from a rolling "last 24 hours" range.
+
+The query includes `avg.sampleInterval` for each day. A value of 1 indicates no
+sampling for that row; values greater than 1 mark the report as an estimate.
+Missing metadata is shown as unknown, never as unsampled. Counts from Cloudflare
+are displayed unchanged: do not multiply or divide them by the sample interval.
+Shorter periods can reduce sampling, but the API does not guarantee unsampled
+responses, particularly for history older than seven days.
+
+The existing `analytics_cache` row holds a version-2 envelope with separate
+7/30/90-day snapshots, each cached for five minutes. Entries must match the site,
+account and UTC start date. Old version-1 90-day snapshots are ignored; switching
+periods or crossing midnight cannot reuse a snapshot for a different range.
+Concurrent refreshes merge their period entries atomically. No additional D1
+migration is required beyond `0003_analytics_cache.sql`.
+
+The proposed first-party visit collector, browser session storage, traffic
+endpoint and migration were removed before deployment. Contact click collection
+remains unchanged. No first-party visit totals are mixed with Cloudflare data.
 
 Cloudflare is queried when an authenticated admin opens or refreshes the report;
 there is no background polling. A timeout, API error or revoked token preserves

@@ -3,7 +3,7 @@ import { analyticsDashboard, eventLabels, type AnalyticsReport } from '../../../
 import { api, ApiError } from '../../lib/api';
 
 export function Analytics({ onSessionExpired }: { onSessionExpired: () => void }) {
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(7);
   const [report, setReport] = useState<AnalyticsReport | null>(null);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
@@ -33,8 +33,14 @@ export function Analytics({ onSessionExpired }: { onSessionExpired: () => void }
     </div>
     {error ? <p className="admin-error" role="alert">{error}</p> : !report ? <p role="status">Завантажуємо статистику…</p> : <>
       <h2>Відвідування</h2>
-      <p>Візити та перегляди за даними Cloudflare, з виключенням відомих ботів. Один відвідувач може здійснити кілька візитів. Дані можуть бути приблизними; дні рахуються за UTC.</p>
+      <p>Візити та перегляди за даними Cloudflare, з виключенням відомих ботів. Один відвідувач може здійснити кілька візитів. Період охоплює календарні дні за UTC, включно із сьогодні.</p>
       {report.traffic.updatedAt ? <>
+        <p>Період звіту: {new Date(report.traffic.rangeStart).toLocaleString('uk-UA', { timeZone: 'UTC' })} — {new Date(report.traffic.rangeEnd).toLocaleString('uk-UA', { timeZone: 'UTC' })} (UTC).</p>
+        {report.traffic.rows.length > 0 && <p className="analytics-sampling">{report.traffic.rows.some((row) => (row.sampleInterval ?? 0) > 1)
+          ? 'Cloudflare застосував вибірку: числа за цей період є оцінкою. Спробуй коротший період для детальніших даних.'
+          : report.traffic.rows.every((row) => row.sampleInterval === 1)
+            ? 'За даними Cloudflare, цей звіт отримано без вибірки.'
+            : 'Cloudflare не повідомив рівень вибірки для всіх даних цього звіту.'}</p>}
         <dl className="analytics-totals">
           <div><dt>Візити</dt><dd>{report.traffic.rows.reduce((sum, row) => sum + row.visits, 0).toLocaleString('uk-UA')}</dd></div>
           <div><dt>Перегляди сторінки</dt><dd>{report.traffic.rows.reduce((sum, row) => sum + row.pageViews, 0).toLocaleString('uk-UA')}</dd></div>

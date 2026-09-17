@@ -1,4 +1,4 @@
-import { visitReport } from './visits';
+import { visitRange, visitReport } from './visits';
 import { eventLabels } from '../shared/analytics';
 import type { Env } from './env';
 import { HttpError } from './store';
@@ -26,9 +26,10 @@ export async function collectClick(request: Request, env: Env) {
 }
 
 export async function clickReport(url: URL, env: Env) {
-  const days = Number(url.searchParams.get('days') ?? 30);
+  const days = Number(url.searchParams.get('days') ?? 7);
   if (![7, 30, 90].includes(days)) throw new HttpError(400, 'Обери 7, 30 або 90 днів.');
-  const start = new Date(Date.now() - (days - 1) * 86400000).toISOString().slice(0, 10);
+  const now = new Date();
+  const start = visitRange(days, now).rangeStart.slice(0, 10);
   const { results } = await env.DB.prepare('SELECT day, event, count FROM analytics_daily WHERE day >= ? ORDER BY day DESC, event').bind(start).all();
-  return Response.json({ days, rows: results, traffic: await visitReport(env, start) });
+  return Response.json({ days, rows: results, traffic: await visitReport(env, days, now) });
 }

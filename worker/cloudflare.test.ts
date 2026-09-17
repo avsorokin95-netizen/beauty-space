@@ -35,14 +35,16 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       if (request.url === 'https://api.cloudflare.com/client/v4/graphql') {
         analyticsRequests++;
         assert.equal(request.headers.get('Authorization'), 'Bearer test-read-token');
-        const body = await request.json() as { variables: { site: string }; query: string };
+        const body = await request.json() as { variables: { site: string; start: string; end: string }; query: string };
+        const duration = Date.parse(body.variables.end) - Date.parse(body.variables.start);
+        const sampleInterval = duration <= 7 * 86400000 ? 1 : 10;
         assert.equal(body.variables.site, 'ac736284c7bc428f896ce42c457c8687');
         assert.ok(body.query.includes('bot: 0'));
         if (analyticsUnavailable) return Response.json({ errors: [{ message: 'Unavailable' }] });
         return Response.json({ data: { viewer: { accounts: [{ rumPageloadEventsAdaptiveGroups: [
-          { count: 12, sum: { visits: 8 }, dimensions: { date: new Date().toISOString().slice(0, 10) } },
-          { count: 5, sum: { visits: 4 }, dimensions: { date: new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10) } },
-        ] }] } }, errors: null });
+          { count: 12, sum: { visits: 8 }, avg: { sampleInterval }, dimensions: { date: new Date().toISOString().slice(0, 10) } },
+          { count: 5, sum: { visits: 4 }, avg: { sampleInterval }, dimensions: { date: new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10) } },
+        ].filter((row) => row.dimensions.date >= body.variables.start.slice(0, 10)) }] } }, errors: null });
       }
       assert.equal(request.url, `${issuer}/cdn-cgi/access/certs`);
       return Response.json({ keys: [jwk] });
@@ -89,8 +91,11 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.equal(traffic.traffic.rows.length, 1);
     assert.equal(traffic.traffic.rows[0].visits, 8);
     assert.equal(analyticsRequests, 1, 'Reports share a five-minute cache');
+    await send('/api/admin/analytics?days=30');
+    assert.equal(analyticsRequests, 2, 'Each selected period requests its own range');
     const saved = JSON.parse((await db.prepare('SELECT value FROM analytics_cache WHERE id=1').first<{ value: string }>())!.value);
-    saved.updatedAt = new Date(Date.now() - 600000).toISOString();
+    saved.reports['30'].report.updatedAt = new Date(Date.now() - 600000).toISOString();
+    saved.reports['30'].report.rangeEnd = saved.reports['30'].report.updatedAt;
     await db.prepare('UPDATE analytics_cache SET value=? WHERE id=1').bind(JSON.stringify(saved)).run();
     analyticsUnavailable = true;
     const stale = await (await send('/api/admin/analytics?days=30')).json() as { traffic: { status: string; rows: unknown[] }; rows: unknown[] };
@@ -171,6 +176,10 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.getByRole('button', { name: 'Статистика', exact: true }).click();
       await page.getByRole('table').first().waitFor();
       assert.ok((await page.locator('.analytics-totals').last().innerText()).includes('Записатися\n3'));
+      assert.ok((await page.locator('.analytics-totals').first().innerText()).includes('Візити\n8'));
+      await page.getByText('За даними Cloudflare, цей звіт отримано без вибірки.').waitFor();
+      await page.getByLabel('Період').selectOption('30');
+      await page.getByText('Cloudflare застосував вибірку:', { exact: false }).waitFor();
       assert.ok((await page.locator('.analytics-totals').first().innerText()).includes('Візити\n12'));
       await page.getByLabel('Період').selectOption('7');
       await page.getByRole('table').first().waitFor();
