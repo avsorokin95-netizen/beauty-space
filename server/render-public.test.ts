@@ -26,6 +26,8 @@ test('SSR renders the published public page with visible content and native pric
   assert.match(html, /Опублікована робота/);
   assert.match(html, /<details/);
   assert.match(html, /href="tel:\+380939314056"/);
+  assert.match(html, /<h1[^>]*>Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»<\/h1>/);
+
   assert.doesNotMatch(html, /opacity:\s*0(?:;|"|\})/);
   assert.doesNotMatch(html, /Відкриваємо beauty-простір|Завантажуємо роботи/);
 });

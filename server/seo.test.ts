@@ -20,9 +20,9 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     const response = await fetch(base + '/');
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /<title>Манікюр для мешканців ЖК «Софія» \| Beauty Space Victoriya<\/title>/);
-    assert.match(html, /property="og:title" content="Манікюр для мешканців ЖК «Софія» \| Beauty Space Victoriya"/);
-    assert.match(html, /name="twitter:title" content="Манікюр для мешканців ЖК «Софія» \| Beauty Space Victoriya"/);
+    assert.match(html, /<title>Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya<\/title>/);
+    assert.match(html, /property="og:title" content="Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya"/);
+    assert.match(html, /name="twitter:title" content="Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya"/);
     assert.match(html, /rel="canonical" href="https:\/\/beauty.example\/"/);
     assert.match(html, /property="og:image" content="https:\/\/beauty.example\/images\/social-preview.jpg"/);
     assert.match(html, /name="twitter:card" content="summary_large_image"/);
@@ -44,6 +44,14 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
     assert.equal(schema.address.addressLocality, 'Софіївська Борщагівка');
+    const graph = JSON.parse(html.match(/id="page-schema">(.*?)<\/script>/)![1])['@graph'];
+    const serviceSchemas = graph.filter((item: { '@type': string }) => item['@type'] === 'Service');
+    assert.deepEqual(serviceSchemas.map((item: { name: string }) => item.name), ['Манікюр', 'Педикюр', 'Ламінування та фарбування вій']);
+    for (const service of serviceSchemas) {
+      assert.equal(service.provider['@id'], `${origin}/#studio`);
+      assert.deepEqual(service.areaServed.map((area: { name: string }) => area.name), ['Софіївська Борщагівка', 'Вишневе']);
+      assert.ok(html.includes(`id="${new URL(service.url).hash.slice(1)}"`));
+    }
     assert.equal(new URL(schema.hasMap).searchParams.get('query_place_id'), 'ChIJey2Ar-TL1EARuk3pdFrpkJ0');
     assert.match(html, /maps\/embed\?pb=/);
     assert.match(html, /0x40d4cbe4af802d7b%3A0x9d90e95a74e94dba/);
@@ -94,6 +102,7 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.ok(!updated.includes('<script>alert(1)</script>'));
     assert.ok(updated.includes('&lt;script&gt;alert(1)&lt;/script&gt; $&amp;'));
     assert.ok(!updated.includes('Вишневого'));
+    assert.ok(!updated.includes('Вишневе'));
     assert.ok(!updated.includes('ЖК «Софія»'));
     assert.ok(!updated.includes('ChIJey2Ar-TL1EARuk3pdFrpkJ0'));
     const priceRow = store.db.prepare('SELECT * FROM revisions ORDER BY revision DESC LIMIT 1').get()!;

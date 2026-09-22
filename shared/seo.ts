@@ -20,10 +20,10 @@ function offers(prices: PriceDocument['prices'], id: string, origin?: string) {
 export function studioSeo(contacts: ContactData, origin?: string, prices?: PriceDocument['prices']) {
   const local = contacts.city === 'Софіївська Борщагівка';
   const title = local
-    ? 'Манікюр для мешканців ЖК «Софія» | Beauty Space Victoriya'
+    ? 'Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya'
     : `Манікюр і педикюр · ${contacts.city} | Beauty Space Victoriya`;
   const description = local
-    ? `Манікюр для мешканців ЖК «Софія»: покриття, зміцнення та дизайн. ${contacts.city}, ${contacts.address}. Ціни, фото робіт і запис у Beauty Space Victoriya.`
+    ? `Манікюр зі зміцненням і дизайном, педикюр та ламінування вій. ${contacts.city}, ${contacts.address}. Для мешканців ЖК «Софія» та Вишневого. Ціни й запис.`
     : `Манікюр, педикюр, брови та вії · ${contacts.city}, ${contacts.address}. Ціни, фото робіт і запис у Beauty Space Victoriya.`;
   const home = origin ? `${origin}/` : undefined;
   const url = home;
@@ -49,6 +49,17 @@ export function studioSeo(contacts: ContactData, origin?: string, prices?: Price
   const pageSchemas = home && url ? [
     { '@type': 'WebSite', '@id': `${home}#website`, url: home, name: 'Beauty Space Victoriya', inLanguage: 'uk', publisher: { '@id': `${home}#studio` } },
     { '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'uk', isPartOf: { '@id': `${home}#website` }, about: { '@id': `${home}#studio` } },
+    ...[
+      ['manicure-guide', 'Манікюр', 'Манікюр без покриття, зі зміцненням, реставрацією та дизайном'],
+      ['pedicure-guide', 'Педикюр', 'Гігієнічний педикюр, комплекси з покриттям та обробка стопи'],
+      ['lashes-guide', 'Ламінування та фарбування вій', 'Ламінування вій без фарбування або з фарбуванням і доглядом'],
+    ].map(([id, name, serviceDescription]) => ({
+      '@type': 'Service', '@id': `${home}#${id}`, url: `${home}#services`,
+      name, description: serviceDescription, serviceType: name,
+      provider: { '@id': `${home}#studio` },
+      areaServed: (local ? [contacts.city, 'Вишневе'] : [contacts.city])
+        .map((name) => ({ '@type': 'City', name })),
+    })),
   ] : [];
   return { title, description, url, image, schema, pageSchemas };
 }

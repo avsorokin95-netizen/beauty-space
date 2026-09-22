@@ -8,7 +8,7 @@ import { useContacts } from "../hooks/useContacts";
 export function Hero() {
   const studio = useContacts();
   const heading = studio.city === "Софіївська Борщагівка"
-    ? "Манікюр для мешканців ЖК «Софія»"
+    ? "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
     : `Манікюр і педикюр · ${studio.city}`;
   const ref = useRef<HTMLElement>(null);
   const photo = useRef<HTMLImageElement>(null);
@@ -26,9 +26,9 @@ export function Hero() {
           </p>
           <h1 className="hero-heading">{heading}</h1>
           <p className="hero-description">
-            Педикюр, брови та вії.
+            Покриття, зміцнення та дизайн нігтів.
             <br />
-            Твій час для себе у Beauty Space Victoriya.
+            Також педикюр, брови та ламінування вій.
           </p>
           <BookingLink />
           <p className="booking-note">
