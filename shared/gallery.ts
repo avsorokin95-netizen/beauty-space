@@ -2,15 +2,21 @@ export interface GalleryItem {
   id: string;
   src: string;
   title: string;
+  alt?: string;
   label: string;
   instagram: string;
 }
 export const MAX_GALLERY_ITEMS = 30;
+export const MAX_GALLERY_ALT_LENGTH = 300;
 
 export interface GalleryDocument {
   revision: number;
   updatedAt: string;
   items: GalleryItem[];
+}
+
+export function validGalleryAlt(value: unknown): value is string | undefined {
+  return value === undefined || typeof value === "string" && value.length <= MAX_GALLERY_ALT_LENGTH;
 }
 
 export function validInstagram(value: unknown): value is string {

@@ -98,11 +98,11 @@ export function Contacts() {
           {navigation
             .filter((item) => ["#services", "#contacts"].includes(item.href))
             .map((item) => (
-              <a key={item.href} href={item.href}>
+              <a key={item.href} href={`/${item.href}`}>
                 {item.label}
               </a>
             ))}
-          <a href="#home" aria-label="На початок сторінки">
+          <a href="/#home" aria-label="На початок головної сторінки">
             Нагору ↑
           </a>
         </nav>

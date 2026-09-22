@@ -41,8 +41,10 @@ test("renders content without overflow and loads local imagery", async ({
   page,
 }, testInfo) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Краса починається",
+    "Манікюр для мешканців ЖК «Софія»",
   );
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator(".hero-slogan")).toContainText("Краса починається");
   await expect(page.locator(".hero-photo")).toBeVisible();
   expect(
     await page

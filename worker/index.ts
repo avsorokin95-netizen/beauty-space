@@ -8,6 +8,9 @@ import type { ContactDocument } from '../shared/contacts';
 import type { PriceDocument } from '../shared/pricing';
 import type { GalleryDocument } from '../shared/gallery';
 import { robotsText } from '../shared/robots';
+import { sitemapXml } from '../shared/sitemap';
+import { canonicalPath } from '../shared/redirects';
+import { renderPublicApp } from '../src/entry-server';
 
 const json = (value: unknown, status = 200) => Response.json(value, { status });
 const text = (value: string, type = 'text/html; charset=utf-8', status = 200) => new Response(value, { status, headers: { 'Content-Type': type } });
@@ -17,8 +20,9 @@ async function handle(request: Request, env: Env): Promise<Response> {
   const path = url.pathname;
   const get = request.method === 'GET' || request.method === 'HEAD';
   const origin = env.APP_ORIGIN ? new URL(env.APP_ORIGIN).origin : undefined;
-  if (get && origin && url.origin !== origin && !path.startsWith('/api/')) {
-    return Response.redirect(`${origin}${path}${url.search}`, 301);
+  const normalizedPath = canonicalPath(path);
+  if (get && !path.startsWith('/api/') && (normalizedPath || (origin && url.origin !== origin))) {
+    return Response.redirect(`${origin ?? url.origin}${normalizedPath ?? path}${url.search}`, 301);
   }
   if (path.startsWith('/api/') && !get && request.headers.get('Origin') !== (origin ?? url.origin)) throw new HttpError(403, 'Запит з іншого сайту відхилено.');
   if (path === '/api/analytics' && request.method === 'POST') return collectClick(request, env);
@@ -65,20 +69,19 @@ async function handle(request: Request, env: Env): Promise<Response> {
   }
   if (path.startsWith('/api/')) throw new HttpError(404, 'Сторінку не знайдено.');
   if (!get) throw new HttpError(405, 'Метод не підтримується.');
-  if (path === '/index.html') return Response.redirect(`${url.origin}/`, 301);
   if (path === '/robots.txt') return text(robotsText(origin), 'text/plain; charset=utf-8');
   if (path === '/sitemap.xml') {
     if (!origin) throw new HttpError(404, 'Домен ще не налаштовано.');
-    return text(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${origin.replaceAll('&', '&amp;')}/</loc></url></urlset>`, 'application/xml');
+    return text(sitemapXml(origin), 'application/xml');
   }
   if (path === '/') {
     const [template, contacts, prices, gallery] = await Promise.all([
       env.ASSETS.fetch(new Request(new URL('/index.html', url))).then((res) => res.text()),
       readDocument(env.DB, 'contacts'), readDocument(env.DB, 'prices'), readDocument(env.DB, 'gallery'),
     ]);
-    return text(analyticsHtml(renderSeo(template, contacts as unknown as ContactDocument, prices.prices as PriceDocument['prices'], origin, {
-      prices: prices as unknown as PriceDocument, gallery: gallery as unknown as GalleryDocument,
-    }), env.WEB_ANALYTICS_TOKEN));
+    const snapshot = { contacts: contacts as unknown as ContactDocument, prices: prices as unknown as PriceDocument, gallery: gallery as unknown as GalleryDocument };
+    const body = renderPublicApp(snapshot);
+    return text(analyticsHtml(renderSeo(template, snapshot.contacts, snapshot.prices.prices, origin, snapshot, body), env.WEB_ANALYTICS_TOKEN));
   }
   return env.ASSETS.fetch(request);
 }

@@ -1,6 +1,6 @@
 import { validPrice, normalizePrice, type PriceDocument } from '../shared/pricing';
 import { contactFields, validContact, type ContactData } from '../shared/contacts';
-import { MAX_GALLERY_ITEMS, validInstagram, type GalleryItem } from '../shared/gallery';
+import { MAX_GALLERY_ITEMS, validGalleryAlt, validInstagram, type GalleryItem } from '../shared/gallery';
 import { initialGallery } from '../src/data/gallery';
 
 export type Kind = 'prices' | 'contacts' | 'gallery';
@@ -51,13 +51,14 @@ export async function saveDocument(db: D1Database, media: R2Bucket, kind: Kind, 
     for (const item of input.items) {
       if (!item || typeof item.id !== 'string' || !/^work-[A-Za-z0-9-]{1,64}$/.test(item.id) || ids.has(item.id) ||
         typeof item.src !== 'string' || typeof item.title !== 'string' || !item.title.trim() || item.title.length > 100 ||
+        !validGalleryAlt(item.alt) ||
         typeof item.label !== 'string' || !item.label.trim() || item.label.length > 60 || !validInstagram(item.instagram)) throw invalid();
       if (!initialGallery.some((seed) => seed.src === item.src)) {
         const name = item.src.slice('/api/media/'.length);
         if (item.src !== `/api/media/${name}` || !mediaName.test(name) || !await media.head(name)) throw invalid();
       }
       ids.add(item.id);
-      items.push({ id: item.id, src: item.src, title: item.title.trim(), label: item.label.trim(), instagram: item.instagram });
+      items.push({ id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), label: item.label.trim(), instagram: item.instagram });
     }
     data = items;
   }

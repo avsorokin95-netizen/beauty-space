@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../lib/api";
 import type { PriceDocument } from "../../shared/pricing";
-import { readBootstrap } from "../lib/bootstrap";
+import { PublicSnapshotContext, readBootstrap } from "../lib/bootstrap";
+
+export const PricesContext = createContext<ReturnType<typeof usePublishedPrices> | null>(null);
 
 export function usePrices() {
-  const [snapshot, setSnapshot] = useState<PriceDocument | null>(() => readBootstrap<PriceDocument>('studio-prices'));
+  const value = useContext(PricesContext);
+  if (!value) throw new Error('PricesProvider is required');
+  return value;
+}
+
+/** Only PricesProvider subscribes; visible prices and SEO share one revision. */
+export function usePublishedPrices() {
+  const published = useContext(PublicSnapshotContext);
+  const [snapshot, setSnapshot] = useState<PriceDocument | null>(() => published?.prices ?? readBootstrap<PriceDocument>('studio-prices'));
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {

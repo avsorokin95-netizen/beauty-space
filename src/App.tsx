@@ -1,4 +1,3 @@
-import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
@@ -7,25 +6,16 @@ import { Gallery } from "./components/Gallery";
 import { Contacts } from "./components/Contacts";
 import { LocalInfo } from "./components/LocalInfo";
 import { Reviews } from "./components/Reviews";
-import { lazy, Suspense } from "react";
 import { ContactsProvider } from "./components/ContactsProvider";
-const Admin = lazy(() => import("./components/admin/Admin"));
-export default function App() {
-  if (window.location.pathname.replace(/\/$/, "") === "/admin") {
-    return (
-      <Suspense
-        fallback={
-          <main role="status" style={{ padding: 40 }}>
-            Завантажуємо адмінку…
-          </main>
-        }
-      >
-        <Admin />
-      </Suspense>
-    );
-  }
+import { PricesProvider } from "./components/PricesProvider";
+import type { PublicSnapshot } from "../shared/public-snapshot";
+import { PublicSnapshotContext } from "./lib/bootstrap";
+
+export default function App({ initialSnapshot }: { initialSnapshot?: PublicSnapshot }) {
   return (
-    <ContactsProvider><MotionConfig reducedMotion="user">
+    <PublicSnapshotContext.Provider value={initialSnapshot ?? null}>
+    <PricesProvider>
+    <ContactsProvider initialSnapshot={initialSnapshot?.contacts}>
       <a className="skip-link" href="#main">
         Перейти до вмісту
       </a>
@@ -39,6 +29,8 @@ export default function App() {
         <LocalInfo />
         <Contacts />
       </main>
-    </MotionConfig></ContactsProvider>
+    </ContactsProvider>
+    </PricesProvider>
+    </PublicSnapshotContext.Provider>
   );
 }

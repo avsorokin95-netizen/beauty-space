@@ -1,9 +1,10 @@
 import useEmblaCarousel from "embla-carousel-react";
-import { useReducedMotion } from "framer-motion";
+import { useMotionPreference } from "../hooks/useMotionPreference";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ChevronLeft, ChevronRight, Camera, Maximize2, X, Pause, Play } from "lucide-react";
 import { useContacts } from "../hooks/useContacts";
 import { Eyebrow, Reveal } from "./ui";
+import { galleryAlt } from "../../shared/gallery-descriptions";
 
 import { useGallery } from "../hooks/useGallery";
 
@@ -12,7 +13,7 @@ export function Gallery() {
   const { posts = [], error, retry } = useGallery();
   const [selected, setSelected] = useState<number | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const reduced = useReducedMotion();
+  const reduced = useMotionPreference();
   const [viewport, carousel] = useEmblaCarousel({ loop: true, align: "start", duration: 45, slidesToScroll: 1 });
   const region = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
@@ -21,7 +22,7 @@ export function Gallery() {
   const [dragging, setDragging] = useState(false);
   const touchInteraction = useRef(false);
   const [inView, setInView] = useState(false);
-  const [visible, setVisible] = useState(!document.hidden);
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
     if (!carousel) return;
     const sync = () => setActiveSlide(carousel.selectedScrollSnap());
@@ -39,6 +40,7 @@ export function Gallery() {
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.25 });
     if (region.current) observer.observe(region.current);
     const sync = () => setVisible(!document.hidden);
+    sync();
     document.addEventListener("visibilitychange", sync);
     return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); };
   }, []);
@@ -114,7 +116,7 @@ export function Gallery() {
               >
                 <img
                   src={post.src}
-                  alt={post.title + " — робота Beauty Space Victoriya"}
+                  alt={galleryAlt(post)}
                   width="1200"
                   height="1600"
                   loading="lazy"
@@ -193,7 +195,7 @@ export function Gallery() {
             <img
               className="lightbox-image"
               key={posts[selected].id}
-              alt={posts[selected].title + " — робота студії"}
+              alt={galleryAlt(posts[selected])}
               src={posts[selected].src}
             />
             <div className="lightbox-footer">

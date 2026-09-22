@@ -1,13 +1,19 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
+import { ClientApp } from "./ClientApp";
 import { startAnalytics } from "./lib/analytics";
+import { readPublicSnapshot } from "./lib/bootstrap";
 
 startAnalytics();
 
-createRoot(document.getElementById("root")!).render(
+const path = window.location.pathname;
+const root = document.getElementById("root")!;
+const app = (
   <StrictMode>
-    <App />
-  </StrictMode>,
+    <ClientApp path={path} initialSnapshot={readPublicSnapshot()} />
+  </StrictMode>
 );
+
+if (root.hasChildNodes()) hydrateRoot(root, app);
+else createRoot(root).render(app);

@@ -1,6 +1,6 @@
 import { linkEvent } from '../../shared/analytics';
 
-// The production Worker opts in only the public homepage. No cookies or IDs.
+// The production Worker opts in the public homepage. No cookies or IDs.
 export function startAnalytics() {
   if (location.pathname !== '/' || !document.querySelector('meta[name="beauty-analytics"]')) return;
   const lastClick = new Map<string, number>();

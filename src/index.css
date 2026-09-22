@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap");
+@import "./styles/fonts.css";
 @import "tailwindcss";
 @theme {
   --color-cream: #f8f5f0;
@@ -60,7 +60,8 @@ p {
   margin: 0;
 }
 h1,
-h2 {
+h2,
+.hero-slogan {
   font-family: var(--font-serif);
   font-weight: 400;
 }
@@ -214,12 +215,14 @@ h2 em {
   background: #997468;
   border-radius: 50%;
 }
-h1 {
+h1,
+.hero-slogan {
   font-size: clamp(60px, 6.1vw, 88px);
   line-height: 0.99;
   letter-spacing: -2.8px;
 }
-h1 em {
+h1 em,
+.hero-slogan em {
   font-weight: 400;
   color: #967162;
 }
@@ -777,7 +780,7 @@ h1 em {
   .hero-visual {
     min-height: 555px;
   }
-  .hero h1 {
+  .hero .hero-slogan {
     font-size: 66px;
   }
   .about-grid {
@@ -847,7 +850,7 @@ h1 em {
     letter-spacing: 1.9px;
     margin-bottom: 21px;
   }
-  .hero h1 {
+  .hero .hero-slogan {
     font-size: clamp(61px, 11vw, 82px);
     letter-spacing: -2px;
   }
@@ -920,6 +923,10 @@ h1 em {
     width: 132px;
     height: 132px;
     padding-top: 31px;
+    padding-inline: 8px;
+  }
+  .about-stamp em {
+    font-size: 24px;
   }
   .about-copy > p:not(.eyebrow) {
     font-size: 12px;
@@ -1278,3 +1285,62 @@ h1 em {
 @media (max-width: 767px) { .local-info { grid-template-columns: 1fr; gap: 24px; } }
 
 .contact-hours { font-size: 13px; line-height: 1.7; margin-bottom: 24px; color: #f3e5d8; }
+
+.hero .hero-slogan {
+  font-size: clamp(54px, 5.6vw, 82px);
+}
+.hero .hero-heading {
+  margin-top: 24px;
+  font: 600 18px/1.5 var(--font-sans);
+  letter-spacing: 0;
+}
+.hero-heading + .hero-description {
+  margin-top: 8px;
+}
+.service-toggle {
+  cursor: pointer;
+  list-style: none;
+}
+.service-toggle::-webkit-details-marker {
+  display: none;
+}
+.service-toggle:focus-visible {
+  outline: 2px solid #93685c;
+  outline-offset: 5px;
+}
+@media (max-width: 767px) {
+  .hero .hero-slogan {
+    font-size: clamp(47px, 9.4vw, 70px);
+    letter-spacing: -1.5px;
+  }
+  .hero .hero-heading {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+}
+
+.service-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 28px;
+  margin-bottom: 22px;
+}
+.service-detail .service-guide p {
+  margin: 0;
+  color: #6b6057;
+  font-size: 12px;
+  line-height: 1.85;
+}
+.service-guide strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #58473c;
+  font-weight: 600;
+}
+@media (max-width: 767px) {
+  .service-guide {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+}

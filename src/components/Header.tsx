@@ -8,7 +8,7 @@ export function Logo() {
   return (
     <a
       className="logo"
-      href="#home"
+      href="/"
       aria-label="Beauty Space Victoriya — головна"
     >
       <span>
@@ -43,7 +43,7 @@ export function Header() {
         <Logo />
         <nav className="desktop-nav" aria-label="Основна навігація">
           {navigation.map((item) => (
-            <a key={item.href} href={item.href}>
+            <a key={item.href} href={`/${item.href}`}>
               {item.label}
             </a>
           ))}
@@ -86,7 +86,7 @@ export function Header() {
         <p className="mobile-menu-intro">Твій простір краси.</p>
         <nav className="mobile-nav" aria-label="Мобільна навігація">
           {navigation.map((item, index) => (
-            <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <a key={item.href} href={`/${item.href}`} onClick={() => setOpen(false)}>
               <span className="mobile-nav-number">0{index + 1}</span>
               <span>{item.label}</span>
               <ArrowUpRight size={20} />

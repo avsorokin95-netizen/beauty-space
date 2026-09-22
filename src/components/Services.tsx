@@ -1,12 +1,16 @@
 import { useContacts } from "../hooks/useContacts";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Plus, Minus, ArrowUpRight } from "lucide-react";
 import { services } from "../data/studio";
+import { serviceContent } from "../../shared/service-content";
 import { usePrices } from "../hooks/usePrices";
 import { Eyebrow, Reveal } from "./ui";
+const subscribeToClient = () => () => {};
+
 export function Services() {
   const studio = useContacts();
   const [active, setActive] = useState<string | null>(null);
+  const enhanced = useSyncExternalStore(subscribeToClient, () => true, () => false);
   const { prices, error, retry } = usePrices();
   return (
     <section id="services" className="services-section section">
@@ -21,9 +25,9 @@ export function Services() {
             </h2>
           </div>
           <p>
-            Обери те, що зробить твій день кращим.
+            Порівняй склад процедур і переглянь ціни.
             <br />
-            Про решту домовимось у повідомленнях.
+            Під час запису узгодимо потрібні деталі.
           </p>
         </Reveal>
         {error && (
@@ -45,17 +49,20 @@ export function Services() {
           <div className="service-list">
             {services.map((service) => (
               <Reveal key={service.id}>
-                <article
+                <details
                   className="service-row"
+                  open={active === service.id}
                   data-open={active === service.id}
                 >
-                  <button
+                  <summary
                     className="service-toggle"
-                    aria-expanded={active === service.id}
+                    role="button"
+                    aria-expanded={enhanced ? active === service.id : undefined}
                     aria-controls={`service-${service.id}`}
-                    onClick={() =>
-                      setActive(active === service.id ? null : service.id)
-                    }
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setActive(active === service.id ? null : service.id);
+                    }}
                   >
                     <span className="service-number">{service.number}</span>
                     <span className="service-title">
@@ -75,12 +82,21 @@ export function Services() {
                         <Plus size={18} />
                       )}
                     </span>
-                  </button>
+                  </summary>
                   <div
                     id={`service-${service.id}`}
-                    hidden={active !== service.id}
                     className="service-detail"
                   >
+                    <div className="service-guide">
+                      <p>
+                        <strong>Що обрати</strong>
+                        {serviceContent[service.id].overview}
+                      </p>
+                      <p>
+                        <strong>Перед записом</strong>
+                        {serviceContent[service.id].booking}
+                      </p>
+                    </div>
                     <dl className="price-list">
                       {prices[service.id].items.map((item, index) => (
                         <div
@@ -107,7 +123,7 @@ export function Services() {
                       Записатися на послугу <ArrowUpRight size={16} />
                     </a>
                   </div>
-                </article>
+                </details>
               </Reveal>
             ))}
           </div>

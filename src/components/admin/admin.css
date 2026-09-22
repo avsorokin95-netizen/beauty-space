@@ -519,12 +519,14 @@
 .gallery-admin-fields { display: flex; flex-direction: column; padding: 22px; gap: 10px; }
 .gallery-admin-fields label { font-size: 13px; margin-top: 8px; font-weight: 600; }
 .gallery-admin-fields label small { display: block; font-weight: 400; color: #70665e; }
-.gallery-admin-fields input { width: 100%; min-width: 0; padding: 12px; border: 1px solid #d8cfc4; border-radius: 8px; background: #fff; font-size: 14px; }
+.gallery-admin-fields input, .gallery-admin-fields textarea { width: 100%; min-width: 0; padding: 12px; border: 1px solid #d8cfc4; border-radius: 8px; background: #fff; font-size: 14px; }
+.gallery-admin-fields textarea { resize: vertical; font-family: inherit; line-height: 1.5; }
+.gallery-description-hint { color: #70665e; font-size: 12px; line-height: 1.6; }
 .gallery-admin-fields input[type="file"] { font-size: 12px; padding: 10px 0; border: 0; background: transparent; }
 .gallery-admin-fields input::file-selector-button { border: 1px solid #cbbdaf; border-radius: 6px; padding: 8px; margin-right: 8px; background: #f5efe8; cursor: pointer; }
 .gallery-admin-fields .gallery-upload { display: flex; gap: 8px; align-items: center; }
 .gallery-upload-hint { font-size: 13px; color: #70665e; margin: 22px 0; line-height: 1.7; }
-.gallery-admin-fields input[aria-invalid="true"] { border-color: #aa352c; }
+.gallery-admin-fields input[aria-invalid="true"], .gallery-admin-fields textarea[aria-invalid="true"] { border-color: #aa352c; }
 .admin-main [hidden] { display: none; }
 @media (max-width: 900px) { .gallery-admin-grid { grid-template-columns: 1fr; } .gallery-admin-card { display: grid; grid-template-columns: 1fr 1fr; } .gallery-admin-preview img { height: 100%; } }
 @media (max-width: 560px) { .gallery-admin-card { display: block; } .gallery-admin-preview img { max-height: 340px; } .gallery-admin-fields { padding: 18px; } }

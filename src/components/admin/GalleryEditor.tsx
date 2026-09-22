@@ -2,7 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ImagePlus, Save, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
 import { preparePhoto } from "../../lib/prepare-photo";
-import { MAX_GALLERY_ITEMS, validInstagram, type GalleryDocument, type GalleryItem } from "../../../shared/gallery";
+import { MAX_GALLERY_ALT_LENGTH, MAX_GALLERY_ITEMS, validGalleryAlt, validInstagram, type GalleryDocument, type GalleryItem } from "../../../shared/gallery";
+import { galleryAlt, galleryPhotoDescription } from "../../../shared/gallery-descriptions";
 
 export interface GalleryModel { draft: GalleryDocument; published: GalleryDocument }
 interface Props {
@@ -21,7 +22,7 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const dirty = !!model && JSON.stringify(model.draft.items) !== JSON.stringify(model.published.items);
-  const invalid = model?.draft.items.some((item) => !item.title.trim() || !item.label.trim() || !validInstagram(item.instagram));
+  const invalid = model?.draft.items.some((item) => !item.title.trim() || !item.label.trim() || !validGalleryAlt(item.alt) || !validInstagram(item.instagram));
 
   useEffect(() => {
     if (model) return;
@@ -66,8 +67,8 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
     try {
       const photo = optimizeUploads ? await preparePhoto(file) : file;
       const result = await api<{ src: string }>("/api/admin/gallery/upload", { method: "POST", headers: { "Content-Type": photo.type }, body: photo });
-      if (index === -1 && model) changeItems([...model.draft.items, { id: `work-${crypto.randomUUID()}`, src: result.src, instagram: "", title: "Нова робота", label: "МАНІКЮР" }]);
-      else update(index, { src: result.src, instagram: "" });
+      if (index === -1 && model) changeItems([...model.draft.items, { id: `work-${crypto.randomUUID()}`, src: result.src, alt: "", instagram: "", title: "Нова робота", label: "МАНІКЮР" }]);
+      else update(index, { src: result.src, alt: "", instagram: "" });
     } catch (cause) { failure(cause); }
     finally { onBusy(false); }
   }
@@ -107,7 +108,7 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
         </div>
         <fieldset disabled={busy} className="gallery-admin-grid">
           {model.draft.items.map((item, index) => <article className="gallery-admin-card" key={item.id}>
-            <div className="gallery-admin-preview"><img src={item.src} alt={item.title} /><span>{String(index + 1).padStart(2, "0")}</span></div>
+            <div className="gallery-admin-preview"><img src={item.src} alt={galleryAlt(item)} /><span>{String(index + 1).padStart(2, "0")}</span></div>
             <div className="gallery-admin-fields">
               <div className="gallery-item-actions">
                 <button type="button" className="icon-button" aria-label={`Перемістити роботу ${index + 1} раніше`} disabled={index === 0} onClick={() => move(index, -1)}><ArrowUp size={18} /></button>
@@ -121,6 +122,10 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
               <input id={`title-${item.id}`} value={item.title} maxLength={100} required onChange={(event) => update(index, { title: event.target.value })} />
               <label htmlFor={`label-${item.id}`}>Категорія / підпис {index + 1}</label>
               <input id={`label-${item.id}`} value={item.label} maxLength={60} required onChange={(event) => update(index, { label: event.target.value })} />
+              <label htmlFor={`alt-${item.id}`}>Опис фото {index + 1} <small>необов’язково</small></label>
+              <textarea id={`alt-${item.id}`} value={item.alt ?? galleryPhotoDescription(item.src) ?? ""} rows={3} maxLength={MAX_GALLERY_ALT_LENGTH}
+                aria-describedby={`alt-hint-${item.id}`} aria-invalid={!validGalleryAlt(item.alt)} onChange={(event) => update(index, { alt: event.target.value })} />
+              <small className="gallery-description-hint" id={`alt-hint-${item.id}`}>Коротко опиши, що видно на фото: процедуру, колір і дизайн. Цей текст допомагає людям, які користуються читачем екрана. До {MAX_GALLERY_ALT_LENGTH} символів.</small>
               <label htmlFor={`instagram-${item.id}`}>Instagram роботи {index + 1} <small>необов’язково</small></label>
               <input id={`instagram-${item.id}`} type="url" value={item.instagram} maxLength={300} placeholder="https://www.instagram.com/p/…" aria-invalid={!validInstagram(item.instagram)}
                 onChange={(event) => update(index, { instagram: event.target.value.trim() })} />
@@ -128,7 +133,7 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
             </div>
           </article>)}
         </fieldset>
-        <p className="gallery-upload-hint" id="gallery-upload-hint">JPG, PNG або WebP · до 8 МБ. Після заміни фото додай посилання на відповідний допис, якщо він є.</p>
+        <p className="gallery-upload-hint" id="gallery-upload-hint">JPG, PNG або WebP · до 8 МБ. Після заміни фото додай його опис і посилання на відповідний допис, якщо він є.</p>
         <div className="admin-savebar">
           <div><strong role="status">{busy ? "Обробляємо…" : dirty ? "Є неопубліковані зміни" : "Усі роботи опубліковано"}</strong><span>Завантаження фото не змінює сайт до публікації.</span></div>
           <div className="save-actions">

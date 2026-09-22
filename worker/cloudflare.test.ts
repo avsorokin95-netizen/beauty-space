@@ -11,6 +11,7 @@ import { extname, join } from 'node:path';
 import { prices } from '../src/data/prices.ts';
 import { studio } from '../src/data/studio.ts';
 import { initialGallery } from '../src/data/gallery.ts';
+import { MAX_GALLERY_ALT_LENGTH, type GalleryDocument } from '../shared/gallery.ts';
 
 test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO', async () => {
   const { publicKey, privateKey } = await generateKeyPair('RS256');
@@ -27,7 +28,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     bindings: { CF_ANALYTICS_API_TOKEN: 'test-read-token', CF_ANALYTICS_ACCOUNT_ID: '7fa5e6d60edca4265f9829b6bc448d6b', CF_ANALYTICS_SITE_ID: 'ac736284c7bc428f896ce42c457c8687', WEB_ANALYTICS_TOKEN: '8d41b30a9ff545b0b885f0387148869b', APP_ORIGIN: origin, ACCESS_TEAM_DOMAIN: 'test-team.cloudflareaccess.com', ACCESS_AUD: 'test-aud', ADMIN_EMAILS: 'owner@example.com,studio@example.com' },
     serviceBindings: { ASSETS: (request) => {
       const path = new URL(request.url).pathname;
-      const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.jpg': 'image/jpeg' }[extname(path)] || 'application/octet-stream';
+      const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.woff2': 'font/woff2' }[extname(path)] || 'application/octet-stream';
       try { return new Response(readFileSync(join('dist', path)), { headers: { 'Content-Type': mime } }); }
       catch { return new Response('Not found', { status: 404 }); }
     } },
@@ -123,11 +124,32 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.ok(html.includes('"spa":false'));
     assert.ok(html.includes('777 грн') && html.includes('Київ') && html.includes('studio-schema'));
     assert.ok(html.includes(`href="${origin}/"`));
+    assert.ok(html.includes('<div id="root"><'));
+    assert.ok(!html.includes('<noscript'));
+    assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1);
+    const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
+    assert.equal(schema.hasOfferCatalog.itemListElement[0].itemListElement[0].price, 777);
+    for (const catalog of schema.hasOfferCatalog.itemListElement) {
+      for (const offer of catalog.itemListElement) assert.equal(offer.url, `${origin}/#services`);
+    }
     const admin = await send('/admin');
     assert.equal(admin.headers.get('cache-control'), 'no-store');
     assert.match(admin.headers.get('x-robots-tag')!, /noindex/);
     assert.match(await (await send('/robots.txt')).text(), /Disallow: \/admin/);
     assert.match(await (await send('/sitemap.xml')).text(), /studio.example/);
+    const sitemap = await (await send('/sitemap.xml')).text();
+    assert.ok(sitemap.includes(`<loc>${origin}/</loc>`));
+    assert.equal((sitemap.match(/<loc>/g) ?? []).length, 1);
+    for (const slug of ['manicure', 'pedicure', 'brows', 'lashes']) {
+      assert.ok(!html.includes(`href="/${slug}`), `The homepage must not link to the removed ${slug} route`);
+      assert.ok(!sitemap.includes(`/${slug}`));
+      for (const path of [`/${slug}`, `/${slug}/`, `/${slug}/index.html`]) {
+        const response = await mf.dispatchFetch(origin + path + '?ref=test', { redirect: 'manual' });
+        assert.equal(response.status, 404, `${path} must not serve or redirect to a removed page`);
+      }
+    }
+    assert.equal((await send('/nonexistent-page/')).status, 404);
+    assert.equal((await send('/manicure/nonexistent-page/')).status, 404);
     const photo = await sharp({ create: { width: 800, height: 600, channels: 3, background: '#ddbbcc' } }).webp().toBuffer();
     const upload = (body: Uint8Array, mime = 'image/webp') => mf.dispatchFetch(origin + '/api/admin/gallery/upload', { method: 'POST', headers: { Origin: origin, 'Cf-Access-Jwt-Assertion': jwt, 'Content-Type': mime }, body });
     assert.equal((await upload(Buffer.from('<svg/>'), 'image/svg+xml')).status, 415);
@@ -141,9 +163,24 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.equal(media.headers.get('content-type'), 'image/webp');
     assert.deepEqual(Buffer.from(await media.arrayBuffer()), photo);
     assert.equal(media.headers.get('x-robots-tag'), null);
-    const gallery = await (await send('/api/gallery')).json() as { revision: number; items: typeof initialGallery };
+    const gallery = await (await send('/api/gallery')).json() as GalleryDocument;
     gallery.items[0].src = src;
+    gallery.items[0].alt = '  Рожеве покриття на коротких нігтях  ';
+    delete gallery.items[1].alt;
+    gallery.items[2].alt = '';
+    for (const alt of [null, 123, false, {}, [], 'а'.repeat(MAX_GALLERY_ALT_LENGTH + 1)]) {
+      const invalid = structuredClone(gallery);
+      Object.assign(invalid.items[0], { alt });
+      assert.equal((await send('/api/admin/gallery', 'PUT', invalid)).status, 400);
+    }
     assert.equal((await send('/api/admin/gallery', 'PUT', gallery)).status, 200);
+    const publishedGallery = await (await send('/api/gallery')).json() as GalleryDocument;
+    assert.equal(publishedGallery.items[0].alt, 'Рожеве покриття на коротких нігтях');
+    assert.equal(publishedGallery.items[0].title, gallery.items[0].title);
+    assert.equal(Object.hasOwn(publishedGallery.items[1], 'alt'), false, 'Legacy items may omit the description');
+    assert.equal(publishedGallery.items[2].alt, '', 'Empty descriptions allow the public fallback');
+    const storedGallery = await db.prepare("SELECT data FROM documents WHERE kind = 'gallery'").first<{ data: string }>();
+    assert.deepEqual(JSON.parse(storedGallery!.data), publishedGallery.items, 'The Worker persists descriptions in D1');
     gallery.revision++;
     gallery.items[0].src = 'https://evil.example/photo';
     assert.equal((await send('/api/admin/gallery', 'PUT', gallery)).status, 400);
@@ -151,7 +188,26 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
 
     const browser = await chromium.launch();
     try {
+      const noScript = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+      await noScript.route('**/*', async (route) => {
+        if (!route.request().url().startsWith(origin + '/')) return route.abort();
+        const response = await mf.dispatchFetch(route.request().url());
+        await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
+      });
+      const staticPage = await noScript.newPage();
+      await staticPage.goto(origin + '/');
+      assert.equal(await staticPage.locator('h1').count(), 1);
+      assert.ok(await staticPage.locator('h1').isVisible());
+      assert.equal(await staticPage.locator('h1').evaluate((element) => getComputedStyle(element.parentElement!).opacity), '1');
+      assert.ok(await staticPage.getByRole('link', { name: /Записатися/ }).first().isVisible());
+      assert.ok(await staticPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await staticPage.locator('[aria-controls="service-nails"]').click();
+      assert.ok(await staticPage.getByText('777 грн', { exact: true }).isVisible());
+      await noScript.close();
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+      const hydrationErrors: string[] = [];
+      page.on('pageerror', (error) => hydrationErrors.push(error.message));
+      page.on('console', (message) => { if (/hydration|hydrating|didn't match|server rendered HTML/i.test(message.text())) hydrationErrors.push(message.text()); });
       let expired = false;
       let publicApiUnavailable = false;
       await page.route('**/*', async (route) => {
@@ -164,10 +220,23 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       });
       publicApiUnavailable = true;
       await page.goto(origin + '/');
+      await page.getByRole('heading', { level: 1 }).waitFor();
+      const loadedFonts = await page.evaluate(async () => {
+        await document.fonts.ready;
+        return Array.from(document.fonts)
+          .filter((face) => face.status === 'loaded')
+          .map((face) => `${face.family.replaceAll('"', '')}:${face.style}`);
+      });
+      for (const font of ['Manrope:normal', 'Cormorant Garamond:normal', 'Cormorant Garamond:italic']) {
+        assert.ok(loadedFonts.includes(font), `${font} must load in the Worker-rendered page with external requests blocked`);
+      }
+      assert.match(await page.title(), /Манікюр і педикюр.*Київ/);
+      assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), origin + '/');
       await page.getByRole('button', { name: /01 Манікюр/ }).click();
       await page.getByText('777 грн', { exact: true }).waitFor();
       assert.ok(await page.locator('.gallery-slide').count() >= initialGallery.length);
       await page.locator('.gallery-slide img').first().evaluate((image: HTMLImageElement) => image.decode());
+      assert.deepEqual(hydrationErrors, [], 'Server and browser must render the same public content');
       publicApiUnavailable = false;
       const clickResponse = page.waitForResponse('**/api/analytics');
       await page.locator('.hero [data-analytics="booking"]').click();

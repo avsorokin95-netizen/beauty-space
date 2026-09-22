@@ -86,11 +86,12 @@ test("public price failure shows recovery instead of invented prices", async ({
     route.fulfill({ status: 503, body: "{}" }),
   );
   await page.goto("/#services");
-  await expect(page.getByRole("status")).toContainText(
+  const services = page.locator("#services");
+  await expect(services.getByRole("status")).toContainText(
     "Не вдалося завантажити прайс.",
   );
   await page.unroute("**/api/prices");
-  await page.getByRole("button", { name: "Спробувати ще раз" }).click();
+  await services.getByRole("button", { name: "Спробувати ще раз" }).click();
   await page.locator('[aria-controls="service-nails"]').click();
   await expect(page.locator("#service-nails")).toBeVisible();
 });

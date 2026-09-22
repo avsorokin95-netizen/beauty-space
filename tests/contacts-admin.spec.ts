@@ -33,7 +33,7 @@ test('contacts publish across site, map, booking links and survive reload', asyn
       await expect(landing.locator('.header-book')).toHaveAttribute('href', 'https://ig.me/m/test_studio');
       await expect(landing.locator('#contacts h3').filter({ hasText: '@test_studio' })).toBeVisible();
       expect(new URL((await landing.locator('.studio-map iframe').getAttribute('src'))!).searchParams.get('q')).toBe('вул. Тестова, 12, Київ, Україна');
-      const schema = await landing.locator('script[type="application/ld+json"]').textContent();
+      const schema = await landing.locator('#studio-schema').textContent();
       expect(JSON.parse(schema!).telephone).toBe('+380501234567');
     } finally { await visitor.close(); }
     await page.reload();

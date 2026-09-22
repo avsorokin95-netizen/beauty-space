@@ -23,9 +23,11 @@ export async function api<T>(
     throw new ApiError('Сесію завершено. Підтвердь вхід ще раз.', 401);
   }
   if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
+    const body: unknown = await response.json().catch(() => ({}));
     throw new ApiError(
-      body.message || "Не вдалося зв’язатися із сервером. Спробуй ще раз.",
+      body && typeof body === 'object' && 'message' in body && typeof body.message === 'string'
+        ? body.message
+        : "Не вдалося зв’язатися із сервером. Спробуй ще раз.",
       response.status,
     );
   }

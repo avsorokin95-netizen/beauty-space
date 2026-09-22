@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "../lib/api";
 import type { GalleryDocument } from "../../shared/gallery";
-import { readBootstrap } from "../lib/bootstrap";
+import { PublicSnapshotContext, readBootstrap } from "../lib/bootstrap";
 
 export function useGallery() {
-  const [snapshot, setSnapshot] = useState<GalleryDocument | null>(() => readBootstrap<GalleryDocument>('studio-gallery'));
+  const published = useContext(PublicSnapshotContext);
+  const [snapshot, setSnapshot] = useState<GalleryDocument | null>(() => published?.gallery ?? readBootstrap<GalleryDocument>('studio-gallery'));
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
