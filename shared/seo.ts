@@ -1,4 +1,5 @@
 import { studioHours } from './hours.ts';
+import { studioMapLinks } from './maps.ts';
 import type { ContactData } from './contacts.ts';
 import type { PriceDocument } from './pricing.ts';
 import { services } from '../src/data/studio.ts';
@@ -43,7 +44,7 @@ export function studioSeo(contacts: ContactData, origin?: string, prices?: Price
     sameAs: [contacts.instagram, contacts.telegram],
     currenciesAccepted: 'UAH',
     ...(catalog ? { hasOfferCatalog: catalog } : {}),
-    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${contacts.address}, ${contacts.city}, Україна`)}`,
+    hasMap: studioMapLinks(contacts).mapProfile,
   };
   const pageSchemas = home && url ? [
     { '@type': 'WebSite', '@id': `${home}#website`, url: home, name: 'Beauty Space Victoriya', inLanguage: 'uk', publisher: { '@id': `${home}#studio` } },

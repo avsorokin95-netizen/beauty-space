@@ -1,3 +1,5 @@
+import { studioMapLinks } from './maps.ts';
+
 export interface ContactData {
   phone: string;
   address: string;
@@ -40,6 +42,6 @@ export function contactView(contacts: ContactData) {
     ...contacts,
     phoneDisplay: contacts.phone.replace(/^(\+380)(\d{2})(\d{3})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5'),
     instagramHandle: '@' + new URL(contacts.instagram).pathname.split('/')[1],
-    map: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${contacts.address}, ${contacts.city}, Україна`),
+    ...studioMapLinks(contacts),
   };
 }

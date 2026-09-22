@@ -44,6 +44,9 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
     assert.equal(schema.address.addressLocality, 'Софіївська Борщагівка');
+    assert.equal(new URL(schema.hasMap).searchParams.get('query_place_id'), 'ChIJey2Ar-TL1EARuk3pdFrpkJ0');
+    assert.match(html, /maps\/embed\?pb=/);
+    assert.match(html, /0x40d4cbe4af802d7b%3A0x9d90e95a74e94dba/);
     assert.match(schema.description, /Софіївська Борщагівка/);
     assert.equal(schema.aggregateRating, undefined);
     assert.equal(schema.openingHoursSpecification[0].dayOfWeek.length, 7);
@@ -92,6 +95,7 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.ok(updated.includes('&lt;script&gt;alert(1)&lt;/script&gt; $&amp;'));
     assert.ok(!updated.includes('Вишневого'));
     assert.ok(!updated.includes('ЖК «Софія»'));
+    assert.ok(!updated.includes('ChIJey2Ar-TL1EARuk3pdFrpkJ0'));
     const priceRow = store.db.prepare('SELECT * FROM revisions ORDER BY revision DESC LIMIT 1').get()!;
     const prices = JSON.parse(String(priceRow.prices));
     prices.nails.items[0].price = '777 грн';

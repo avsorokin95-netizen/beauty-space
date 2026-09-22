@@ -26,15 +26,19 @@ test('contacts publish across site, map, booking links and survive reload', asyn
     const visitor = await browser.newContext();
     try {
       const landing = await visitor.newPage();
-      await landing.route('https://maps.google.com/**', (route) => route.fulfill({ body: '<html><body>Map</body></html>', contentType: 'text/html' }));
+      await landing.route(/^https:\/\/(?:maps|www)\.google\.com\/maps(?:[/?]|$)/, (route) => route.fulfill({ body: '<html><body>Map</body></html>', contentType: 'text/html' }));
       await landing.goto('http://127.0.0.1:4173/');
       await expect(landing.locator('#contacts a[href="tel:+380501234567"]')).toContainText('+380 50 123 45 67');
       await expect(landing.locator('.hero-location')).toContainText('Київ · вул. Тестова, 12');
       await expect(landing.locator('.header-book')).toHaveAttribute('href', 'https://ig.me/m/test_studio');
       await expect(landing.locator('#contacts h3').filter({ hasText: '@test_studio' })).toBeVisible();
       expect(new URL((await landing.locator('.studio-map iframe').getAttribute('src'))!).searchParams.get('q')).toBe('вул. Тестова, 12, Київ, Україна');
+      const directions = new URL((await landing.getByRole('link', { name: 'Відкрити маршрут' }).getAttribute('href'))!);
+      expect(directions.searchParams.get('destination')).toBe('вул. Тестова, 12, Київ, Україна');
+      expect(directions.searchParams.has('destination_place_id')).toBe(false);
       const schema = await landing.locator('#studio-schema').textContent();
       expect(JSON.parse(schema!).telephone).toBe('+380501234567');
+      expect(new URL(JSON.parse(schema!).hasMap).searchParams.has('query_place_id')).toBe(false);
     } finally { await visitor.close(); }
     await page.reload();
     await page.getByRole('button', { name: 'Контакти', exact: true }).click();

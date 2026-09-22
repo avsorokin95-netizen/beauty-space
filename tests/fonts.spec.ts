@@ -5,7 +5,7 @@ test('Ukrainian and Latin fonts load locally without Google Fonts', async ({ pag
   page.on('request', (request) => requests.push(request.url()));
   await page.route('https://fonts.googleapis.com/**', (route) => route.abort());
   await page.route('https://fonts.gstatic.com/**', (route) => route.abort());
-  await page.route('https://maps.google.com/**', (route) => route.abort());
+  await page.route(/^https:\/\/(?:maps|www)\.google\.com\/maps(?:[/?]|$)/, (route) => route.abort());
   await page.goto('/');
   await expect(page.locator('#home h1')).toBeVisible();
   const loaded = await page.evaluate(async () => {

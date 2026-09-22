@@ -6,7 +6,6 @@ import { studioWayfinding } from "../../shared/wayfinding";
 export function StudioMap() {
   const studio = useContacts();
   const address = `${studio.address}, ${studio.city}, Україна`;
-  const source = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&z=17&hl=uk&output=embed`;
   return (
     <Reveal className="shell studio-map">
       <div className="map-heading">
@@ -20,7 +19,7 @@ export function StudioMap() {
       </div>
       <iframe
         title={`Карта студії: ${address}`}
-        src={source}
+        src={studio.mapEmbed}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen

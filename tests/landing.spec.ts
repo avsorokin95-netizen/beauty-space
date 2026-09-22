@@ -3,7 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
   // Test our integration independently of Google's consent UI and availability.
-  await page.route("https://maps.google.com/**", (route) =>
+  await page.route(/^https:\/\/(?:maps|www)\.google\.com\/maps(?:[/?]|$)/, (route) =>
     route.fulfill({
       contentType: "text/html",
       body: '<html lang="uk"><head><title>Карта</title></head><body><main>Боголюбова, 6</main></body></html>',
@@ -13,15 +13,14 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("map identifies the studio address and reviews link opens the real highlight", async ({
+test("map identifies the studio business profile and reviews link opens the real highlight", async ({
   page,
 }) => {
   const map = page.locator(".studio-map iframe");
   const source = new URL((await map.getAttribute("src"))!);
-  expect(source.searchParams.get("q")).toBe(
-    "вул. Боголюбова, 6, Софіївська Борщагівка, Україна",
-  );
-  expect(source.searchParams.get("output")).toBe("embed");
+  expect(source.pathname).toBe('/maps/embed');
+  expect(source.searchParams.get('pb')).toContain('0x40d4cbe4af802d7b:0x9d90e95a74e94dba');
+  expect(source.searchParams.get('pb')).toContain('Beauty Space Victoriya');
   await expect(map).toHaveAttribute("loading", "lazy");
   await page.locator("#reviews").scrollIntoViewIfNeeded();
   await expect(page.locator(".reviews-source")).toHaveAttribute(
@@ -32,9 +31,10 @@ test("map identifies the studio address and reviews link opens the real highligh
     "target",
     "_blank",
   );
-  await expect(
-    page.getByRole("link", { name: "Відкрити маршрут" }),
-  ).toHaveAttribute("href", /google.com\/maps\/search/);
+  const directions = new URL((await page.getByRole("link", { name: "Відкрити маршрут" }).getAttribute("href"))!);
+  expect(directions.pathname).toBe('/maps/dir/');
+  expect(directions.searchParams.get('destination_place_id')).toBe('ChIJey2Ar-TL1EARuk3pdFrpkJ0');
+  expect(directions.searchParams.get('destination')).toContain('Beauty Space Victoriya');
 });
 
 test("renders content without overflow and loads local imagery", async ({

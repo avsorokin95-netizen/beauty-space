@@ -8,9 +8,6 @@ export const studio = {
   telegram: "https://t.me/tooriyaaa/s/10",
   address: "вул. Боголюбова, 6",
   city: "Софіївська Борщагівка",
-  map:
-    "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent("вулиця Боголюбова 6, Софіївська Борщагівка"),
 };
 
 export const navigation = [
