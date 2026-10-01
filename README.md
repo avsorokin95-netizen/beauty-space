@@ -1,4 +1,4 @@
-> **SEO-кандидат 2026-10-01:** [стратегія, перевірки та розгортання](docs/seo/README.md). Три SSR-сторінки: `/`, `/pedicure`, `/laminuvannia-vii`. Production не оновлюється автоматично; для D1-історії потрібен [окремий rollout/rollback checklist](docs/seo/release-checklist.md).
+> **SEO-реліз опубліковано 2026-10-01:** [незалежний повторний аудит і production-перевірки](docs/seo/reaudit-2026-10-01.md). Три SSR-сторінки: `/`, `/pedicure`, `/laminuvannia-vii`. Production не оновлюється автоматично; D1-історія ввімкнена, [rollout/rollback checklist](docs/seo/release-checklist.md) залишається обов’язковим для відкату.
 
 > **Онлайн:** https://victoriya-beauty.space · **Адмінка:** https://victoriya-beauty.space/admin
 > Production працює на Cloudflare з входом за кодом на пошту. Інструкції про
