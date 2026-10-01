@@ -1,3 +1,4 @@
+import { ArrowUpRight } from 'lucide-react';
 import { publicPages, type PublicPath } from '../../shared/pages';
 import { usePrices } from '../hooks/usePrices';
 import { Eyebrow } from './ui';
@@ -8,7 +9,7 @@ export function RelatedServices({ path }: { path: PublicPath }) {
     <div className="related-grid">{(Object.keys(publicPages) as PublicPath[]).filter((item) => item !== path).map((href) => {
       const page = publicPages[href];
       const first = prices?.[page.category]?.items[0];
-      return <a key={href} href={href} className="related-card"><h3>{page.name} <span aria-hidden="true">↗</span></h3>{first && <p>{first.name}{first.detail ? ` · ${first.detail}` : ''}<strong>{first.price}</strong></p>}<span>Варіанти процедури, ціни та роботи</span></a>;
+      return <a key={href} href={href} className="related-card"><h3>{page.name}<ArrowUpRight size={18} aria-hidden="true" /></h3>{first && <p>{first.name}{first.detail ? ` · ${first.detail}` : ''}<strong>{first.price}</strong></p>}<span>Варіанти процедури, ціни та роботи</span></a>;
     })}</div>
   </section>;
 }

@@ -1409,6 +1409,7 @@ h1 em,
 .related-card { display: flex; flex-direction: column; align-items: flex-start; padding: 32px; border: 1px solid #d4c3b3; border-radius: 6px; background: #f0e7dd; gap: 20px; }
 .related-card:hover { background: #e8dbcc; }
 .related-card h3 { font: 400 36px/1.1 var(--font-serif); }
+.related-card h3 svg { display: inline-block; margin-left: 10px; vertical-align: middle; }
 .related-card p { font-size: 14px; line-height: 1.8; }
 .related-card strong { display: block; margin-top: 8px; }
 .related-card > span { margin-top: auto; font-size: 12px; text-decoration: underline; text-underline-offset: 5px; }
