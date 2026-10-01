@@ -1,3 +1,5 @@
+import { publicPages, type PublicPath } from '../../shared/pages.ts';
+
 export const studio = {
   name: "Beauty Space Victoriya",
   hours: "Щодня, 09:00–18:00",
@@ -14,14 +16,13 @@ export const studio = {
   city: "Софіївська Борщагівка",
 };
 
-export const navigation = [
-  { href: "", label: "Манікюр" },
-  { href: "pedicure", label: "Педикюр" },
-  { href: "laminuvannia-vii", label: "Вії" },
-  { href: "#services", label: "Ціни" },
-  { href: "#gallery", label: "Наші роботи" },
+export const serviceNavigation = (Object.keys(publicPages) as PublicPath[])
+  .map((href) => ({ href, label: publicPages[href].label }));
 
-  { href: "#contacts", label: "Контакти" },
+export const studioNavigation = [
+  { href: "/#services", label: "Усі ціни" },
+  { href: "/#gallery", label: "Усі роботи" },
+  { href: "/#contacts", label: "Контакти" },
 ];
 
 export const services = [

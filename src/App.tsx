@@ -22,7 +22,7 @@ export default function App({ initialSnapshot, path = "/" }: { initialSnapshot?:
       <a className="skip-link" href="#main">
         Перейти до вмісту
       </a>
-      <Header />
+      <Header path={path} />
       <main id="main">
         <Hero path={path} />
         <Services path={path} />

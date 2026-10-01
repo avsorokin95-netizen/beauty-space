@@ -33,7 +33,7 @@ export function Hero({ path = '/' }: { path?: PublicPath }) {
       <div className="hero-booking">
         <div className="hero-actions"><BookingLink /><a className="text-link" href={`tel:${studio.phone}`} aria-label={`Зателефонувати ${studio.phoneDisplay}`}><Phone size={16} /><span>{studio.phoneDisplay}</span></a></div>
         <p className="booking-note">Запис у Direct або телефоном · час підтверджуємо особисто</p>
-        <div className="hero-jumps"><a href="#services">Усі ціни <ArrowDown size={15} /></a><a href="#gallery">Переглянути роботи <ArrowDown size={15} /></a></div>
+        <div className="hero-jumps"><a href="#services">{path === '/' ? 'Усі ціни' : path === '/pedicure' ? 'Ціни на педикюр' : 'Ціни на вії'} <ArrowDown size={15} /></a><a href="#gallery">{path === '/' ? 'Переглянути роботи' : path === '/pedicure' ? 'Роботи з педикюру' : 'Роботи з віями'} <ArrowDown size={15} /></a></div>
       </div>
     </div>
     <figure className="hero-visual work-hero">

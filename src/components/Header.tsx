@@ -2,7 +2,16 @@ import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { navigation } from "../data/studio";
+import { serviceNavigation, studioNavigation } from "../data/studio";
+import type { PublicPath } from "../../shared/pages";
+
+function ServiceSwitcher({ path }: { path: PublicPath }) {
+  return <div className="service-switcher" role="group" aria-label="Послуги">
+    {serviceNavigation.map((item) => <a key={item.href} href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+      <span className="service-current-dot" aria-hidden="true" />{item.label}
+    </a>)}
+  </div>;
+}
 
 export function Logo() {
   return (
@@ -18,7 +27,7 @@ export function Logo() {
     </a>
   );
 }
-export function Header() {
+export function Header({ path }: { path: PublicPath }) {
   const studio = useContacts();
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -28,7 +37,7 @@ export function Header() {
     const previousOverflow = document.body.style.overflow;
     element?.showModal();
     document.body.style.overflow = "hidden";
-    const desktop = window.matchMedia("(min-width: 768px)");
+    const desktop = window.matchMedia("(min-width: 1101px)");
     const closeOnDesktop = () => { if (desktop.matches) setOpen(false); };
     desktop.addEventListener("change", closeOnDesktop);
     return () => {
@@ -42,11 +51,14 @@ export function Header() {
       <div className="shell header-inner">
         <Logo />
         <nav className="desktop-nav" aria-label="Основна навігація">
-          {navigation.map((item) => (
-            <a key={item.href} href={item.href.startsWith("#") ? item.href : `/${item.href}`}>
+          <ServiceSwitcher path={path} />
+          <div className="studio-links" role="group" aria-label="Інформація про студію">
+          {studioNavigation.map((item) => (
+            <a key={item.href} href={item.href}>
               {item.label}
             </a>
           ))}
+          </div>
         </nav>
         <a
           className="header-book"
@@ -66,6 +78,9 @@ export function Header() {
           <Menu />
         </button>
       </div>
+      <nav className="shell service-bar" aria-label="Послуги студії">
+        <ServiceSwitcher path={path} />
+      </nav>
       <dialog
         ref={dialog}
         id="mobile-nav"
@@ -83,15 +98,22 @@ export function Header() {
           <span>BEAUTY SPACE <BrandStar /></span>
           <button className="icon-button" autoFocus aria-label="Закрити меню" onClick={() => setOpen(false)}><X size={22} /></button>
         </div>
-        <p className="mobile-menu-intro">Твій простір краси.</p>
         <nav className="mobile-nav" aria-label="Мобільна навігація">
-          {navigation.map((item, index) => (
-            <a key={item.href} href={item.href.startsWith("#") ? item.href : `/${item.href}`} onClick={() => setOpen(false)}>
-              <span className="mobile-nav-number" aria-hidden="true">0{index + 1}</span>
+          <div className="mobile-nav-services" role="group" aria-labelledby="menu-services-label">
+          <p className="menu-group-label" id="menu-services-label">Обери послугу</p>
+          {serviceNavigation.map((item) => (
+            <a key={item.href} href={item.href} aria-current={path === item.href ? 'page' : undefined} onClick={() => setOpen(false)}>
               <span>{item.label}</span>
-              <ArrowUpRight size={20} />
+              {path === item.href ? <span className="current-page-label">Ви тут</span> : <ArrowUpRight size={18} aria-hidden="true" />}
             </a>
           ))}
+          </div>
+          <div className="mobile-nav-studio" role="group" aria-labelledby="menu-studio-label">
+          <p className="menu-group-label" id="menu-studio-label">Інформація про студію</p>
+          {studioNavigation.map((item) => (
+            <a key={item.href} href={item.href} onClick={() => setOpen(false)}>{item.label}<ArrowUpRight size={15} aria-hidden="true" /></a>
+          ))}
+          </div>
         </nav>
         <div className="mobile-menu-bottom">
           <a className="button" data-analytics="booking" href={studio.direct} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Запис у Direct <ArrowUpRight size={18} /></a>

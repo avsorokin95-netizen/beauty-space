@@ -1,7 +1,7 @@
 import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { ArrowUpRight, Camera, MapPin, Phone, Send } from "lucide-react";
-import { navigation } from "../data/studio";
+import { studioNavigation } from "../data/studio";
 import { BookingLink, Eyebrow, Reveal } from "./ui";
 import { Logo } from "./Header";
 import { StudioMap } from "./StudioMap";
@@ -92,10 +92,8 @@ export function Contacts() {
         <Logo />
         <p>© {new Date().getFullYear()} Beauty Space Victoriya</p>
         <nav aria-label="Навігація в підвалі">
-          {navigation
-            .filter((item) => ["#services", "#contacts"].includes(item.href))
-            .map((item) => (
-              <a key={item.href} href={item.href.startsWith("#") ? item.href : `/${item.href}`}>
+          {studioNavigation.map((item) => (
+              <a key={item.href} href={item.href}>
                 {item.label}
               </a>
             ))}
