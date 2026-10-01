@@ -2,7 +2,7 @@
 
 Дата: **2026-10-01**. Сайт: **https://victoriya-beauty.space/**. Перевірено заново після зміни меню, локальних переходів і підписів hero-фото. Попередні звіти використано як контекст, а висновки нижче ґрунтуються на нових HTTP/HTML/DOM, тестах і даних production.
 
-**Висновок:** підтверджених P0/P1/P2 регресій не знайдено. Єдине нове зауваження P3 — неправильний напрямок посилання «Нагору» — виправлено. Усі завершені зміни сайту входять у кандидат цього релізу; нових залежностей, сторінок, змін protected content або міграцій не потрібно.
+**Висновок:** підтверджених P0/P1/P2 регресій не знайдено. Єдине нове зауваження P3 — неправильний напрямок посилання «Нагору» — виправлено. Усі завершені зміни сайту опубліковані та перевірені на production; нових залежностей, сторінок, змін protected content або міграцій не було.
 
 ## Незалежність і початковий стан
 
@@ -54,7 +54,25 @@
 
 ## Публікація
 
-Кандидат перевірено; SHA/deployment і результат нового production smoke буде записано після публікації штатним `npm run cf:deploy`. GitHub Actions workflows відсутні; перелічені перевірки виконані локально та незалежними агентами.
+Code commit **`46bcfb22289906c72a9abb5c797c46f36a3f8f15`** → **origin/main**, включно з усіма попередніми змінами меню та hero. GitHub Actions workflows відсутні; перелічені перевірки виконані локально та незалежними агентами. Публікація штатним `npm run cf:deploy -- --tag 46bcfb2 --message 'Final independent SEO audit 46bcfb2'` успішна.
+
+Cloudflare version **`f2357cf0-434c-431b-9515-039824a01177`** (#36), deployment **`5f8bb824-49c3-4ef9-a3d5-d94dd747e9f2`**, **100% traffic**, **2026-10-01 11:01:42.509 UTC** (14:01 Київ). Tag відповідає Git SHA; усі чотири production JS/CSS assets побайтово збігаються з перевіреним build.
+
+[Production smoke](evidence/final-audit-production.json), 11:02:17 UTC: 17 HTTP checks і дев'ять mobile/desktop/no-JS переглядів — PASS; canonical/schema/sitemap/redirects/Access, зображення й assets правильні, pageerrors 0. Public document hashes точно збігаються з baseline до аудиту.
+
+Незалежний Agent B, **11:02:42–11:02:51 UTC**: три сторінки у Chromium 1440 px і WebKit 402 px — PASS; локальне меню та «Нагору» зберігають pathname/query, drawer закривається, короткі підписи в один рядок без накладання. No-JS сторінка вій показує заголовок і ціни; pageerrors 0.
+
+[Незалежна postdeployment provenance/D1 перевірка](evidence/final-audit-production-provenance.json), **11:03:33 UTC**: правильний deployment обслуговує 100%, актуальні documents/revisions/history/triggers збережені; analytics лишилася 5 aggregate rows / 9 events, cache 1 row. Усі контрольні SQL-запити — SELECT-only, `changes=0`, `rows_written=0`. Жодної міграції, owner write або тестової production-події не було.
+
+| Статус | Результат |
+|---|---|
+| Незалежний аудит і рев’ю | PASS; RA-01 закрито, невирішених P0/P1/P2 немає |
+| Push у origin/main | Виконано |
+| Deployment та незалежна production-перевірка | Успішні |
+| Захищені дані, історія й статистика | Збережені |
+| Sitemap | Публічно перевірений, HTTP 200, три canonical URL |
+| Подання sitemap / Request indexing | Не виконано: немає авторизованого GSC |
+| Фактична індексація нового релізу | Не підтверджена; недоступні дані GSC |
 
 ## Google Search Console та межі висновків
 

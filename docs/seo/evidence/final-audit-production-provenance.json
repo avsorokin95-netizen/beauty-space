@@ -1,0 +1,148 @@
+{
+  "checked_at_utc": "2026-10-01T11:03:33.378696+00:00",
+  "status": "PASS",
+  "scope": "Independent read-only postdeploy verification",
+  "checks": {
+    "expected_worker_100_percent": true,
+    "expected_runtime_tag": true,
+    "all_four_assets_match_dist": true,
+    "current_revisions_preserved": true,
+    "history_preserved": true,
+    "three_history_triggers_present": true,
+    "analytics_counts_not_reset": true,
+    "cache_preserved": true,
+    "all_sql_read_only": true
+  },
+  "metadata": {
+    "checked_at": "2026-10-01T11:03:02.025Z",
+    "deployment": {
+      "id": "5f8bb824-49c3-4ef9-a3d5-d94dd747e9f2",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "annotations": {
+        "workers/message": "Final independent SEO audit 46bcfb2",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "f2357cf0-434c-431b-9515-039824a01177",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-01T11:01:42.509095Z"
+    },
+    "version": {
+      "id": "f2357cf0-434c-431b-9515-039824a01177",
+      "number": 36,
+      "metadata": {
+        "created_on": "2026-10-01T11:01:41.16253Z",
+        "source": "wrangler"
+      },
+      "annotations": {
+        "workers/message": "Final independent SEO audit 46bcfb2",
+        "workers/tag": "46bcfb2",
+        "workers/triggered_by": "version_upload"
+      }
+    }
+  },
+  "assets": {
+    "checked_at": "2026-10-01T11:02:59.308880+00:00",
+    "assets": [
+      {
+        "path": "/assets/index-BrjwGtwE.js",
+        "bytes": 332450,
+        "sha256": "768652e276db294f9eb5a6c7e06cdb63df2784b66fdc16ad1b897ed15b43e777",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/Admin-Ch6WE1Aj.js",
+        "bytes": 44272,
+        "sha256": "bd0e9e734a5219dd278c35139f19e60b7035af84efacffbf8cf159f3e195d79c",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/Admin-zfTY5aRL.css",
+        "bytes": 12379,
+        "sha256": "314767c31b79dda856bff86028aa16d855f4db788e2b169b689298bd0268ef91",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/index-DX2ofj9h.css",
+        "bytes": 46169,
+        "sha256": "e4b1bf6d9534850f0f0a101894c3fe293c22e1ed1512e5549bcf57406967574f",
+        "local_exists": true,
+        "local_match": true
+      }
+    ]
+  },
+  "d1": {
+    "checked_at": "2026-10-01T11:03:00.014Z",
+    "documents": [
+      {
+        "kind": "contacts",
+        "revision": 1,
+        "valid": 1
+      },
+      {
+        "kind": "gallery",
+        "revision": 4,
+        "valid": 1
+      },
+      {
+        "kind": "prices",
+        "revision": 1,
+        "valid": 1
+      }
+    ],
+    "history_triggers": [
+      "document_history_delete",
+      "document_history_insert",
+      "document_history_update"
+    ],
+    "history": [
+      {
+        "kind": "contacts",
+        "snapshots": 1,
+        "oldest_revision": 1,
+        "newest_revision": 1,
+        "all_json_valid": 1
+      },
+      {
+        "kind": "gallery",
+        "snapshots": 1,
+        "oldest_revision": 4,
+        "newest_revision": 4,
+        "all_json_valid": 1
+      },
+      {
+        "kind": "prices",
+        "snapshots": 1,
+        "oldest_revision": 1,
+        "newest_revision": 1,
+        "all_json_valid": 1
+      }
+    ],
+    "analytics_daily": {
+      "rows": 5,
+      "total_click_events": 9
+    },
+    "analytics_cache": {
+      "cache_rows": 1
+    },
+    "read_only": true
+  },
+  "analytics_predeploy_baseline": {
+    "rows": 5,
+    "total_click_events": 9
+  },
+  "mutations_performed": false,
+  "analytics_scripts_executed": false,
+  "limitations": [
+    "Worker source SHA is established through deployment/version metadata tag; this pass does not separately compare the Worker source bundle.",
+    "D1 checks cover JSON validity, revisions, history presence, triggers and aggregate counts, without exposing raw document contents.",
+    "Counts are point-in-time observations."
+  ]
+}
