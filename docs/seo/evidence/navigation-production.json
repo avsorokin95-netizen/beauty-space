@@ -1,0 +1,277 @@
+{
+  "result": "PASS",
+  "date": "2026-10-01T10:36:48.090Z",
+  "http": [
+    {
+      "path": "/",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/",
+      "h1": "Манікюр у Софіївській Борщагівці"
+    },
+    {
+      "path": "/pedicure",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/pedicure",
+      "h1": "Педикюр у Софіївській Борщагівці"
+    },
+    {
+      "path": "/laminuvannia-vii",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/laminuvannia-vii",
+      "h1": "Ламінування вій у Софіївській Борщагівці"
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "robots": null,
+      "cache": null,
+      "body": "User-agent: *\nAllow: /\nDisallow: /api/\nAllow: /api/prices$\nAllow: /api/contacts$\nAllow: /api/gallery$\nAllow: /api/media/\nDisallow: /admin\nSitemap: https://victoriya-beauty.space/sitemap.xml\n"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "robots": null,
+      "cache": null,
+      "urls": [
+        "https://victoriya-beauty.space/",
+        "https://victoriya-beauty.space/pedicure",
+        "https://victoriya-beauty.space/laminuvannia-vii"
+      ]
+    },
+    {
+      "path": "/admin",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robots": null,
+      "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    },
+    {
+      "path": "/api/admin/session",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robots": null,
+      "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    },
+    {
+      "path": "/brows",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/not-a-page-reaudit",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/?utm_source=audit",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/",
+      "h1": "Манікюр у Софіївській Борщагівці"
+    },
+    {
+      "path": "https://victoriya-beauty.space/index.html?ref=test",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/?ref=test"
+    },
+    {
+      "path": "http://victoriya-beauty.space/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/"
+    },
+    {
+      "path": "https://www.victoriya-beauty.space/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/"
+    },
+    {
+      "path": "https://victoriya-beauty.space/pedicure/?ref=test",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/pedicure?ref=test"
+    },
+    {
+      "path": "https://victoriya-beauty.space/laminuvannia-vii/index.html",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/laminuvannia-vii"
+    },
+    {
+      "path": "https://victoriya-beauty.space/manicure",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/"
+    },
+    {
+      "path": "https://victoriya-beauty.space/lashes",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/laminuvannia-vii"
+    }
+  ],
+  "pages": [
+    {
+      "label": "mobile",
+      "path": "/",
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 8
+    },
+    {
+      "label": "mobile",
+      "path": "/pedicure",
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Педикюр у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 2
+    },
+    {
+      "label": "mobile",
+      "path": "/laminuvannia-vii",
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Ламінування вій у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 3
+    },
+    {
+      "label": "desktop",
+      "path": "/",
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці"
+      ],
+      "width": 1440,
+      "viewport": 1440,
+      "errors": [],
+      "images": 8
+    },
+    {
+      "label": "desktop",
+      "path": "/pedicure",
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Педикюр у Софіївській Борщагівці"
+      ],
+      "width": 1440,
+      "viewport": 1440,
+      "errors": [],
+      "images": 2
+    },
+    {
+      "label": "desktop",
+      "path": "/laminuvannia-vii",
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Ламінування вій у Софіївській Борщагівці"
+      ],
+      "width": 1440,
+      "viewport": 1440,
+      "errors": [],
+      "images": 3
+    },
+    {
+      "label": "no-js",
+      "path": "/",
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 8
+    },
+    {
+      "label": "no-js",
+      "path": "/pedicure",
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Педикюр у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 2
+    },
+    {
+      "label": "no-js",
+      "path": "/laminuvannia-vii",
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Ламінування вій у Софіївській Борщагівці"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "errors": [],
+      "images": 3
+    }
+  ],
+  "snapshotHashes": {
+    "contacts": {
+      "revision": 1,
+      "sha256": "6bdb30678fb4bfcdbfc7433826b928461bed40e87c61a2d49c9587b90b5b3f2b"
+    },
+    "prices": {
+      "revision": 1,
+      "sha256": "bad6f056551587fe9a1dc0a4c6c513e0f850775716da5e8db3f38192293dab76"
+    },
+    "gallery": {
+      "revision": 4,
+      "sha256": "3a84e437c1fab92e3870e215a1bd354f2047b16417d3190110317be3f233ce71"
+    }
+  },
+  "release": {
+    "commit": "ceb3205e68f9b13af2fba1d6bd175af8d41fd743",
+    "remoteBranch": "origin/main",
+    "version": "a0f84e07-b75e-4f55-9dcb-189200ef5fa7",
+    "deployment": "e96cf1ba-159d-48bd-906d-400b5481ec95",
+    "createdOn": "2026-10-01T10:36:22.887813Z",
+    "trafficPercent": 100,
+    "tag": "ceb3205"
+  },
+  "independentReview": {
+    "result": "PASS",
+    "from": "2026-10-01T10:36:58Z",
+    "to": "2026-10-01T10:37:04Z",
+    "pages": 3,
+    "widths": [
+      390,
+      1440
+    ],
+    "checks": [
+      "SSR current service",
+      "visible navigation current service",
+      "drawer Ви тут",
+      "stable global anchors",
+      "service-specific hero anchors",
+      "drawer closes on navigation",
+      "anchor offsets",
+      "no overflow",
+      "no JavaScript errors"
+    ],
+    "analyticsBlocked": true,
+    "productionWrites": false
+  }
+}
