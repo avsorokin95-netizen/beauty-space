@@ -1404,8 +1404,9 @@ h1 em,
 .commercial-hero .booking-note { margin: 13px 0 0; font-size: 11px; line-height: 1.7; }
 .hero-jumps { display: flex; gap: 28px; margin-top: 24px; flex-wrap: wrap; }
 .hero-jumps a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; text-decoration: underline; text-underline-offset: 5px; }
-.commercial-hero .work-hero { margin: 0; min-height: 0; height: auto; position: relative; border-radius: 120px 12px 12px 12px; overflow: hidden; background: #e9ddd0; }
+.commercial-hero .work-hero { margin: 0; min-width: 0; min-height: 0; height: auto; position: relative; grid-template-columns: minmax(0, 1fr); border-radius: 120px 12px 12px 12px; overflow: hidden; background: #e9ddd0; }
 .work-hero > a { display: block; }
+.hero-image-frame { min-width: 0; }
 .commercial-hero .hero-photo { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; transform: none; filter: none; position: static; border-radius: 0; }
 .work-hero::after { display: none; }
 .work-hero figcaption { position: relative; padding: 18px 24px; display: grid; gap: 7px; background: #eee4d8; color: #4f4136; }
@@ -1494,9 +1495,17 @@ h1 em,
     background: transparent;
     overflow: visible;
   }
-  .commercial-hero .hero-photo {
+  .commercial-hero .hero-image-frame {
+    /* A normal grid box owns the image height; replaced-element sizing cannot
+       paint across the separate caption row, including during image loading. */
     grid-row: 1 / span 2;
     contain: size;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .commercial-hero .hero-photo {
+    position: absolute;
     width: auto;
     max-width: 100%;
     height: 100%;
@@ -1531,7 +1540,8 @@ h1 em,
   .hero-prices dd { font-size: 25px; }
   .commercial-hero .work-hero { max-width: 230px; align-self: start; }
   .commercial-hero .hero-photo { max-height: 360px; border-radius: 28px 6px 6px 6px; }
-  .work-hero figcaption { padding-top: 10px; }
+  /* Below the photo and prices, short captions may use the spare row width. */
+  .work-hero figcaption { width: max-content; max-width: calc(100vw - 40px); padding-top: 10px; justify-self: start; text-align: left; overflow-wrap: anywhere; }
   .work-hero figcaption span:first-child { letter-spacing: 0.5px; }
   .work-hero figcaption span:last-child { font-size: 20px; line-height: 1.15; }
   .hero-booking { padding-top: 4px; }
@@ -1565,9 +1575,15 @@ h1 em,
     max-width: 100%;
   }
   /* The photo spans 23 parts to the offer's 20 (115%); the caption follows. */
-  .commercial-hero:has(.hero-offer) .hero-photo {
+  .commercial-hero:has(.hero-offer) .hero-image-frame {
     grid-row: 1 / span 2;
     contain: size;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .commercial-hero:has(.hero-offer) .hero-photo {
+    position: absolute;
     width: auto;
     height: 100%;
     min-height: 0;

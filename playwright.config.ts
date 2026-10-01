@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
   workers: 1,
@@ -17,6 +17,11 @@ export default defineConfig({
     },
   ],
   projects: [
+    {
+      name: "iphone-webkit",
+      testMatch: "hero-layout.spec.ts",
+      use: { ...devices["iPhone 16 Pro"], browserName: "webkit" },
+    },
     { name: "desktop", use: { viewport: { width: 1440, height: 1000 } } },
     {
       name: "mobile",

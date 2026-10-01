@@ -32,7 +32,7 @@ npm run preview # локальний перегляд збірки; API має �
 npm run lint
 npm run perf    # після build: локальні мобільні заміри, не оцінка PageSpeed
 npm run test:server # авторизація, валідація, конфлікти, persistence, logout, rate limit
-npx playwright install chromium
+npx playwright install chromium webkit
 npm test        # desktop/mobile, редактор, публікація для іншого браузера, галерея, доступність
 ```
 
