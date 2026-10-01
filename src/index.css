@@ -1545,7 +1545,7 @@ h1 em,
   .commercial-hero:has(.hero-offer) .hero-booking { margin-top: 24px; }
 }
 /* A light vertical crop is approved for the pink manicure cover. */
-.commercial-hero .hero-photo-manicure { aspect-ratio: 2 / 3; object-fit: cover; object-position: center; }
+.commercial-hero .hero-photo-manicure { aspect-ratio: 18 / 25; object-fit: cover; object-position: center; }
 @media (max-width: 359px) {
   .commercial-hero:has(.hero-offer) .hero-photo-manicure { object-fit: contain; object-position: top; }
 }
