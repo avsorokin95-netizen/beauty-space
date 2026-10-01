@@ -1488,7 +1488,7 @@ h1 em,
   .commercial-hero .hero-heading { font-size: clamp(38px, 10.5vw, 54px); letter-spacing: -1px; }
   .commercial-hero .hero-heading-place { margin-top: 8px; font-size: 22px; }
   .commercial-hero .hero-location { margin-top: 12px; font-size: 11px; }
-  .hero-offer { align-self: center; }
+  .hero-offer { align-self: start; }
   .hero-offer-label { margin-bottom: 12px; font-size: 8px; letter-spacing: 1.1px; }
   .hero-prices { grid-template-columns: 1fr; gap: 16px; }
   .hero-prices > div { gap: 7px; padding-top: 12px; font-size: 12px; }
@@ -1514,7 +1514,37 @@ h1 em,
   .footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
   html { scroll-padding-bottom: 90px; }
 }
+@media (max-width: 767px) {
+  .commercial-hero:has(.hero-offer) {
+    grid-template-areas: "intro intro" "photo offer" "photo ." "booking booking";
+    row-gap: 0;
+  }
+  .commercial-hero:has(.hero-offer) .hero-intro { margin-bottom: 24px; }
+  .commercial-hero:has(.hero-offer) .work-hero {
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    align-self: stretch;
+    max-width: 100%;
+  }
+  /* Prices determine the image height; its caption occupies the next row. */
+  .commercial-hero:has(.hero-offer) .hero-photo {
+    contain: size;
+    width: auto;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: 4 / 5;
+    justify-self: center;
+    object-position: top;
+  }
+  .commercial-hero:has(.hero-offer) .hero-photo-manicure { aspect-ratio: 2 / 3; object-position: center; }
+  .commercial-hero:has(.hero-offer) .hero-booking { margin-top: 24px; }
+}
 /* A light vertical crop is approved for the pink manicure cover. */
 .commercial-hero .hero-photo-manicure { aspect-ratio: 2 / 3; object-fit: cover; object-position: center; }
+@media (max-width: 359px) {
+  .commercial-hero:has(.hero-offer) .hero-photo-manicure { object-fit: contain; object-position: top; }
+}
 .studio-about p, .service-guide p, .service-note { white-space: pre-line; }
 .desktop-nav a:hover, .desktop-nav a:focus-visible { color: #795747; }
