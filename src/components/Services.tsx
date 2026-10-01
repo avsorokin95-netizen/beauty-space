@@ -38,6 +38,7 @@ export function Services({ path = "/" }: { path?: PublicPath }) {
             Порівняй склад процедур і переглянь ціни.
             <br />
             Під час запису узгодимо потрібні деталі.
+            {path !== '/' && <><br /><a className="text-link full-price-link" href="/#services">Повний прайс студії <ArrowUpRight size={16} aria-hidden="true" /></a></>}
           </p>
         </Reveal>
         {error && (

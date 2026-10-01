@@ -483,6 +483,7 @@ h1 em,
   color: #6a6058;
   padding-bottom: 6px;
 }
+.full-price-link { min-height: 44px; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--color-ink); }
 .service-list {
   border-top: 1px solid #d4c8bd;
 }
