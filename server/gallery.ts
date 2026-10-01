@@ -6,7 +6,7 @@ import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import { initialGallery } from "../src/data/gallery.ts";
-import { MAX_GALLERY_ITEMS, validGalleryCategory, validGalleryAlt, validInstagram, type GalleryDocument, type GalleryItem } from "../shared/gallery.ts";
+import { MAX_GALLERY_DOCUMENT_ITEMS, validGalleryPlacements, validGalleryCategory, validGalleryAlt, validInstagram, type GalleryDocument, type GalleryItem } from "../shared/gallery.ts";
 
 const mediaName = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/;
 
@@ -80,7 +80,7 @@ export function registerGallery(app: Express, db: DatabaseSync, directory: strin
       const current = read();
       if (!req.body || !Number.isInteger(req.body.revision) || !Array.isArray(req.body.items)) throw new Error("validation");
       if (req.body.revision !== current.revision) throw new Error("conflict");
-      if (req.body.items.length < 1 || req.body.items.length > MAX_GALLERY_ITEMS) throw new Error("validation");
+      if (req.body.items.length < 1 || req.body.items.length > MAX_GALLERY_DOCUMENT_ITEMS || !validGalleryPlacements(req.body.items)) throw new Error("validation");
       const ids = new Set<string>();
       const items: GalleryItem[] = req.body.items.map((item: GalleryItem) => {
         if (!item || typeof item.id !== "string" || !/^work-[A-Za-z0-9-]{1,64}$/.test(item.id) || ids.has(item.id) || !validSource(item.src) ||
@@ -88,7 +88,7 @@ export function registerGallery(app: Express, db: DatabaseSync, directory: strin
           !validGalleryAlt(item.alt) || !validGalleryCategory(item.category) ||
           typeof item.label !== "string" || !item.label.trim() || item.label.length > 60 || !validInstagram(item.instagram)) throw new Error("validation");
         ids.add(item.id);
-        return { id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), ...(item.category === undefined ? {} : { category: item.category }), label: item.label.trim(), instagram: item.instagram };
+        return { id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), ...(item.category === undefined ? {} : { category: item.category }), ...(item.placement === undefined ? {} : { placement: item.placement }), label: item.label.trim(), instagram: item.instagram };
       });
       const document = { revision: current.revision + 1, updatedAt: new Date().toISOString(), items };
       db.prepare("INSERT INTO gallery_revisions VALUES (?, ?, ?)").run(document.revision, document.updatedAt, JSON.stringify(items));

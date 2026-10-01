@@ -1,4 +1,4 @@
-import { galleryCategory, type GalleryItem } from "../../shared/gallery";
+import { galleryCategory, isPortfolioItem, type GalleryItem } from "../../shared/gallery";
 import useEmblaCarousel from "embla-carousel-react";
 import { useMotionPreference } from "../hooks/useMotionPreference";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -12,7 +12,7 @@ import { useGallery } from "../hooks/useGallery";
 export function Gallery({ category }: { category?: GalleryItem["category"] }) {
   const studio = useContacts();
   const { posts: allPosts = [], error, retry } = useGallery();
-  const posts = category ? allPosts.filter((post) => galleryCategory(post) === category) : allPosts;
+  const posts = allPosts.filter((post) => isPortfolioItem(post) && (!category || galleryCategory(post) === category));
   const [selected, setSelected] = useState<number | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const reduced = useMotionPreference();

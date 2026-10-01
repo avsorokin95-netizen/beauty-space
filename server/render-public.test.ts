@@ -5,6 +5,7 @@ import { studio } from '../src/data/studio.ts';
 import { prices } from '../src/data/prices.ts';
 import { initialGallery } from '../src/data/gallery.ts';
 import type { PublicSnapshot } from '../shared/public-snapshot.ts';
+import type { PublicPath } from '../shared/pages.ts';
 
 function snapshot(): PublicSnapshot {
   return {
@@ -13,6 +14,23 @@ function snapshot(): PublicSnapshot {
     gallery: { revision: 1, updatedAt: '2026-09-22T00:00:00.000Z', items: structuredClone(initialGallery) },
   };
 }
+
+test('each hero separates atmospheric imagery and editable covers from the portfolio in SSR', async () => {
+  for (const [path, category, image] of [['/', 'nails', 'manicure'], ['/pedicure', 'pedicure', 'pedicure'], ['/laminuvannia-vii', 'lashes', 'lashes']] as const) {
+    const published = snapshot();
+    const fallback = await renderPublicApp(published, path as PublicPath);
+    const hero = fallback.split('id="home"')[1].split('</section>')[0];
+    assert.ok(hero.includes(`/images/hero/${image}-800.webp`));
+    assert.match(hero, /АТМОСФЕРНЕ ЗОБРАЖЕННЯ/);
+    assert.doesNotMatch(hero, /РОБОТА BEAUTY SPACE/);
+    const source = `/api/media/cover-${category}.webp`;
+    published.gallery.items.push({ ...published.gallery.items[0], id: `work-cover-${category}`, src: source, title: 'Моя обкладинка', placement: `hero-${category}` });
+    const html = await renderPublicApp(published, path);
+    assert.ok(html.split('id="home"')[1].split('</section>')[0].includes(source));
+    assert.ok(!html.split('id="gallery"')[1].split('</section>')[0].includes(source));
+    assert.equal(published.gallery.items.length, initialGallery.length + 1);
+  }
+});
 
 test('SSR renders the published public page with visible content and native price lists', async () => {
   const published = snapshot();

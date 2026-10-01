@@ -62,7 +62,7 @@ test('owner replaces gallery photo and publishes it for visitors', async ({ page
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
     const count = initial.items.length;
-    await page.getByLabel(`Додати роботу (${count} / 30)`).setInputFiles('public/images/lashes-detail.webp');
+    await page.getByLabel(`Додати фото (${count} / 33)`).setInputFiles('public/images/lashes-detail.webp');
     await expect(page.locator('.gallery-admin-card')).toHaveCount(count + 1);
     await expect(page.getByLabel(`Опис фото ${count + 1}`)).toHaveValue('');
     await page.getByLabel(`Назва роботи ${count + 1}`, { exact: true }).fill('Додана робота');
@@ -85,4 +85,39 @@ test('owner replaces gallery photo and publishes it for visitors', async ({ page
     const response = await page.request.put('/api/admin/gallery', { data: { ...initial, revision: latest.revision }, headers: { Origin: 'http://127.0.0.1:4173' } });
     expect(response.ok()).toBeTruthy();
   }
+});
+
+test('owner can publish separate hero covers without showing them as portfolio work', async ({ page }) => {
+  const password = readFileSync('.test-data/admin-access.txt', 'utf8').match(/Password: (.+)/)![1];
+  const initial = await (await page.request.get('/api/gallery')).json() as GalleryDocument;
+  await page.route(/^https:\/\/(?:maps|www)\.google\.com\/maps/, (route) => route.abort());
+  await page.goto('/admin');
+  await page.getByLabel('Пароль', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Увійти в адмінку' }).click();
+  await page.getByRole('button', { name: 'Роботи', exact: true }).click();
+  try {
+    for (const [index, placement] of ['hero-nails', 'hero-pedicure', 'hero-lashes'].entries()) {
+      await page.getByLabel(`Призначення фото ${index + 1}`, { exact: true }).selectOption(placement);
+    }
+    await page.getByLabel('Призначення фото 4', { exact: true }).selectOption('hero-nails');
+    await expect(page.getByRole('button', { name: 'Опублікувати роботи' })).toBeDisabled();
+    await page.getByLabel('Призначення фото 4', { exact: true }).selectOption('portfolio');
+    await page.getByRole('button', { name: 'Опублікувати роботи' }).click();
+    await expect(page.getByText('Роботи збережено й опубліковано.', { exact: true })).toBeVisible();
+    for (const [index, path] of ['/', '/pedicure', '/laminuvannia-vii'].entries()) {
+      await page.goto(path);
+      await expect(page.locator('.hero-photo')).toHaveAttribute('src', initial.items[index].src);
+      await expect(page.locator('#home figcaption')).toContainText('АТМОСФЕРНЕ ЗОБРАЖЕННЯ');
+      for (const item of initial.items.slice(0, 3)) await expect(page.locator(`#gallery img[src="${item.src}"]`)).toHaveCount(0);
+    }
+    await page.goto('/admin');
+    await page.getByRole('button', { name: 'Роботи', exact: true }).click();
+    await expect(page.getByLabel('Призначення фото 1', { exact: true })).toHaveValue('hero-nails');
+  } finally {
+    const latest = await (await page.request.get('/api/gallery')).json() as GalleryDocument;
+    expect((await page.request.put('/api/admin/gallery', { data: { ...initial, revision: latest.revision }, headers: { Origin: 'http://127.0.0.1:4173' } })).ok()).toBeTruthy();
+  }
+  await page.goto('/');
+  await expect(page.locator('.hero-photo')).toHaveAttribute('src', '/images/hero/manicure-800.webp');
+  await expect(page.locator('.gallery-card')).toHaveCount(initial.items.length);
 });

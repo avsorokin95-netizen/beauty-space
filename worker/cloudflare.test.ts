@@ -183,9 +183,17 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     gallery.items[0].alt = '  Рожеве покриття на коротких нігтях  ';
     delete gallery.items[1].alt;
     gallery.items[2].alt = '';
+    const coverUpload = await upload(photo);
+    const coverSource = (await coverUpload.json() as { src: string }).src;
+    gallery.items.push({ ...initialGallery[0], id: 'work-hero-test', src: coverSource, title: 'Атмосферна обкладинка', placement: 'hero-nails' });
     for (const alt of [null, 123, false, {}, [], 'а'.repeat(MAX_GALLERY_ALT_LENGTH + 1)]) {
       const invalid = structuredClone(gallery);
       Object.assign(invalid.items[0], { alt });
+      assert.equal((await send('/api/admin/gallery', 'PUT', invalid)).status, 400);
+    }
+    for (const placement of [null, ['hero-nails'], {}, 'unknown', 'hero-nails']) {
+      const invalid = structuredClone(gallery);
+      Object.assign(invalid.items[0], { placement });
       assert.equal((await send('/api/admin/gallery', 'PUT', invalid)).status, 400);
     }
     assert.equal((await send('/api/admin/gallery', 'PUT', gallery)).status, 200);
@@ -194,6 +202,10 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.equal(publishedGallery.items[0].title, gallery.items[0].title);
     assert.equal(Object.hasOwn(publishedGallery.items[1], 'alt'), false, 'Legacy items may omit the description');
     assert.equal(publishedGallery.items[2].alt, '', 'Empty descriptions allow the public fallback');
+    assert.equal(publishedGallery.items.at(-1)!.placement, 'hero-nails');
+    const coverHtml = await (await send('/')).text();
+    assert.ok(coverHtml.split('id="home"')[1].split('</section>')[0].includes(coverSource));
+    assert.ok(!coverHtml.split('id="gallery"')[1].split('</section>')[0].includes(coverSource));
     const storedGallery = await db.prepare("SELECT data FROM documents WHERE kind = 'gallery'").first<{ data: string }>();
     assert.deepEqual(JSON.parse(storedGallery!.data), publishedGallery.items, 'The Worker persists descriptions in D1');
     gallery.revision++;
@@ -300,7 +312,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.getByRole('button', { name: 'Опублікувати роботи', exact: true }).click();
       await page.getByText('Роботи збережено й опубліковано.').waitFor();
       const updated = await (await send('/api/gallery')).json() as { items: typeof initialGallery };
-      assert.equal(updated.items.length, initialGallery.length + 1);
+      assert.equal(updated.items.length, publishedGallery.items.length + 1);
       assert.match(updated.items.at(-1)!.src, /^\/api\/media\//);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.getByRole('button', { name: 'Ціни', exact: true }).click();

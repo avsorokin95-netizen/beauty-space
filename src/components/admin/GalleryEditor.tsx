@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ImagePlus, Save, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
 import { preparePhoto } from "../../lib/prepare-photo";
-import { MAX_GALLERY_ALT_LENGTH, MAX_GALLERY_ITEMS, validGalleryAlt, validInstagram, type GalleryDocument, type GalleryItem } from "../../../shared/gallery";
+import { MAX_GALLERY_ALT_LENGTH, MAX_GALLERY_DOCUMENT_ITEMS, validGalleryPlacements, validGalleryAlt, validInstagram, type GalleryDocument, type GalleryItem } from "../../../shared/gallery";
 import { galleryAlt, galleryPhotoDescription } from "../../../shared/gallery-descriptions";
 
 export interface GalleryModel { draft: GalleryDocument; published: GalleryDocument }
@@ -23,7 +23,8 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const dirty = !!model && JSON.stringify(model.draft.items) !== JSON.stringify(model.published.items);
-  const invalid = model?.draft.items.some((item) => !item.title.trim() || !item.label.trim() || !validGalleryAlt(item.alt) || !validInstagram(item.instagram));
+  const placementsValid = !model || validGalleryPlacements(model.draft.items);
+  const invalid = !placementsValid || model?.draft.items.some((item) => !item.title.trim() || !item.label.trim() || !validGalleryAlt(item.alt) || !validInstagram(item.instagram));
 
   useEffect(() => {
     if (model) return;
@@ -97,15 +98,16 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
   return <section aria-label="Керування роботами">
     <div className="admin-page-heading">
       <div><p className="admin-eyebrow">BEAUTY В ДЕТАЛЯХ</p><h1>Твої <em>роботи.</em></h1>
-        <p>Заміни фото та підписи. Натисни «Опублікувати роботи», щоб оновити сайт.</p></div>
+        <p>Заміни фото та підписи. Натисни «Опублікувати роботи», щоб оновити сайт.</p>
+        <p>Щоб замінити головне фото сторінки, додай зображення й обери його призначення. Головні фото показуються окремо від галереї реальних робіт. Якщо прибрати головне фото, повернеться стандартне атмосферне зображення.</p></div>
     </div>
     {error && <p role="alert" className="admin-error">{error}</p>}
     {saved && <p role="status" className="admin-success">Роботи збережено й опубліковано.</p>}
     {!model ? <div role="status">{error ? <button className="admin-secondary" onClick={() => setAttempt((n) => n + 1)}>Спробувати ще раз</button> : "Завантажуємо роботи…"}</div> :
       <form onSubmit={save}>
         <div className="gallery-add">
-          <label htmlFor="add-gallery-photo"><ImagePlus size={18} /> Додати роботу ({model.draft.items.length} / {MAX_GALLERY_ITEMS})</label>
-          <input id="add-gallery-photo" type="file" accept="image/jpeg,image/png,image/webp" disabled={busy || model.draft.items.length >= MAX_GALLERY_ITEMS} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; void upload(-1, file); }} />
+          <label htmlFor="add-gallery-photo"><ImagePlus size={18} /> Додати фото ({model.draft.items.length} / {MAX_GALLERY_DOCUMENT_ITEMS})</label>
+          <input id="add-gallery-photo" type="file" accept="image/jpeg,image/png,image/webp" disabled={busy || model.draft.items.length >= MAX_GALLERY_DOCUMENT_ITEMS} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; void upload(-1, file); }} />
         </div>
         <fieldset disabled={busy} className="gallery-admin-grid">
           {model.draft.items.map((item, index) => <article className="gallery-admin-card" key={item.id}>
@@ -121,6 +123,13 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
                 onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; void upload(index, file); }} />
               <label htmlFor={`title-${item.id}`}>Назва роботи {index + 1}</label>
               <input id={`title-${item.id}`} value={item.title} maxLength={100} required onChange={(event) => update(index, { title: event.target.value })} />
+              <label htmlFor={`placement-${item.id}`}>Призначення фото {index + 1}</label>
+              <select id={`placement-${item.id}`} value={item.placement ?? 'portfolio'} onChange={(event) => update(index, { placement: event.target.value as GalleryItem['placement'] })}>
+                <option value="portfolio">Галерея реальних робіт</option>
+                <option value="hero-nails">Головне фото — манікюр</option>
+                <option value="hero-pedicure">Головне фото — педикюр</option>
+                <option value="hero-lashes">Головне фото — вії</option>
+              </select>
               <label htmlFor={`category-${item.id}`}>Послуга на фото {index + 1}</label>
               <select id={`category-${item.id}`} value={galleryCategory(item)} onChange={(event) => update(index, { category: event.target.value as CategorizedItem['category'] })}>
                 <option value="nails">Манікюр</option><option value="pedicure">Педикюр</option><option value="lashes">Вії</option><option value="other">Інше</option>
@@ -138,6 +147,7 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
             </div>
           </article>)}
         </fieldset>
+        {!placementsValid && <p className="admin-error" role="alert">Можна опублікувати до 30 реальних робіт і по одному головному фото для манікюру, педикюру та вій. Перевір призначення фото.</p>}
         <p className="gallery-upload-hint" id="gallery-upload-hint">JPG, PNG або WebP · до 8 МБ. Після заміни фото додай його опис і посилання на відповідний допис, якщо він є.</p>
         <div className="admin-savebar">
           <div><strong role="status">{busy ? "Обробляємо…" : dirty ? "Є неопубліковані зміни" : "Усі роботи опубліковано"}</strong><span>Завантаження фото не змінює сайт до публікації.</span></div>

@@ -4,17 +4,19 @@ import { useContacts } from '../hooks/useContacts';
 import { usePrices } from '../hooks/usePrices';
 import { useGallery } from '../hooks/useGallery';
 import { galleryAlt } from '../../shared/gallery-descriptions';
-import { galleryCategory } from '../../shared/gallery';
 import { pageHeading, publicPages, type PublicPath } from '../../shared/pages';
+import { heroImages } from '../data/hero-images';
 
 export function Hero({ path = '/' }: { path?: PublicPath }) {
   const studio = useContacts();
   const { prices } = usePrices();
   const { posts = [] } = useGallery();
   const page = publicPages[path];
-  const photo = posts.find((post) => galleryCategory(post) === page.gallery);
+  const cover = posts.find((post) => post.placement === `hero-${page.category}`);
+  const atmosphere = heroImages[page.category];
+  const imageBase = `/images/hero/${atmosphere.name}`;
   const selected = prices?.[page.category]?.items.slice(0, 2) ?? [];
-  return <section id="home" className={`hero shell commercial-hero ${photo ? '' : 'hero-without-photo'}`}>
+  return <section id="home" className="hero shell commercial-hero">
     <div className="hero-copy">
       {path !== '/' && <nav className="breadcrumbs" aria-label="Хлібні крихти"><a href="/">Головна</a><span aria-hidden="true"> / </span><span>{page.name}</span></nav>}
       <Eyebrow>BEAUTY SPACE VICTORIYA</Eyebrow>
@@ -26,9 +28,12 @@ export function Hero({ path = '/' }: { path?: PublicPath }) {
       <p className="booking-note">Запис у Direct або телефоном · час підтверджуємо особисто</p>
       <div className="hero-jumps"><a href="#services">Усі ціни <ArrowDown size={15} /></a><a href="#gallery">Переглянути роботи <ArrowDown size={15} /></a></div>
     </div>
-    {photo && <figure className="hero-visual work-hero">
-      <a href="#gallery" aria-label="Переглянути роботи студії"><img src={photo.src} width="1200" height="1600" alt={galleryAlt(photo)} fetchPriority="high" className="hero-photo" /></a>
-      <figcaption><span>РОБОТА BEAUTY SPACE VICTORIYA</span><span>{photo.title}</span></figcaption>
-    </figure>}
+    <figure className="hero-visual work-hero">
+      <img src={cover?.src ?? `${imageBase}-800.webp`}
+        srcSet={cover ? undefined : `${imageBase}-480.webp 480w, ${imageBase}-800.webp 800w, ${imageBase}-1120.webp 1120w`}
+        sizes={cover ? undefined : '(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) calc((100vw - 99px) / 2), 600px'}
+        width="1120" height="1400" alt={cover ? galleryAlt(cover) : atmosphere.alt} fetchPriority="high" className="hero-photo" />
+      <figcaption><span>АТМОСФЕРНЕ ЗОБРАЖЕННЯ</span><span>{cover?.title ?? atmosphere.title}</span></figcaption>
+    </figure>
   </section>;
 }

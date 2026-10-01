@@ -1,6 +1,6 @@
 import { validatePrices, type PriceDocument } from '../shared/pricing';
 import { contactFields, validContact, type ContactData } from '../shared/contacts';
-import { MAX_GALLERY_ITEMS, validGalleryCategory, validGalleryAlt, validInstagram, type GalleryItem } from '../shared/gallery';
+import { MAX_GALLERY_DOCUMENT_ITEMS, validGalleryPlacements, validGalleryCategory, validGalleryAlt, validInstagram, type GalleryItem } from '../shared/gallery';
 import { initialGallery } from '../src/data/gallery';
 
 export type Kind = 'prices' | 'contacts' | 'gallery';
@@ -34,7 +34,7 @@ export async function saveDocument(db: D1Database, media: R2Bucket, kind: Kind, 
       return [key, incoming[key]?.trim() ?? (current.contacts as ContactData)[key]];
     }));
   } else {
-    if (!Array.isArray(input.items) || input.items.length < 1 || input.items.length > MAX_GALLERY_ITEMS) throw invalid();
+    if (!Array.isArray(input.items) || input.items.length < 1 || input.items.length > MAX_GALLERY_DOCUMENT_ITEMS || !validGalleryPlacements(input.items)) throw invalid();
     const ids = new Set<string>();
     const items: GalleryItem[] = [];
     for (const item of input.items) {
@@ -47,7 +47,7 @@ export async function saveDocument(db: D1Database, media: R2Bucket, kind: Kind, 
         if (item.src !== `/api/media/${name}` || !mediaName.test(name) || !await media.head(name)) throw invalid();
       }
       ids.add(item.id);
-      items.push({ id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), ...(item.category === undefined ? {} : { category: item.category }), label: item.label.trim(), instagram: item.instagram });
+      items.push({ id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), ...(item.category === undefined ? {} : { category: item.category }), ...(item.placement === undefined ? {} : { placement: item.placement }), label: item.label.trim(), instagram: item.instagram });
     }
     data = items;
   }

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('real hero work stays still and readable for both motion preferences', async ({ page }) => {
+test('atmospheric hero image stays still and readable for both motion preferences', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   for (const reducedMotion of ['reduce', 'no-preference'] as const) {

@@ -6,9 +6,29 @@ export interface GalleryItem {
   label: string;
   instagram: string;
   category?: 'nails' | 'pedicure' | 'lashes' | 'other';
+  placement?: 'portfolio' | 'hero-nails' | 'hero-pedicure' | 'hero-lashes';
 }
 export const MAX_GALLERY_ITEMS = 30;
+export const MAX_GALLERY_DOCUMENT_ITEMS = MAX_GALLERY_ITEMS + 3;
 export const MAX_GALLERY_ALT_LENGTH = 300;
+
+export function isPortfolioItem(item: GalleryItem) {
+  return item.placement === undefined || item.placement === 'portfolio';
+}
+
+/** Legacy records stay in the portfolio; each service has at most one cover. */
+export function validGalleryPlacements(items: unknown[]) {
+  const covers = new Set<string>();
+  let portfolioCount = 0;
+  return items.every((item) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return false;
+    const value = 'placement' in item ? item.placement : undefined;
+    if (value === undefined || value === 'portfolio') return ++portfolioCount <= MAX_GALLERY_ITEMS;
+    if (typeof value !== 'string' || !['hero-nails', 'hero-pedicure', 'hero-lashes'].includes(value) || covers.has(value)) return false;
+    covers.add(value);
+    return true;
+  });
+}
 
 export function validGalleryCategory(value: unknown): value is GalleryItem['category'] {
   return value === undefined || typeof value === 'string' && ['nails', 'pedicure', 'lashes', 'other'].includes(value);

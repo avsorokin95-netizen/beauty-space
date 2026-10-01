@@ -1,4 +1,4 @@
-import { validGalleryCategory } from '../shared/gallery.ts';
+import { validGalleryCategory, validGalleryPlacements } from '../shared/gallery.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -55,15 +55,18 @@ test('gallery upload, validation, publication, conflict and disk persistence', a
     assert.equal(metadata.exif, undefined);
     assert.deepEqual(await (await send('/api/gallery')).json(), initial);
     const draft = structuredClone(initial);
-    draft.items[0] = { ...draft.items[0], src, title: 'Нова робота', alt: '  Рожеве покриття на коротких нігтях  ', instagram: '' };
+    draft.items[0] = { ...draft.items[0], src, title: 'Нова робота', alt: '  Рожеве покриття на коротких нігтях  ', instagram: '', placement: 'hero-nails' };
     delete draft.items[1].alt;
     for (const patch of [{ src: '/api/media/../../auth.json' }, { src: 'https://example.com/image.jpg' }, { instagram: 'javascript:alert(1)' }, { title: '' }, { id: 'fake' },
-      ...[null, 123, false, {}, [], 'а'.repeat(MAX_GALLERY_ALT_LENGTH + 1)].map((alt) => ({ alt }))]) {
+      ...[null, 123, false, {}, [], 'а'.repeat(MAX_GALLERY_ALT_LENGTH + 1)].map((alt) => ({ alt })),
+      ...[null, ['hero-nails'], {}, 'unknown'].map((placement) => ({ placement }))]) {
       const invalid = structuredClone(draft); Object.assign(invalid.items[0], patch);
       assert.equal((await send('/api/admin/gallery', invalid)).status, 400);
     }
     const duplicate = structuredClone(draft); duplicate.items[1].id = duplicate.items[0].id;
     assert.equal((await send('/api/admin/gallery', duplicate)).status, 400);
+    const duplicateCover = structuredClone(draft); duplicateCover.items[1].placement = 'hero-nails';
+    assert.equal((await send('/api/admin/gallery', duplicateCover)).status, 400);
     const empty = { ...draft, items: [] };
     assert.equal((await send('/api/admin/gallery', empty)).status, 400);
     draft.items = [draft.items[0], { ...draft.items[1], id: 'work-new-photo' }];
@@ -72,11 +75,13 @@ test('gallery upload, validation, publication, conflict and disk persistence', a
     const saved = await (await send('/api/gallery')).json() as GalleryDocument;
     assert.equal(saved.items[0].src, src);
     assert.equal(saved.items[0].title, 'Нова робота');
+    assert.equal(saved.items[0].placement, 'hero-nails');
     assert.equal(saved.items[0].alt, 'Рожеве покриття на коротких нігтях');
     assert.equal(Object.hasOwn(saved.items[1], 'alt'), false, 'Legacy items may omit the description');
     const reopened = createApp({ directory, origins: [origin] });
     const row = reopened.store.db.prepare('SELECT items FROM gallery_revisions ORDER BY revision DESC LIMIT 1').get()!;
     assert.equal(JSON.parse(String(row.items))[0].src, src);
+    assert.equal(JSON.parse(String(row.items))[0].placement, 'hero-nails');
     assert.equal(JSON.parse(String(row.items))[0].alt, saved.items[0].alt, 'Custom descriptions survive a server restart');
     assert.equal(Object.hasOwn(JSON.parse(String(row.items))[1], 'alt'), false);
     assert.equal(JSON.parse(String(row.items)).length, 2);
@@ -91,4 +96,13 @@ test('gallery upload, validation, publication, conflict and disk persistence', a
 test('gallery categories reject malformed values and preserve legacy omission', () => {
   for (const value of [undefined, 'nails', 'pedicure', 'lashes', 'other']) assert.equal(validGalleryCategory(value), true);
   for (const value of [null, ['nails'], {}, 1, true, 'unknown']) assert.equal(validGalleryCategory(value), false);
+});
+
+test('gallery keeps capacity for thirty portfolio photos and three distinct covers', () => {
+  const portfolio = Array.from({ length: 30 }, () => ({}));
+  const covers = ['hero-nails', 'hero-pedicure', 'hero-lashes'].map((placement) => ({ placement }));
+  assert.equal(validGalleryPlacements([...portfolio, ...covers]), true);
+  assert.equal(validGalleryPlacements([...portfolio, { placement: 'portfolio' }]), false);
+  assert.equal(validGalleryPlacements([...covers, covers[0]]), false);
+  assert.equal(validGalleryPlacements([{ placement: ['hero-nails'] }]), false);
 });
