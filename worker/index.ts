@@ -12,6 +12,7 @@ import { robotsText } from '../shared/robots';
 import { sitemapXml } from '../shared/sitemap';
 import { canonicalPath } from '../shared/redirects';
 import { renderPublicApp } from '../src/entry-server';
+import { publicationLimits } from '../shared/publication-limits';
 
 const json = (value: unknown, status = 200) => Response.json(value, { status });
 const text = (value: string, type = 'text/html; charset=utf-8', status = 200) => new Response(value, { status, headers: { 'Content-Type': type } });
@@ -48,7 +49,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       const kind = path.slice('/api/admin/'.length) as Kind;
       if (['prices', 'contacts', 'gallery'].includes(kind)) {
         if (!request.headers.get('Content-Type')?.startsWith('application/json')) throw invalid();
-        const bytes = await boundedBody(request, 32 * 1024);
+        const bytes = await boundedBody(request, publicationLimits[kind]);
         let input;
         try { input = JSON.parse(new TextDecoder().decode(bytes)); } catch { throw invalid(); }
         if (!input || typeof input !== 'object' || Array.isArray(input)) throw invalid();

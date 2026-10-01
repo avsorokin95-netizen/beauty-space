@@ -41,7 +41,7 @@ export function Hero({ path = '/' }: { path?: PublicPath }) {
         srcSet={cover ? undefined : defaultImage.srcSet}
         sizes={cover || !defaultImage.srcSet ? undefined : '(max-width: 767px) min(230px, calc((100vw - 60px) * 0.487)), (max-width: 1100px) min(320px, calc((100vw - 104px) / 2.2)), 600px'}
         width={cover ? 1120 : defaultImage.width} height={cover ? 1400 : defaultImage.height} alt={cover ? galleryAlt(cover) : defaultImage.alt} fetchPriority="high" className={`hero-photo${imageSrc === heroImages.nails.src ? ' hero-photo-manicure' : ''}`} />
-      <figcaption><span>{cover ? 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ' : defaultImage.caption}</span><span>{cover?.title ?? defaultImage.title}</span></figcaption>
+      <figcaption><span>{cover ? 'ГОЛОВНЕ ФОТО' : defaultImage.caption}</span><span>{cover?.title ?? defaultImage.title}</span></figcaption>
     </figure>
   </section>;
 }

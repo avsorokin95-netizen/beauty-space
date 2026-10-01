@@ -32,6 +32,8 @@ test('each hero identifies its image source and separates editable covers from t
     published.gallery.items.push({ ...published.gallery.items[0], id: `work-cover-${category}`, src: source, title: 'Моя обкладинка', placement: `hero-${category}` });
     const html = await renderPublicApp(published, path);
     assert.ok(html.split('id="home"')[1].split('</section>')[0].includes(source));
+    assert.match(html.split('id="home"')[1].split('</section>')[0], /ГОЛОВНЕ ФОТО/);
+    assert.doesNotMatch(html.split('id="home"')[1].split('</section>')[0], /АТМОСФЕРНЕ ЗОБРАЖЕННЯ|РОБОТА BEAUTY SPACE/);
     assert.ok(!html.split('id="gallery"')[1].split('</section>')[0].includes(source));
     assert.equal(published.gallery.items.length, initialGallery.length + 1);
   }

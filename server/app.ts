@@ -8,6 +8,7 @@ import { registerContacts } from "./contacts.ts";
 import { registerSeo } from "./seo.ts";
 import { readAccessCredentials, replacePassword, sessionHash, verifyAccessPassword } from "./auth.ts";
 import { validNewPassword } from "../shared/password.ts";
+import { publicationLimits } from "../shared/publication-limits.ts";
 
 interface Options {
   directory: string;
@@ -59,7 +60,9 @@ export function createApp(options: Options) {
     }
     next();
   });
-  app.use(express.json({ limit: "32kb", type: "application/json" }));
+  app.use("/api/admin/prices", express.json({ limit: publicationLimits.prices }));
+  app.use("/api/admin/gallery", express.json({ limit: publicationLimits.gallery }));
+  app.use(express.json({ limit: publicationLimits.contacts, type: "application/json" }));
   app.get("/api/prices", (_req, res) => res.json(store.read()));
   app.get("/api/auth/config", (_req, res) => res.json({ mode: "password" }));
 

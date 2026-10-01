@@ -1,0 +1,46 @@
+{
+  "frontend": [
+    {
+      "asset": "index-BrGWYj--.js",
+      "productionBytes": 326009,
+      "rebuiltBytes": 326009,
+      "sha256": "7d985ee2b61dde6524de95bc6c7e67126c44bb303a268df2252a64f0b76b8d65",
+      "byteIdentical": true
+    },
+    {
+      "asset": "index-DYdCsTvX.css",
+      "productionBytes": 33365,
+      "rebuiltBytes": 33365,
+      "sha256": "20dcc0f9876c6f7458e2f4c77bd340465c49534c18f984301323cfff4657cdbe",
+      "byteIdentical": true
+    },
+    {
+      "asset": "Admin-CMwctGHk.js",
+      "productionBytes": 39749,
+      "rebuiltBytes": 39749,
+      "sha256": "2f17be22256dcafdaa42853e7102ae4546d27ba97b6f7e0426e15eeb4394c744",
+      "byteIdentical": true
+    },
+    {
+      "asset": "Admin-DU5oSMrb.css",
+      "productionBytes": 11681,
+      "rebuiltBytes": 11681,
+      "sha256": "6bd1d9f15b4033a83594925eda84eff500064dca554d481cd99164c46689576b",
+      "byteIdentical": true
+    }
+  ],
+  "worker": {
+    "gitArchive": "d4c9a30a6304c0e63fa0e23b590519f1e3e1ab44",
+    "readEndpoint": "/accounts/{account}/workers/scripts/beauty-space/content/v2",
+    "productionBytes": 970070,
+    "productionSHA256": "07fa76d40ba40f12f9b1708968f43dc110f077279dcc583f2a7f96464372ca68",
+    "rebuiltRawBytes": 974354,
+    "rebuiltRawSHA256": "56801f679bf97d09878c58a16dc9f4a1f047b6d3c5600c13209b29c40d88982e",
+    "normalization": "Remove isolated archive symlink path prefix from bundled dependency identifiers/comments",
+    "prefixOccurrences": 68,
+    "normalizedBytes": 970070,
+    "normalizedSHA256": "07fa76d40ba40f12f9b1708968f43dc110f077279dcc583f2a7f96464372ca68",
+    "normalizedByteIdentical": true,
+    "originalSourceGitSHAMetadataAvailable": false
+  }
+}

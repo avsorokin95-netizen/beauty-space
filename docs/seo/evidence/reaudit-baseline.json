@@ -1,0 +1,256 @@
+{
+  "date": "2026-10-01T10:11:13.108Z",
+  "http": [
+    {
+      "path": "/",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/",
+      "h1": "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+    },
+    {
+      "path": "/pedicure",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/laminuvannia-vii",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "robots": null,
+      "cache": null,
+      "body": "User-agent: *\nAllow: /\nDisallow: /api/\nAllow: /api/prices$\nAllow: /api/contacts$\nAllow: /api/gallery$\nAllow: /api/media/\nDisallow: /admin\nSitemap: https://victoriya-beauty.space/sitemap.xml\n"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "robots": null,
+      "cache": null,
+      "urls": [
+        "https://victoriya-beauty.space/"
+      ]
+    },
+    {
+      "path": "/admin",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robots": null,
+      "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    },
+    {
+      "path": "/api/admin/session",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robots": null,
+      "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    },
+    {
+      "path": "/brows",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/not-a-page-reaudit",
+      "status": 404,
+      "robots": null,
+      "cache": null
+    },
+    {
+      "path": "/?utm_source=audit",
+      "status": 200,
+      "robots": null,
+      "cache": "no-cache",
+      "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+      "canonical": "https://victoriya-beauty.space/",
+      "h1": "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+    },
+    {
+      "path": "https://victoriya-beauty.space/index.html?ref=test",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/?ref=test"
+    },
+    {
+      "path": "http://victoriya-beauty.space/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/"
+    },
+    {
+      "path": "https://www.victoriya-beauty.space/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/"
+    }
+  ],
+  "pages": [
+    {
+      "label": "mobile",
+      "path": "/",
+      "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "images": [
+        {
+          "src": "/images/manicure.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DMH0_1XIG6e.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pink-floral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/Daz8xsnCN4f.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DNm6R3Qo2oO.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "loaded": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "label": "desktop",
+      "path": "/",
+      "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+      ],
+      "width": 1440,
+      "viewport": 1440,
+      "images": [
+        {
+          "src": "/images/manicure.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DMH0_1XIG6e.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pink-floral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/Daz8xsnCN4f.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DNm6R3Qo2oO.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "loaded": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "label": "no-js",
+      "path": "/",
+      "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+      ],
+      "width": 390,
+      "viewport": 390,
+      "images": [
+        {
+          "src": "/images/manicure.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DMH0_1XIG6e.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pink-floral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/Daz8xsnCN4f.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/DNm6R3Qo2oO.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "loaded": true
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "loaded": true
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "snapshotHashes": {
+    "contacts": {
+      "revision": 1,
+      "sha256": "6bdb30678fb4bfcdbfc7433826b928461bed40e87c61a2d49c9587b90b5b3f2b"
+    },
+    "prices": {
+      "revision": 1,
+      "sha256": "bad6f056551587fe9a1dc0a4c6c513e0f850775716da5e8db3f38192293dab76"
+    },
+    "gallery": {
+      "revision": 4,
+      "sha256": "3a84e437c1fab92e3870e215a1bd354f2047b16417d3190110317be3f233ce71"
+    }
+  },
+  "errors": []
+}

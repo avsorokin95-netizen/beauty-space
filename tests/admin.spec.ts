@@ -20,6 +20,7 @@ test("admin publishes prices for other visitors, preserves them and discards dra
     page.getByRole("heading", { name: "Послуги та ціни." }),
   ).toBeVisible();
   try {
+    await page.getByLabel("Ціна категорії", { exact: true }).fill("від 625 грн");
     await page.getByLabel("Манікюр без покриття").fill("675 грн");
     await page
       .getByRole("button", { name: "Зберегти зміни", exact: true })
@@ -33,8 +34,10 @@ test("admin publishes prices for other visitors, preserves them and discards dra
     await expect(
       landing.locator("#service-nails .price-item dd").first(),
     ).toHaveText("675 грн");
+    await expect(landing.locator("#service-nails .service-summary")).toHaveText("Ціна категорії: від 625 грн");
     await visitor.close();
     await page.reload();
+    await expect(page.getByLabel("Ціна категорії", { exact: true })).toHaveValue("від 625 грн");
     await expect(page.getByLabel("Манікюр без покриття")).toHaveValue(
       "675 грн",
     );

@@ -7,6 +7,9 @@ import { initializeCredentials } from './auth.ts';
 import { createApp } from './app.ts';
 import type { PriceDocument } from '../shared/pricing.ts';
 import type { ContactDocument } from '../shared/contacts.ts';
+import type { GalleryDocument } from '../shared/gallery.ts';
+import { fullPriceDocument, fullGalleryDocument } from '../tests/publication-fixture.ts';
+import { publicationLimits } from '../shared/publication-limits.ts';
 
 test('owner service edits remain synchronized in SSR, metadata, schema and revision history', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'beauty-content-test-'));
@@ -29,6 +32,7 @@ test('owner service edits remain synchronized in SSR, metadata, schema and revis
     draft.prices.pedicure.overview = 'Опис власниці: <тест> & догляд.';
     draft.prices.pedicure.booking = 'Уточни варіант перед візитом.';
     draft.prices.pedicure.note = 'Тестова примітка.';
+    draft.prices.pedicure.summary = 'від 711 грн';
     assert.equal((await send('/api/admin/prices', 'PUT', draft)).status, 200);
     assert.equal((await send('/api/admin/prices', 'PUT', draft)).status, 409);
     assert.equal(JSON.parse(String(store.db.prepare('SELECT prices FROM revisions WHERE revision = ?').get(initial.revision)!.prices)).pedicure.items.length, initial.prices.pedicure.items.length);
@@ -39,6 +43,7 @@ test('owner service edits remain synchronized in SSR, metadata, schema and revis
       assert.ok(html.includes('811 грн'));
       assert.ok(html.includes('Опис власниці: &lt;тест&gt; &amp; догляд.'));
       assert.ok(html.includes('Тестова примітка.'));
+      assert.match(html, /class="service-note service-summary">Ціна категорії: <!-- -->від 711 грн/);
       const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
       const pedicure = schema.hasOfferCatalog.itemListElement.find((item: { name: string }) => item.name === 'Педикюр');
       assert.equal(pedicure.itemListElement.length, 1);
@@ -67,6 +72,16 @@ test('owner service edits remain synchronized in SSR, metadata, schema and revis
     current.prices.pedicure.overview = 'а'.repeat(1201);
     assert.equal((await send('/api/admin/prices', 'PUT', current)).status, 400);
     for (const path of ['/PEDICURE', '/pedicure/unknown', '/missing']) assert.equal((await send(path)).status, 404);
+    const fullPrices = fullPriceDocument(await (await send('/api/prices')).json() as PriceDocument);
+    assert.ok(Buffer.byteLength(JSON.stringify(fullPrices)) > 32 * 1024);
+    assert.equal((await send('/api/admin/prices', 'PUT', fullPrices)).status, 200);
+    assert.deepEqual((await (await send('/api/prices')).json() as PriceDocument).prices, fullPrices.prices);
+    const fullGallery = fullGalleryDocument(await (await send('/api/gallery')).json() as GalleryDocument);
+    assert.ok(Buffer.byteLength(JSON.stringify(fullGallery)) > 32 * 1024);
+    assert.equal((await send('/api/admin/gallery', 'PUT', fullGallery)).status, 200);
+    assert.deepEqual((await (await send('/api/gallery')).json() as GalleryDocument).items, fullGallery.items);
+    assert.equal((await send('/api/admin/prices', 'PUT', { extra: 'a'.repeat(publicationLimits.prices) })).status, 413);
+    assert.equal((await send('/api/admin/gallery', 'PUT', { extra: 'a'.repeat(publicationLimits.gallery) })).status, 413);
   } finally {
     await new Promise<void>((done) => server.close(() => done()));
     store.db.close(); rmSync(directory, { recursive: true, force: true });

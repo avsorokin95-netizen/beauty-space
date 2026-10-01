@@ -1,0 +1,481 @@
+{
+  "label": "reaudit-2026-10-01",
+  "environment": {
+    "browser": "153.0.8010.12",
+    "viewport": "390x844 DPR3",
+    "cpuSlowdown": 4,
+    "latencyMs": 150,
+    "downloadMbps": 1.6,
+    "server": "localhost with gzip and public seed snapshot",
+    "cache": "cold context per run",
+    "note": "Lab load measurements; not field Core Web Vitals or INP. External font network latency can vary."
+  },
+  "scripts": [
+    {
+      "path": "/assets/index-CNf268He.js",
+      "rawBytes": 331321,
+      "gzipBytes": 105368
+    }
+  ],
+  "median": {
+    "fcp": 584,
+    "lcp": 1580,
+    "cls": 0.0158068893698393,
+    "longTaskMs": 0
+  },
+  "runs": [
+    {
+      "lcp": 1588,
+      "cls": 0.0158068893698393,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "http://127.0.0.1:50884/images/pink-floral.webp"
+      },
+      "fcp": 596,
+      "resources": [
+        {
+          "url": "http://127.0.0.1:50884/assets/index-CNf268He.js",
+          "type": "script",
+          "encodedBytes": 105368
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/index-BeiSK7DT.css",
+          "type": "link",
+          "encodedBytes": 12578
+        },
+        {
+          "url": "http://127.0.0.1:50884/images/pink-floral.webp",
+          "type": "link",
+          "encodedBytes": 63360
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "type": "css",
+          "encodedBytes": 14544
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "type": "css",
+          "encodedBytes": 37776
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "type": "css",
+          "encodedBytes": 24576
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "type": "css",
+          "encodedBytes": 21264
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "type": "css",
+          "encodedBytes": 39304
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "type": "css",
+          "encodedBytes": 21132
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/contacts",
+          "type": "fetch",
+          "encodedBytes": 604
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/prices",
+          "type": "fetch",
+          "encodedBytes": 946
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        }
+      ],
+      "errors": [],
+      "fontRequests": [
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2"
+      ],
+      "fontResponses": [
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "status": 200,
+          "contentLength": "14544"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "status": 200,
+          "contentLength": "21264"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "status": 200,
+          "contentLength": "24576"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "status": 200,
+          "contentLength": "37776"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "status": 200,
+          "contentLength": "21132"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "status": 200,
+          "contentLength": "39304"
+        }
+      ]
+    },
+    {
+      "lcp": 1564,
+      "cls": 0.0158068893698393,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "http://127.0.0.1:50884/images/pink-floral.webp"
+      },
+      "fcp": 584,
+      "resources": [
+        {
+          "url": "http://127.0.0.1:50884/assets/index-CNf268He.js",
+          "type": "script",
+          "encodedBytes": 105368
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/index-BeiSK7DT.css",
+          "type": "link",
+          "encodedBytes": 12578
+        },
+        {
+          "url": "http://127.0.0.1:50884/images/pink-floral.webp",
+          "type": "link",
+          "encodedBytes": 63360
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "type": "css",
+          "encodedBytes": 14544
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "type": "css",
+          "encodedBytes": 37776
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "type": "css",
+          "encodedBytes": 24576
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "type": "css",
+          "encodedBytes": 21264
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "type": "css",
+          "encodedBytes": 39304
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "type": "css",
+          "encodedBytes": 21132
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/contacts",
+          "type": "fetch",
+          "encodedBytes": 604
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/prices",
+          "type": "fetch",
+          "encodedBytes": 946
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        }
+      ],
+      "errors": [],
+      "fontRequests": [
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2"
+      ],
+      "fontResponses": [
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "status": 200,
+          "contentLength": "14544"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "status": 200,
+          "contentLength": "21264"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "status": 200,
+          "contentLength": "24576"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "status": 200,
+          "contentLength": "37776"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "status": 200,
+          "contentLength": "21132"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "status": 200,
+          "contentLength": "39304"
+        }
+      ]
+    },
+    {
+      "lcp": 1580,
+      "cls": 0.0158068893698393,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "http://127.0.0.1:50884/images/pink-floral.webp"
+      },
+      "fcp": 576,
+      "resources": [
+        {
+          "url": "http://127.0.0.1:50884/assets/index-CNf268He.js",
+          "type": "script",
+          "encodedBytes": 105368
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/index-BeiSK7DT.css",
+          "type": "link",
+          "encodedBytes": 12578
+        },
+        {
+          "url": "http://127.0.0.1:50884/images/pink-floral.webp",
+          "type": "link",
+          "encodedBytes": 63360
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "type": "css",
+          "encodedBytes": 14544
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "type": "css",
+          "encodedBytes": 37776
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "type": "css",
+          "encodedBytes": 24576
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "type": "css",
+          "encodedBytes": 21264
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "type": "css",
+          "encodedBytes": 39304
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "type": "css",
+          "encodedBytes": 21132
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/gallery",
+          "type": "fetch",
+          "encodedBytes": 917
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/contacts",
+          "type": "fetch",
+          "encodedBytes": 604
+        },
+        {
+          "url": "http://127.0.0.1:50884/api/prices",
+          "type": "fetch",
+          "encodedBytes": 946
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "italic",
+          "weight": "400 500"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Cormorant Garamond",
+          "style": "normal",
+          "weight": "400 600"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        },
+        {
+          "family": "Manrope",
+          "style": "normal",
+          "weight": "400 700"
+        }
+      ],
+      "errors": [],
+      "fontRequests": [
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+        "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+        "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2"
+      ],
+      "fontResponses": [
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-cyrillic-DJ9PYDpy.woff2",
+          "status": 200,
+          "contentLength": "14544"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-cyrillic-BnpXT-eY.woff2",
+          "status": 200,
+          "contentLength": "21264"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/manrope-v20-normal-latin-C46ZzDBF.woff2",
+          "status": 200,
+          "contentLength": "24576"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-latin-vTYAbwjx.woff2",
+          "status": 200,
+          "contentLength": "37776"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-normal-cyrillic-KZtADeSH.woff2",
+          "status": 200,
+          "contentLength": "21132"
+        },
+        {
+          "url": "http://127.0.0.1:50884/assets/cormorant-garamond-v21-italic-latin-C6MJWnjX.woff2",
+          "status": 200,
+          "contentLength": "39304"
+        }
+      ]
+    }
+  ]
+}

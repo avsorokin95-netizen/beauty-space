@@ -12,6 +12,9 @@ import { prices } from '../src/data/prices.ts';
 import { studio } from '../src/data/studio.ts';
 import { initialGallery } from '../src/data/gallery.ts';
 import { MAX_GALLERY_ALT_LENGTH, type GalleryDocument } from '../shared/gallery.ts';
+import type { PriceDocument } from '../shared/pricing.ts';
+import { fullPriceDocument, fullGalleryDocument } from '../tests/publication-fixture.ts';
+import { publicationLimits } from '../shared/publication-limits.ts';
 
 test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO', async () => {
   const { publicKey, privateKey } = await generateKeyPair('RS256');
@@ -325,6 +328,18 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.locator('#price-nails-0').waitFor();
       assert.equal(await page.locator('#price-nails-0').inputValue(), '888 грн');
     } finally { await browser.close(); }
+    const savedPrices = await (await send('/api/prices')).json() as PriceDocument;
+    const fullPrices = fullPriceDocument(savedPrices);
+    assert.ok(Buffer.byteLength(JSON.stringify(fullPrices)) > 32 * 1024);
+    assert.equal((await send('/api/admin/prices', 'PUT', fullPrices)).status, 200);
+    assert.deepEqual((await (await send('/api/prices')).json() as PriceDocument).prices, fullPrices.prices);
+    const fullGallery = fullGalleryDocument(await (await send('/api/gallery')).json() as GalleryDocument);
+    assert.ok(Buffer.byteLength(JSON.stringify(fullGallery)) > 32 * 1024);
+    assert.equal((await send('/api/admin/gallery', 'PUT', fullGallery)).status, 200);
+    assert.deepEqual((await (await send('/api/gallery')).json() as GalleryDocument).items, fullGallery.items);
+    assert.equal((await send('/api/admin/prices', 'PUT', { extra: 'a'.repeat(publicationLimits.prices) })).status, 413);
+    assert.equal((await send('/api/admin/gallery', 'PUT', { extra: 'a'.repeat(publicationLimits.gallery) })).status, 413);
+
     const triggerWrite = await db.prepare("UPDATE documents SET revision = revision + 1 WHERE kind = 'contacts'").run();
     assert.ok(triggerWrite.meta.changes > 1, 'Legacy meta.changes === 1 check is incompatible with history triggers; rollback must remove triggers or retain RETURNING writer');
     const afterMigration = await (await send('/api/contacts')).json();

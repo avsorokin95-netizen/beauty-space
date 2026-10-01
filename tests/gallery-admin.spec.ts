@@ -107,7 +107,7 @@ test('owner can publish separate hero covers without showing them as portfolio w
     for (const [index, path] of ['/', '/pedicure', '/laminuvannia-vii'].entries()) {
       await page.goto(path);
       await expect(page.locator('.hero-photo')).toHaveAttribute('src', initial.items[index].src);
-      await expect(page.locator('#home figcaption')).toContainText('АТМОСФЕРНЕ ЗОБРАЖЕННЯ');
+      await expect(page.locator('#home figcaption')).toContainText('ГОЛОВНЕ ФОТО');
       for (const item of initial.items.slice(0, 3)) await expect(page.locator(`#gallery img[src="${item.src}"]`)).toHaveCount(0);
     }
     await page.goto('/admin');
