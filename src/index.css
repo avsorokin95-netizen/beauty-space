@@ -1421,7 +1421,11 @@ h1 em,
 .studio-about h2 { font-size: 48px; }
 .studio-about p { font-size: 15px; line-height: 1.9; margin-bottom: 20px; }
 .mobile-booking { display: none; }
-@media (max-width: 1100px) { .commercial-hero { gap: 35px; } .desktop-nav { gap: 15px; } }
+@media (max-width: 1100px) {
+  .commercial-hero { gap: 35px; }
+  .commercial-hero .hero-photo { aspect-ratio: auto; max-height: none; object-fit: contain; object-position: center; }
+  .desktop-nav { gap: 15px; }
+}
 @media (max-width: 767px) {
   .section { padding-block: 48px; }
   .commercial-hero { padding-block: 30px 40px; gap: 28px; }
@@ -1433,8 +1437,7 @@ h1 em,
   .hero-prices > div { font-size: 13px; gap: 12px; padding-block: 12px; }
   .hero-actions { gap: 16px; }
   .hero-actions .text-link { min-height: 44px; }
-  .commercial-hero .work-hero { width: 100%; max-height: none; aspect-ratio: auto; border-radius: 60px 8px 8px 8px; }
-  .commercial-hero .hero-photo { aspect-ratio: 4 / 4.5; max-height: 470px; object-position: center; }
+  .commercial-hero .work-hero { width: 100%; max-width: 420px; justify-self: center; max-height: none; aspect-ratio: auto; border-radius: 60px 8px 8px 8px; }
   .work-hero figcaption { padding: 16px 20px; }
   .hero-jumps { gap: 22px; margin-top: 10px; }
   .services-section.section { padding-block: 40px; }
