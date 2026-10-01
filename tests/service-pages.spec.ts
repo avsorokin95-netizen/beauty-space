@@ -29,9 +29,10 @@ test('service pages keep their own prices, works, mobile booking and navigation'
     expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
     const nav = info.project.name === 'mobile' ? page.getByRole('navigation', { name: 'Мобільна навігація' }) : page.getByRole('navigation', { name: 'Основна навігація' });
     if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Відкрити меню' }).click();
-    await nav.getByRole('link', { name: 'Усі ціни', exact: true }).click();
-    await expect(page).toHaveURL(/\/#services$/);
-    await expect(page.locator('.service-row')).toHaveCount(6);
+    await nav.getByRole('link', { name: 'Ціни', exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`${path}#services$`));
+    await expect(page.locator('#service-nails')).toHaveCount(0);
+    await expect(page.locator(`#service-${category}`)).toBeVisible();
   }
   expect(errors).toEqual([]);
 });

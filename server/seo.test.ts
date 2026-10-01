@@ -86,7 +86,8 @@ test('production SEO uses published data in HTML and excludes admin from indexin
       assert.ok(html.includes(`href="${path}"`));
       assert.ok(sitemap.includes(`<loc>${origin}${path}</loc>`));
       assert.match(content, new RegExp(`href="${path}" aria-current="page"`), 'Active service is present in initial HTML');
-      assert.ok(content.includes('href="/#services"') && content.includes('href="/#gallery"'), 'Global menu links retain a stable destination');
+      assert.ok(content.includes('href="#services"') && content.includes('href="#gallery"'), 'Section links remain on the current service page');
+      assert.ok(!content.includes('href="/#services"') && !content.includes('href="/#gallery"') && !content.includes('href="/#contacts"'), 'Section navigation does not switch to manicure');
     }
     for (const [old, target] of [['/manicure', '/'], ['/lashes', '/laminuvannia-vii'], ['/pedicure/', '/pedicure'], ['/laminuvannia-vii/index.html', '/laminuvannia-vii']]) {
       const response = await fetch(base + old + '?utm_source=instagram', { redirect: 'manual' });

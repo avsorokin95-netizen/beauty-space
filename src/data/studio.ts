@@ -20,9 +20,9 @@ export const serviceNavigation = (Object.keys(publicPages) as PublicPath[])
   .map((href) => ({ href, label: publicPages[href].label }));
 
 export const studioNavigation = [
-  { href: "/#services", label: "Усі ціни" },
-  { href: "/#gallery", label: "Усі роботи" },
-  { href: "/#contacts", label: "Контакти" },
+  { href: "#services", label: "Ціни" },
+  { href: "#gallery", label: "Наші роботи" },
+  { href: "#contacts", label: "Контакти" },
 ];
 
 export const services = [
