@@ -82,7 +82,7 @@ test('production SEO uses published data in HTML and excludes admin from indexin
       assert.equal(response.status, 200);
       const content = await response.text();
       assert.ok(content.includes(`rel="canonical" href="${origin}${path}"`));
-      assert.ok(content.includes(`<h1 class="hero-heading">${heading}`));
+      assert.equal(content.match(/<h1\b[^>]*>(.*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ''), `${heading} у Софіївській Борщагівці`);
       assert.ok(html.includes(`href="${path}"`));
       assert.ok(sitemap.includes(`<loc>${origin}${path}</loc>`));
     }

@@ -49,7 +49,7 @@ test('SSR renders the published public page with visible content and native pric
   assert.match(html, /Опублікована робота/);
   assert.match(html, /<details/);
   assert.match(html, /href="tel:\+380939314056"/);
-  assert.match(html, /<h1[^>]*>Манікюр у Софіївській Борщагівці<\/h1>/);
+  assert.equal(html.match(/<h1\b[^>]*>(.*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ''), 'Манікюр у Софіївській Борщагівці');
 
   assert.doesNotMatch(html, /opacity:\s*0(?:;|"|\})/);
   assert.doesNotMatch(html, /Відкриваємо beauty-простір|Завантажуємо роботи/);

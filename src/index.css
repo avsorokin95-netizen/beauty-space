@@ -1370,6 +1370,8 @@ h1 em,
 .commercial-hero .hero-location { margin: 23px 0 0; font-size: 13px; line-height: 1.7; align-items: flex-start; max-width: 490px; }
 .hero-location svg { flex-shrink: 0; margin-top: 2px; }
 .commercial-hero .hero-description { font-size: 14px; line-height: 1.8; margin: 18px 0 0; max-width: 470px; }
+.hero-offer-label { display: none; }
+.hero-intro, .hero-offer, .hero-booking { min-width: 0; }
 .hero-prices { margin: 24px 0; max-width: 530px; }
 .hero-prices > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: 14px 0; border-bottom: 1px solid #d4c8bd; font-size: 14px; line-height: 1.5; }
 .hero-prices dt { font-weight: 600; }
@@ -1413,24 +1415,66 @@ h1 em,
 .studio-about p { font-size: 15px; line-height: 1.9; margin-bottom: 20px; }
 .mobile-booking { display: none; }
 @media (max-width: 1100px) {
-  .commercial-hero { gap: 35px; }
-  .commercial-hero .hero-photo { aspect-ratio: auto; max-height: none; object-fit: contain; object-position: center; }
+  .commercial-hero {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-areas: "intro photo" "offer photo" "booking photo";
+    gap: 24px 40px;
+    align-items: start;
+    min-height: 0;
+    padding-block: 36px 48px;
+  }
+  .commercial-hero .hero-copy { display: contents; }
+  .hero-intro { grid-area: intro; }
+  .hero-offer { grid-area: offer; }
+  .hero-booking { grid-area: booking; }
+  .commercial-hero .eyebrow, .commercial-hero .hero-description, .hero-location-city { display: none; }
+  .commercial-hero .breadcrumbs { margin-bottom: 16px; font-size: 11px; }
+  .commercial-hero .hero-heading { font-size: clamp(44px, 5.5vw, 60px); line-height: 1.04; letter-spacing: -1.2px; }
+  .commercial-hero .hero-heading-place { display: block; margin-top: 10px; font-size: 24px; line-height: 1.25; letter-spacing: -0.3px; color: #795747; }
+  .commercial-hero .hero-location { margin-top: 16px; font-size: 12px; line-height: 1.6; }
+  .hero-offer-label { display: block; margin: 0 0 14px; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #795747; }
+  .hero-prices { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: none; margin: 0; }
+  .hero-prices > div { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 0 0; border-bottom: 0; border-top: 1px solid #d4c8bd; font-size: 12px; line-height: 1.5; }
+  .hero-prices dt { flex: 1; font-weight: 500; }
+  .hero-prices small { font-size: 10px; line-height: 1.5; margin-top: 5px; }
+  .hero-prices dd { font: 400 27px/1.1 var(--font-serif); }
+  .hero-actions { display: grid; grid-template-columns: minmax(0, 1fr) 52px; gap: 12px; }
+  .hero-actions .button { min-height: 52px; padding: 16px 20px; justify-content: space-between; border-radius: 6px; }
+  .hero-actions .text-link { display: grid; place-items: center; width: 52px; height: 52px; padding: 0; border: 1px solid #c5b2a2; border-radius: 50%; }
+  .hero-actions .text-link span { display: none; }
+  .commercial-hero .booking-note { margin-top: 10px; font-size: 10px; line-height: 1.6; }
+  .hero-jumps { justify-content: space-between; gap: 12px; margin-top: 12px; }
+  .hero-jumps a { gap: 6px; font-size: 12px; }
+  .commercial-hero .work-hero { grid-area: photo; align-self: center; justify-self: center; width: 100%; max-width: 320px; max-height: none; aspect-ratio: auto; border-radius: 0; background: transparent; overflow: visible; }
+  .commercial-hero .hero-photo { display: block; width: auto; max-width: 100%; height: auto; aspect-ratio: auto; max-height: 460px; margin-inline: auto; object-fit: contain; object-position: center; border-radius: 48px 8px 8px 8px; }
+  .work-hero figcaption { padding: 14px 0 0; gap: 6px; background: transparent; text-align: center; }
+  .work-hero figcaption span:first-child { font-size: 9px; line-height: 1.5; letter-spacing: 0.8px; }
+  .work-hero figcaption span:last-child { font-size: 23px; }
   .desktop-nav { gap: 15px; }
 }
 @media (max-width: 767px) {
   .section { padding-block: 48px; }
-  .commercial-hero { padding-block: 30px 40px; gap: 28px; }
-  .commercial-hero .hero-heading { font-size: clamp(40px, 10.4vw, 56px); letter-spacing: -1px; }
-  .commercial-hero .eyebrow { font-size: 9px; margin-bottom: 15px; }
-  .commercial-hero .hero-location { margin-top: 18px; font-size: 12px; }
-  .commercial-hero .hero-description { font-size: 13px; margin-top: 12px; }
-  .hero-prices { margin-block: 14px 20px; }
-  .hero-prices > div { font-size: 13px; gap: 12px; padding-block: 12px; }
-  .hero-actions { gap: 16px; }
-  .hero-actions .text-link { min-height: 44px; }
-  .commercial-hero .work-hero { width: 100%; max-width: 420px; justify-self: center; max-height: none; aspect-ratio: auto; border-radius: 60px 8px 8px 8px; }
-  .work-hero figcaption { padding: 16px 20px; }
-  .hero-jumps { gap: 22px; margin-top: 10px; }
+  .commercial-hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-areas: "intro intro" "photo offer" "booking booking";
+    padding-block: 24px 36px;
+    gap: 24px 20px;
+  }
+  .commercial-hero .hero-heading { font-size: clamp(38px, 10.5vw, 54px); letter-spacing: -1px; }
+  .commercial-hero .hero-heading-place { margin-top: 8px; font-size: 22px; }
+  .commercial-hero .hero-location { margin-top: 12px; font-size: 11px; }
+  .hero-offer { align-self: center; }
+  .hero-offer-label { margin-bottom: 12px; font-size: 8px; letter-spacing: 1.1px; }
+  .hero-prices { grid-template-columns: 1fr; gap: 16px; }
+  .hero-prices > div { gap: 7px; padding-top: 12px; font-size: 12px; }
+  .hero-prices dd { font-size: 25px; }
+  .commercial-hero .work-hero { max-width: 230px; align-self: start; }
+  .commercial-hero .hero-photo { max-height: 360px; border-radius: 28px 6px 6px 6px; }
+  .work-hero figcaption { padding-top: 10px; }
+  .work-hero figcaption span:first-child { letter-spacing: 0.5px; }
+  .work-hero figcaption span:last-child { font-size: 20px; line-height: 1.15; }
+  .hero-booking { padding-top: 4px; }
+  .commercial-hero .booking-note { max-width: 300px; }
   .services-section.section { padding-block: 40px; }
   .service-title { font-size: 30px; }
   .service-price { font-size: 12px; }
