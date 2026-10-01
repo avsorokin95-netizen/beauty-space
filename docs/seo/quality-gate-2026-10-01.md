@@ -1,6 +1,6 @@
 # Незалежний SEO quality gate — 1 жовтня 2026
 
-Цей звіт замінює попередні аудити щодо поточного стану. Перевірено production, код, Search Console, публічний Google Maps, конкурентів і шлях до запису. Два незалежні агенти виконали стратегію та технічний review; код змінював лише основний агент. Фінальні дані deployment і Google наведено нижче після завершення релізу.
+Цей звіт замінює попередні аудити щодо поточного стану. Перевірено production, код, Search Console, публічний Google Maps, конкурентів і шлях до запису. Два незалежні агенти виконали стратегію та технічний review; код змінював лише основний агент. Реліз розгорнуто, production перевірено, sitemap подано; обмеження індексації й авторизованої адмінки наведені явно.
 
 ## Вихідний стан і стратегія
 
@@ -86,7 +86,7 @@ JSON-LD: BeautySalon, WebSite, WebPage, Service/OfferCatalog/Offer; breadcrumbs 
 
 ## Дії, що потребують власника
 
-1. Через авторизований Search Console UI виконати URL Inspection → Live Test → одноразовий Request Indexing для трьох canonical URL, якщо не буде виконано в межах цього релізу. Service account API цього endpoint не має; sitemap submit не є переіндексацією ([URL Inspection API](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect)).
+1. Через авторизований Search Console UI виконати URL Inspection → Live Test → одноразовий Request Indexing для [головної](https://victoriya-beauty.space/), [педикюру](https://victoriya-beauty.space/pedicure), [ламінування вій](https://victoriya-beauty.space/laminuvannia-vii). У цьому релізі UI-запити не виконано: авторизований browser access недоступний. Service account API цього endpoint не має; sitemap submit не є переіндексацією ([URL Inspection API](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect)).
 2. У власному GBP перевірити services/ціни й special hours; додати справжні фото входу/поверху −1, робіт і майстра. NAP та головна категорія вже правильні — не змінювати їх заради keywords. Запрошувати чесні відгуки від реальних клієнтів без винагород/відбору лише задоволених ([Google local ranking](https://support.google.com/business/answer/7091), [reviews](https://support.google.com/business/answer/3474122)).
 3. У власному Instagram перевірити website field, NAP і актуальні Highlights прайсу/робіт/маршруту. Недоступний website field не називаємо доведеною помилкою.
 4. За відсутності дубліката створити безкоштовний профіль [Barb](https://barb.ua/uk/partners) з реальними роботами/прайсом/NAP ([реєстрація](https://barb.ua/uk/join)). Free покази телефону лімітовані; звернення через платформу безкоштовні.
@@ -115,4 +115,27 @@ JSON-LD: BeautySalon, WebSite, WebPage, Service/OfferCatalog/Offer; breadcrumbs 
 
 ## Release verification
 
-Передрелізні тести й незалежний review виконані. Остаточний record буде додано після push/deploy, production QA та GSC submit. Жодні pending дії не вважаються виконаними.
+**Реліз виконаний і production незалежно перевірено.** Source commit `bff1408b61b2fa325e49a78354b1f603a2ec43bf` створено на `seo/local-intent-2026-10-01`, fast-forward push `HEAD:main` у чинний `origin` успішний, без force/history rewrite. Deployment ручний: `npm run cf:deploy -- --tag bff1408 --message "Independent SEO quality gate bff1408"`.
+
+Cloudflare version **`9fec9760-5910-44d5-b1e6-60642a53fc2a`**, deployment **`eb9ef72a-593c-4fb0-8f3b-3e45a603fb94`**, **100% production**, **2026-10-01 20:54:27 UTC**. Основний домен `https://victoriya-beauty.space/`, не preview. Нових міграцій немає. Приватний D1 backup успішно прочитано в окремій in-memory SQLite; усі documents/revisions збігаються.
+
+[Production QA](evidence/quality-gate-after.json), [deploy/data/asset evidence](evidence/quality-gate-release.json): 19 HTTP сценаріїв, 3 сторінки × desktop/mobile, 14 requested assets 200; XML sitemap валідний, canonical/robots/redirects/404 правильні. Чотири production JS/CSS (зокрема admin chunks) побайтово збігаються з build. SSR bootstrap deep-equal current API. Contacts rev1, prices rev1, gallery rev4 та їхні SHA256 не змінилися; D1 лишив 7 aggregate rows / 11 contact clicks, 1 cache row і ті самі history snapshots. Audit SQL rows_written=0.
+
+Незалежний фінальний reviewer повторив **12 mobile cases: Chromium/WebKit × 320/390px × 3 сторінки**. Немає overflow/runtime errors/bad anchors; ціни, галерея, CTA й 480/640px image selection правильні. По одній beacon та кожній категорії contact events; POST/RUM перехоплено, тестових кліків у D1 немає. `/admin` та `/api/admin/session` захищені Access. Нових зауважень немає; production owner-save не виконано через відсутність авторизованої сесії.
+
+Зовнішній Schema.org Validator повторено **20:55:29 UTC** для всіх трьох URL: rendered=true, **0 errors/0 warnings**, перевірені нові geo/postcode. Власний mobile lab median LCP до→після: **1,856→0,900s** головна; **2,148→1,596s** педикюр; **1,104→0,832s** вії. Післярелізний CLS ≤0,0125 mobile / ≤0,0205 desktop; mobile TTFB 130–229ms. Long-task sum до 54ms у двох homepage runs; це не INP і не польові дані. Крім image variants реліз містить раніше закомічену responsive layout зміну, тому весь lab delta не приписується одному srcSet.
+
+Повторний [Google PSI mobile](https://pagespeed.web.dev/analysis/https-victoriya-beauty-space/avvkn0o4uw?form_factor=mobile) / [desktop](https://pagespeed.web.dev/analysis/https-victoriya-beauty-space/avvkn0o4uw?form_factor=desktop): Performance **85/100**, A11y/BP/SEO **100/100/100**; mobile LCP **3,3s**, FCP2,8s, TBT0, CLS0, Speed Index4,6s; desktop LCP0,6s, TBT0, CLS0,02. Одиничний remote score 88→85 **не доводить покращення загальної швидкодії**; LCP лишився3,3s, SI погіршився в цьому run. Менші image payloads і контрольований lab поліпшились; польового CWV/INP висновку все ще немає (No Data). Не жертвували UX і не перебудовували loading лише заради score.
+
+Фінальний документаційний коміт містить результати після deployment; runtime джерело — вказаний `bff1408`. Зміни після нього стосуються лише звіту та evidence.
+
+
+## Google після deployment
+
+[До/після evidence](evidence/quality-gate-gsc-after.json): актуальний production [sitemap.xml](https://victoriya-beauty.space/sitemap.xml) повторно перевірено як валідний XML із трьома canonical URL. **PUT sitemap submit успішний, HTTP 204**, `lastSubmitted` **2026-10-01T20:57:29.713Z**. Наступний GET підтвердив реєстрацію: `isPending=true`, warnings/errors **0/0**. `lastDownloaded` поки 27 вересня і submitted=1 — це попередній Google snapshot, не фактичний вміст нового sitemap. Очікується нове завантаження Google; повторно надсилати sitemap в циклі не потрібно.
+
+URL Inspection після публікації: головна **PASS / Submitted and indexed**, обидва canonical = `https://victoriya-beauty.space/`, robots/indexing allowed, last crawl лишився **24 вересня 16:45:05Z**. `/pedicure` і `/laminuvannia-vii` поки **unknown to Google**, canonical і last crawl для них ще не надані. Redirect `/manicure` також unknown, його не подавати як окрему ціль індексації. Це стан індексу, а не live test нової версії: Google ще не підтвердив crawl релізу.
+
+**Request Indexing виконано: 0.** Авторизованих browser surfaces для Search Console UI немає. Через API успішно виконані analytics queries, sitemap list/submit та URL Inspection; Google Indexing API для beauty-сторінок не використовували. Sitemap submit не називається переіндексацією. Три конкретні ручні URL наведено в owner actions.
+
+Фінальний стан доступної роботи: **AUDITED + FIXED + REVIEWED + TESTED + COMMITTED + PUSHED + DEPLOYED + PRODUCTION VERIFIED + SEARCH CONSOLE UPDATED**. Це не обіцянка індексації всіх URL або певної позиції Google.

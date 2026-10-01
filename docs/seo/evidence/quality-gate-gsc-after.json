@@ -1,0 +1,98 @@
+{
+  "retrievedAt": "2026-10-01T20:57:29.611Z",
+  "property": "sc-domain:victoriya-beauty.space",
+  "permissionLevel": "siteFullUser",
+  "submission": {
+    "status": 204,
+    "ok": true
+  },
+  "sitemaps": {
+    "sitemap": [
+      {
+        "path": "https://victoriya-beauty.space/sitemap.xml",
+        "lastSubmitted": "2026-10-01T20:57:29.713Z",
+        "isPending": true,
+        "isSitemapsIndex": false,
+        "type": "sitemap",
+        "lastDownloaded": "2026-09-27T22:35:32.044Z",
+        "warnings": "0",
+        "errors": "0",
+        "contents": [
+          {
+            "type": "web",
+            "submitted": "1",
+            "indexed": "0"
+          }
+        ]
+      }
+    ]
+  },
+  "inspections": {
+    "/": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-09-24T16:45:05Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://victoriya-beauty.space/",
+          "userCanonical": "https://victoriya-beauty.space/",
+          "sitemap": [
+            "https://victoriya-beauty.space/sitemap.xml"
+          ],
+          "referringUrls": [
+            "https://victoriya-beauty.space/sitemap.xml"
+          ],
+          "crawledAs": "MOBILE"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/pedicure": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/laminuvannia-vii": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/manicure": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    }
+  }
+}

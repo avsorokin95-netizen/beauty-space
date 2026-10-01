@@ -1,0 +1,140 @@
+{
+  "checkedAt": "2026-10-01T20:56:30.737Z",
+  "label": "after",
+  "allPassed": true,
+  "checks": [
+    "HTTP/status/canonical/robots/sitemap",
+    "SSR bootstrap equals current owner API",
+    "3 pages x mobile/desktop headings/anchors/CTA/gallery/errors",
+    "schema factual fields and geography",
+    "all requested resources 200",
+    "owner content hashes unchanged",
+    "admin and private API Access protection",
+    "deployed JS/CSS byte identity"
+  ],
+  "assets": [
+    {
+      "file": "Admin-oO2CTh1r.js",
+      "sha256": "bb0c4abcfc05f46a5b67ad979a2712f2fb01804f99ed67841dfa6a2a57b4327e",
+      "bytes": 44272
+    },
+    {
+      "file": "Admin-zfTY5aRL.css",
+      "sha256": "314767c31b79dda856bff86028aa16d855f4db788e2b169b689298bd0268ef91",
+      "bytes": 12379
+    },
+    {
+      "file": "index-DK1eE10J.css",
+      "sha256": "4feb8427d32c56bbdb2003f088c30e593b3e82d2399fe7784b3b23020216dfb7",
+      "bytes": 45383
+    },
+    {
+      "file": "index-doi-lSxI.js",
+      "sha256": "47bac11d7e17ad1fceec1a47c6a81398ea5d426074a48bfeec8996974da9adec",
+      "bytes": 334118
+    }
+  ],
+  "content": {
+    "contacts": {
+      "revision": 1,
+      "updatedAt": "2026-09-11T15:16:31.946Z",
+      "sha256": "6bdb30678fb4bfcdbfc7433826b928461bed40e87c61a2d49c9587b90b5b3f2b"
+    },
+    "prices": {
+      "revision": 1,
+      "updatedAt": "2026-09-11T14:13:09.527Z",
+      "sha256": "bad6f056551587fe9a1dc0a4c6c513e0f850775716da5e8db3f38192293dab76"
+    },
+    "gallery": {
+      "revision": 4,
+      "updatedAt": "2026-09-11T15:51:59.509Z",
+      "sha256": "3a84e437c1fab92e3870e215a1bd354f2047b16417d3190110317be3f233ce71"
+    }
+  },
+  "git": {
+    "sourceCommit": "bff1408b61b2fa325e49a78354b1f603a2ec43bf",
+    "localBranch": "seo/local-intent-2026-10-01",
+    "remote": "https://github.com/avsorokin95-netizen/beauty-space.git",
+    "pushedBranch": "main"
+  },
+  "deployment": {
+    "versionId": "9fec9760-5910-44d5-b1e6-60642a53fc2a",
+    "deploymentId": "eb9ef72a-593c-4fb0-8f3b-3e45a603fb94",
+    "createdAt": "2026-10-01T20:54:27.042304Z",
+    "percentage": 100,
+    "tag": "bff1408"
+  },
+  "database": {
+    "documentsUnchanged": true,
+    "analyticsRowsBefore": 7,
+    "analyticsRowsAfter": 7,
+    "analyticsClicksBefore": 11,
+    "analyticsClicksAfter": 11,
+    "cacheRowsBefore": 1,
+    "cacheRowsAfter": 1,
+    "historySnapshotsUnchanged": true,
+    "migrationsPending": 0,
+    "backupRestoreMatches": true,
+    "auditSqlRowsWritten": 0
+  },
+  "externalSchemaValidator": {
+    "at": "2026-10-01T20:55:29Z",
+    "provider": "https://validator.schema.org/",
+    "results": [
+      {
+        "path": "/",
+        "status": 200,
+        "isRendered": true,
+        "errors": 0,
+        "warnings": 0,
+        "geoAndPostalCodeVerified": true
+      },
+      {
+        "path": "/pedicure",
+        "status": 200,
+        "isRendered": true,
+        "errors": 0,
+        "warnings": 0,
+        "geoAndPostalCodeVerified": true
+      },
+      {
+        "path": "/laminuvannia-vii",
+        "status": 200,
+        "isRendered": true,
+        "errors": 0,
+        "warnings": 0,
+        "geoAndPostalCodeVerified": true
+      }
+    ]
+  },
+  "pageSpeedInsights": {
+    "baselineReport": "https://pagespeed.web.dev/analysis/https-victoriya-beauty-space/86l1tvd0qm",
+    "afterReport": "https://pagespeed.web.dev/analysis/https-victoriya-beauty-space/avvkn0o4uw",
+    "fieldData": "No Data for mobile and desktop",
+    "mobileBefore": {
+      "performance": 88,
+      "lcpSeconds": 3.3,
+      "fcpSeconds": 2.7,
+      "tbtMs": 10,
+      "cls": 0.001,
+      "speedIndexSeconds": 3.0
+    },
+    "mobileAfter": {
+      "performance": 85,
+      "lcpSeconds": 3.3,
+      "fcpSeconds": 2.8,
+      "tbtMs": 0,
+      "cls": 0,
+      "speedIndexSeconds": 4.6
+    },
+    "desktopAfter": {
+      "performance": 100,
+      "lcpSeconds": 0.6,
+      "fcpSeconds": 0.6,
+      "tbtMs": 0,
+      "cls": 0.02,
+      "speedIndexSeconds": 0.6
+    },
+    "note": "One Google server lab run per release, not proof of overall performance improvement. Accessibility, Best Practices and SEO100 each."
+  }
+}
