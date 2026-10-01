@@ -14,6 +14,7 @@ export function Hero({ path = '/' }: { path?: PublicPath }) {
   const page = publicPages[path];
   const cover = posts.find((post) => post.placement === `hero-${page.category}`);
   const defaultImage = heroImages[page.category];
+  const imageSrc = cover?.src ?? defaultImage.src;
   const selected = prices?.[page.category]?.items.slice(0, 2) ?? [];
   const heading = pageHeading(path, studio.city);
   return <section id="home" className="hero shell commercial-hero">
@@ -36,10 +37,10 @@ export function Hero({ path = '/' }: { path?: PublicPath }) {
       </div>
     </div>
     <figure className="hero-visual work-hero">
-      <img src={cover?.src ?? defaultImage.src}
+      <img src={imageSrc}
         srcSet={cover ? undefined : defaultImage.srcSet}
         sizes={cover || !defaultImage.srcSet ? undefined : '(max-width: 767px) min(230px, calc((100vw - 60px) * 0.487)), (max-width: 1100px) min(320px, calc((100vw - 104px) / 2.2)), 600px'}
-        width={cover ? 1120 : defaultImage.width} height={cover ? 1400 : defaultImage.height} alt={cover ? galleryAlt(cover) : defaultImage.alt} fetchPriority="high" className="hero-photo" />
+        width={cover ? 1120 : defaultImage.width} height={cover ? 1400 : defaultImage.height} alt={cover ? galleryAlt(cover) : defaultImage.alt} fetchPriority="high" className={`hero-photo${imageSrc === heroImages.nails.src ? ' hero-photo-manicure' : ''}`} />
       <figcaption><span>{cover ? 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ' : defaultImage.caption}</span><span>{cover?.title ?? defaultImage.title}</span></figcaption>
     </figure>
   </section>;

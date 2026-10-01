@@ -1514,5 +1514,7 @@ h1 em,
   .footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
   html { scroll-padding-bottom: 90px; }
 }
+/* A light vertical crop is approved for the pink manicure cover. */
+.commercial-hero .hero-photo-manicure { aspect-ratio: 2 / 3; object-fit: cover; object-position: center; }
 .studio-about p, .service-guide p, .service-note { white-space: pre-line; }
 .desktop-nav a:hover, .desktop-nav a:focus-visible { color: #795747; }
