@@ -77,7 +77,7 @@ export function Gallery({ category }: { category?: GalleryItem["category"] }) {
         : (current + direction + posts.length) % posts.length,
     );
   return (
-    <section id="gallery" className="section shell">
+    <section id="gallery" className={`section shell gallery-section${posts.length > 0 && posts.length <= 2 ? ' gallery-section-compact' : ''}`}>
       <Reveal className="section-heading">
         <div>
           <Eyebrow>ФОТО НАШИХ РОБІТ</Eyebrow>
@@ -96,7 +96,7 @@ export function Gallery({ category }: { category?: GalleryItem["category"] }) {
       </Reveal>
       {error && <p role="status">Не вдалося оновити роботи. <button className="text-link" onClick={retry}>Спробувати ще раз</button></p>}
       {!posts.length && !error && <p role="status">Фото цієї послуги можна уточнити в Instagram.</p>}
-      <div ref={region} className="gallery-carousel" role="region" aria-roledescription="карусель" aria-label="Роботи студії"
+      <div ref={region} className="gallery-carousel" style={{ "--gallery-columns": Math.min(3, Math.max(1, posts.length - 1)) } as CSSProperties} role="region" aria-roledescription="карусель" aria-label="Роботи студії"
         onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(true); }} onPointerLeave={() => setHovered(false)}
         onPointerDownCapture={(event) => {
           touchInteraction.current = event.pointerType === "touch";
@@ -105,7 +105,7 @@ export function Gallery({ category }: { category?: GalleryItem["category"] }) {
         onKeyDownCapture={() => { touchInteraction.current = false; setFocused(true); }}
         onFocusCapture={() => { if (!touchInteraction.current) setFocused(true); }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
       <div ref={viewport} className="gallery-viewport" id="gallery-track">
-      <div className="gallery-grid" style={{ "--gallery-columns": Math.min(3, Math.max(1, posts.length - 1)) } as CSSProperties}>
+      <div className="gallery-grid">
         {posts.map((post, index) => (
           <div key={post.id} className="gallery-slide" role="group" aria-roledescription="слайд" aria-label={`${index + 1} з ${posts.length}`}>
             <article className="gallery-card">
