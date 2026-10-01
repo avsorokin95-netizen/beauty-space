@@ -1,18 +1,39 @@
-/** Decorative images generated for the site, separate from the owner's portfolio. */
-export const heroImages = {
+interface HeroImage {
+  src: string;
+  srcSet?: string;
+  width: number;
+  height: number;
+  caption: string;
+  title: string;
+  alt: string;
+}
+
+/** Default covers: the owner's manicure photo and two decorative images. */
+export const heroImages: Record<'nails' | 'pedicure' | 'lashes', HeroImage> = {
   nails: {
-    name: 'manicure',
-    title: 'Ніжність у кожній деталі',
-    alt: 'Ілюстративне зображення рук із ніжно-рожевим манікюром на світлому льоні',
+    src: '/images/pink-floral.webp',
+    width: 900,
+    height: 1600,
+    caption: 'РОБОТА BEAUTY SPACE VICTORIYA',
+    title: 'Ніжність у деталях',
+    alt: 'Рожевий манікюр на мигдалеподібних нігтях із дрібним квітковим декором.',
   },
   pedicure: {
-    name: 'pedicure',
+    src: '/images/hero/pedicure-800.webp',
+    srcSet: '/images/hero/pedicure-480.webp 480w, /images/hero/pedicure-800.webp 800w, /images/hero/pedicure-1120.webp 1120w',
+    width: 1120,
+    height: 1400,
+    caption: 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ',
     title: 'Легкість і догляд',
     alt: 'Ілюстративне зображення стоп із ніжно-рожевим педикюром на світлій тканині',
   },
   lashes: {
-    name: 'lashes',
+    src: '/images/hero/lashes-800.webp',
+    srcSet: '/images/hero/lashes-480.webp 480w, /images/hero/lashes-800.webp 800w, /images/hero/lashes-1120.webp 1120w',
+    width: 1120,
+    height: 1400,
+    caption: 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ',
     title: 'Природна виразність',
     alt: 'Ілюстративний портрет жінки з опущеними повіками та виразними віями',
   },
-} as const;
+};

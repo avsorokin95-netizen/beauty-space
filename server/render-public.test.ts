@@ -15,14 +15,19 @@ function snapshot(): PublicSnapshot {
   };
 }
 
-test('each hero separates atmospheric imagery and editable covers from the portfolio in SSR', async () => {
+test('each hero identifies its image source and separates editable covers from the portfolio in SSR', async () => {
   for (const [path, category, image] of [['/', 'nails', 'manicure'], ['/pedicure', 'pedicure', 'pedicure'], ['/laminuvannia-vii', 'lashes', 'lashes']] as const) {
     const published = snapshot();
     const fallback = await renderPublicApp(published, path as PublicPath);
     const hero = fallback.split('id="home"')[1].split('</section>')[0];
-    assert.ok(hero.includes(`/images/hero/${image}-800.webp`));
-    assert.match(hero, /АТМОСФЕРНЕ ЗОБРАЖЕННЯ/);
-    assert.doesNotMatch(hero, /РОБОТА BEAUTY SPACE/);
+    assert.ok(hero.includes(category === 'nails' ? '/images/pink-floral.webp' : `/images/hero/${image}-800.webp`));
+    if (category === 'nails') {
+      assert.match(hero, /РОБОТА BEAUTY SPACE VICTORIYA/);
+      assert.doesNotMatch(hero, /АТМОСФЕРНЕ ЗОБРАЖЕННЯ/);
+    } else {
+      assert.match(hero, /АТМОСФЕРНЕ ЗОБРАЖЕННЯ/);
+      assert.doesNotMatch(hero, /РОБОТА BEAUTY SPACE/);
+    }
     const source = `/api/media/cover-${category}.webp`;
     published.gallery.items.push({ ...published.gallery.items[0], id: `work-cover-${category}`, src: source, title: 'Моя обкладинка', placement: `hero-${category}` });
     const html = await renderPublicApp(published, path);

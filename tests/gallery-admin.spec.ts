@@ -118,6 +118,6 @@ test('owner can publish separate hero covers without showing them as portfolio w
     expect((await page.request.put('/api/admin/gallery', { data: { ...initial, revision: latest.revision }, headers: { Origin: 'http://127.0.0.1:4173' } })).ok()).toBeTruthy();
   }
   await page.goto('/');
-  await expect(page.locator('.hero-photo')).toHaveAttribute('src', '/images/hero/manicure-800.webp');
+  await expect(page.locator('.hero-photo')).toHaveAttribute('src', '/images/pink-floral.webp');
   await expect(page.locator('.gallery-card')).toHaveCount(initial.items.length);
 });
