@@ -141,6 +141,8 @@ h2 em {
 }
 .service-switcher { display: flex; gap: 3px; padding: 4px; border: 1px solid #dfd3c7; border-radius: 999px; background: #eee7df; }
 .service-switcher a { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; transition: background-color 160ms, color 160ms; }
+.desktop-nav .service-switcher { width: 330px; }
+.desktop-nav .service-switcher a { flex: 1; }
 .service-switcher a:hover { background: #e3d7ca; }
 .service-switcher a[aria-current="page"], .service-switcher a[aria-current="page"]:hover { color: #fffaf4; background: #795747; box-shadow: 0 1px 3px #342f2b1a; }
 .service-current-dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: currentColor; visibility: hidden; }
@@ -208,8 +210,9 @@ h2 em {
   .menu-button { display: block; margin-right: -10px; }
   .header-book { margin-left: auto; }
   .service-bar { display: flex; justify-content: center; padding-bottom: 12px; }
-  .service-bar .service-switcher { width: 100%; max-width: 440px; }
-  .service-bar .service-switcher a { flex: 1; min-width: 0; }
+  .service-bar .service-switcher { width: 100%; max-width: 300px; padding: 3px; }
+  .service-bar .service-switcher a { flex: 1; min-width: 0; min-height: 32px; padding: 5px 10px; gap: 5px; font-size: 11px; }
+  .service-bar .service-current-dot { width: 4px; height: 4px; }
 }
 .hero {
   display: grid;
@@ -1386,7 +1389,7 @@ h1 em,
 }
 
 /* Commercial landing: original work and the published offer lead the page. */
-.commercial-hero { min-height: 0; padding-block: 54px 64px; gap: 64px; align-items: center; }
+.commercial-hero { --hero-photo-min-height: 480px; min-height: 0; padding-block: 54px 64px; gap: 64px; align-items: center; }
 .commercial-hero .hero-copy { padding: 0; }
 .commercial-hero .eyebrow { font-size: 10px; letter-spacing: 2px; margin-bottom: 20px; }
 .commercial-hero .hero-heading { font: 400 clamp(44px, 4.6vw, 68px)/1.03 var(--font-serif); letter-spacing: -1.6px; margin: 0; max-width: 650px; }
@@ -1405,12 +1408,12 @@ h1 em,
 .commercial-hero .booking-note { margin: 13px 0 0; font-size: 11px; line-height: 1.7; }
 .hero-jumps { display: flex; gap: 28px; margin-top: 24px; flex-wrap: wrap; }
 .hero-jumps a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; text-decoration: underline; text-underline-offset: 5px; }
-.commercial-hero .work-hero { margin: 0; min-width: 0; min-height: 0; height: auto; position: relative; grid-template-columns: minmax(0, 1fr); border-radius: 120px 12px 12px 12px; overflow: hidden; background: #e9ddd0; }
+.commercial-hero .work-hero { margin: 0; min-width: 0; min-height: 0; width: 100%; height: auto; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid; row-gap: 0; align-self: stretch; border-radius: 0; overflow: visible; background: transparent; }
 .work-hero > a { display: block; }
-.hero-image-frame { min-width: 0; }
-.commercial-hero .hero-photo { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; transform: none; filter: none; position: static; border-radius: 0; }
+.hero-image-frame { grid-row: 1; min-width: 0; min-height: var(--hero-photo-min-height); width: 100%; position: relative; contain: size; overflow: hidden; border-radius: 40px 8px 8px 8px; }
+.commercial-hero .hero-photo { width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: center; transform: none; filter: none; position: absolute; inset: 0; border-radius: 0; }
 .work-hero::after { display: none; }
-.work-hero figcaption { position: relative; padding: 18px 24px; display: grid; gap: 7px; background: #eee4d8; color: #4f4136; }
+.work-hero figcaption { grid-row: 2; position: relative; padding: 14px 0 0; display: grid; gap: 7px; text-align: center; color: #4f4136; overflow-wrap: anywhere; }
 .work-hero figcaption span:first-child { font-size: 9px; letter-spacing: 1px; }
 .work-hero figcaption span:last-child { font: 400 26px/1.1 var(--font-serif); }
 .hero-without-photo { grid-template-columns: 1fr; }
@@ -1441,6 +1444,7 @@ h1 em,
 .mobile-booking { display: none; }
 @media (max-width: 1100px) {
   .commercial-hero {
+    --hero-photo-min-height: 360px;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     grid-template-areas: "intro photo" "offer photo" "booking photo";
     gap: 24px 40px;
@@ -1470,55 +1474,23 @@ h1 em,
   .commercial-hero .booking-note { margin-top: 10px; font-size: 10px; line-height: 1.6; }
   .hero-jumps { justify-content: space-between; gap: 12px; margin-top: 12px; }
   .hero-jumps a { gap: 6px; font-size: 12px; }
-  .commercial-hero .work-hero { grid-area: photo; align-self: center; justify-self: center; width: 100%; max-width: 320px; max-height: none; aspect-ratio: auto; border-radius: 0; background: transparent; overflow: visible; }
-  .commercial-hero .hero-photo { display: block; width: auto; max-width: 100%; height: auto; aspect-ratio: auto; max-height: 460px; margin-inline: auto; object-fit: contain; object-position: center; border-radius: 48px 8px 8px 8px; }
+  .commercial-hero .work-hero { grid-area: photo; justify-self: center; }
+  .commercial-hero .hero-image-frame { border-radius: 48px 8px 8px 8px; }
   .work-hero figcaption { padding: 14px 0 0; gap: 6px; background: transparent; text-align: center; }
   .work-hero figcaption span:first-child { font-size: 9px; line-height: 1.5; letter-spacing: 0.8px; }
   .work-hero figcaption span:last-child { font-size: 23px; }
 }
 @media (min-width: 768px) {
   .commercial-hero {
-    grid-template-areas: "copy photo" ". photo" ". photo";
-    grid-template-rows: 20fr 3fr auto;
+    grid-template-areas: "copy photo" ". photo";
+    grid-template-rows: minmax(var(--hero-photo-min-height), auto) auto;
     row-gap: 0;
     align-items: start;
   }
-  .commercial-hero .hero-copy { grid-area: copy; display: flex; align-self: start; }
-  /* The same 23:20 image-to-content limit as the mobile composition. */
+  .commercial-hero .hero-copy { grid-area: copy; display: flex; align-self: stretch; justify-content: flex-start; }
   .commercial-hero .work-hero {
     grid-area: photo;
-    align-self: stretch;
-    display: grid;
-    grid-template-rows: subgrid;
-    row-gap: 0;
-    max-width: 100%;
-    border-radius: 0;
-    background: transparent;
-    overflow: visible;
   }
-  .commercial-hero .hero-image-frame {
-    /* A normal grid box owns the image height; replaced-element sizing cannot
-       paint across the separate caption row, including during image loading. */
-    grid-row: 1 / span 2;
-    contain: size;
-    position: relative;
-    min-height: 0;
-    overflow: hidden;
-  }
-  .commercial-hero .hero-photo {
-    position: absolute;
-    width: auto;
-    max-width: 100%;
-    height: 100%;
-    min-height: 0;
-    max-height: none;
-    aspect-ratio: 4 / 5;
-    object-fit: contain;
-    object-position: top;
-    justify-self: center;
-    border-radius: 40px 8px 8px 8px;
-  }
-  .work-hero figcaption { grid-row: 3; background: transparent; text-align: center; padding: 14px 0 0; }
 }
 @media (min-width: 768px) and (max-width: 1100px) {
   .commercial-hero .hero-copy { gap: 24px; }
@@ -1526,26 +1498,29 @@ h1 em,
 @media (max-width: 767px) {
   .section { padding-block: 48px; }
   .commercial-hero {
+    --hero-photo-min-height: 220px;
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
-    grid-template-areas: "intro intro" "photo offer" "booking booking";
+    grid-template-areas: "intro intro" "photo offer" "photo ." "booking booking";
+    grid-template-rows: auto minmax(var(--hero-photo-min-height), auto) auto auto;
     padding-block: 24px 36px;
-    gap: 24px 20px;
+    gap: 0 20px;
   }
+  .commercial-hero .hero-intro { margin-bottom: 24px; }
   .commercial-hero .hero-heading { font-size: clamp(38px, 10.5vw, 54px); letter-spacing: -1px; }
   .commercial-hero .hero-heading-place { margin-top: 8px; font-size: 22px; }
   .commercial-hero .hero-location { margin-top: 12px; font-size: 11px; }
-  .hero-offer { align-self: start; }
+  .hero-offer { align-self: stretch; }
   .hero-offer-label { margin-bottom: 12px; font-size: 8px; letter-spacing: 1.1px; }
   .hero-prices { grid-template-columns: 1fr; gap: 16px; }
   .hero-prices > div { gap: 7px; padding-top: 12px; font-size: 12px; }
   .hero-prices dd { font-size: 25px; }
-  .commercial-hero .work-hero { max-width: 230px; align-self: start; }
-  .commercial-hero .hero-photo { max-height: 360px; border-radius: 28px 6px 6px 6px; }
+  .commercial-hero .work-hero { max-width: 230px; }
+  .commercial-hero .hero-image-frame { border-radius: 28px 6px 6px 6px; }
   /* Center beneath the photo, with a little room for captions beyond its edges. */
   .work-hero figcaption { width: max-content; max-width: calc(100% + 32px); padding-top: 10px; justify-self: center; text-align: center; overflow-wrap: anywhere; }
   .work-hero figcaption span:first-child { letter-spacing: 0.5px; }
   .work-hero figcaption span:last-child { font-size: clamp(18px, 5vw, 20px); line-height: 1.15; }
-  .hero-booking { padding-top: 4px; }
+  .hero-booking { margin-top: 24px; padding-top: 4px; }
   .commercial-hero .booking-note { max-width: 300px; }
   .services-section.section { padding-block: 40px; }
   .service-title { font-size: 30px; }
@@ -1561,46 +1536,13 @@ h1 em,
   .footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
   html { scroll-padding-bottom: 90px; }
 }
-@media (max-width: 767px) {
-  .commercial-hero:has(.hero-offer) {
-    grid-template-areas: "intro intro" "photo offer" "photo ." "photo ." "booking booking";
-    grid-template-rows: auto 20fr 3fr auto auto;
-    row-gap: 0;
-  }
-  .commercial-hero:has(.hero-offer) .hero-intro { margin-bottom: 24px; }
-  .commercial-hero:has(.hero-offer) .work-hero {
-    display: grid;
-    grid-template-rows: subgrid;
-    row-gap: 0;
-    align-self: stretch;
-    max-width: 100%;
-  }
-  /* The photo spans 23 parts to the offer's 20 (115%); the caption follows. */
-  .commercial-hero:has(.hero-offer) .hero-image-frame {
-    grid-row: 1 / span 2;
-    contain: size;
-    position: relative;
-    min-height: 0;
-    overflow: hidden;
-  }
-  .commercial-hero:has(.hero-offer) .hero-photo {
-    position: absolute;
-    width: auto;
-    height: 100%;
-    min-height: 0;
-    max-height: none;
-    aspect-ratio: 4 / 5;
-    justify-self: center;
-    object-position: top;
-  }
-  .commercial-hero:has(.hero-offer) figcaption { grid-row: 3; }
-  .commercial-hero:has(.hero-offer) .hero-photo-manicure { aspect-ratio: 2 / 3; object-position: center; }
-  .commercial-hero:has(.hero-offer) .hero-booking { margin-top: 24px; }
+/* Keep the nails in view when the photo is cropped to the content height. */
+.commercial-hero .hero-photo-manicure { object-position: center 40%; }
+@media (min-width: 480px) and (max-width: 767px) {
+  .commercial-hero { --hero-photo-min-height: 260px; }
 }
-/* A light vertical crop is approved for the pink manicure cover. */
-.commercial-hero .hero-photo-manicure { aspect-ratio: 18 / 25; object-fit: cover; object-position: center; }
 @media (max-width: 359px) {
-  .commercial-hero:has(.hero-offer) .hero-photo-manicure { object-fit: contain; object-position: top; }
+  .commercial-hero { --hero-photo-min-height: 180px; }
 }
 .studio-about p, .service-guide p, .service-note { white-space: pre-line; }
 .studio-links a:hover, .studio-links a:focus-visible { color: #795747; }

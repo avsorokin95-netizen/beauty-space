@@ -1,6 +1,7 @@
 import type { PublicPath } from '../shared/pages';
 import { RelatedServices } from './components/RelatedServices';
 import { MobileBooking } from './components/MobileBooking';
+import { InitialFragmentScroll } from './components/InitialFragmentScroll';
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
@@ -19,6 +20,7 @@ export default function App({ initialSnapshot, path = "/" }: { initialSnapshot?:
     <PublicSnapshotContext.Provider value={initialSnapshot ?? null}>
     <PricesProvider>
     <ContactsProvider initialSnapshot={initialSnapshot?.contacts} path={path}>
+      <InitialFragmentScroll />
       <a className="skip-link" href="#main">
         Перейти до вмісту
       </a>

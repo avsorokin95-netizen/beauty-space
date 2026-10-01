@@ -35,6 +35,13 @@ playwright-report/
 .env*
 !.env.example
 
+# Local secrets and service-account credentials
+secrets/
+victoriya-search-console.json
+*service-account*.json
+*service_account*.json
+*credentials*.json
+
 # Cloudflare local state, email allowlists and private migration exports
 .wrangler/
 .cloudflare-private/
