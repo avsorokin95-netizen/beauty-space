@@ -1,8 +1,9 @@
+import type { PublicPath } from '../shared/pages';
 import { renderToString } from 'react-dom/server';
 import type { PublicSnapshot } from '../shared/public-snapshot';
 import App from './App';
 
 /** The browser hydrates this exact component tree from the serialized snapshot. */
-export function renderPublicApp(snapshot: PublicSnapshot): string {
-  return renderToString(<App initialSnapshot={snapshot} />);
+export function renderPublicApp(snapshot: PublicSnapshot, path: PublicPath = '/'): string {
+  return renderToString(<App initialSnapshot={snapshot} path={path} />);
 }

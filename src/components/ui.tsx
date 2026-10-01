@@ -14,7 +14,7 @@ export function Reveal({
 }
 export function BookingLink({
   className,
-  children = "Записатися онлайн",
+  children = "Запис у Direct",
   href,
 }: {
   className?: string;

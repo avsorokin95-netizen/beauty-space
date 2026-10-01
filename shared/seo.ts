@@ -1,14 +1,14 @@
-import { studioHours } from './hours.ts';
-import { studioMapLinks } from './maps.ts';
-import type { ContactData } from './contacts.ts';
+import { contactView, type ContactData } from './contacts.ts';
 import type { PriceDocument } from './pricing.ts';
+import { categoryContent } from './pricing.ts';
 import { services } from '../src/data/studio.ts';
+import { pageHeading, publicPages, type PublicPath } from './pages.ts';
 
-/** Only publish exact, unambiguous prices. Slash variants keep their original text. */
-function offers(prices: PriceDocument['prices'], id: string, origin?: string) {
+/** Slash variants keep their exact published text, without guessing a price. */
+function offers(prices: PriceDocument['prices'], id: string, pageUrl?: string) {
   return (prices[id]?.items ?? []).map((item) => ({
     '@type': 'Offer',
-    ...(origin ? { url: `${origin}/#services` } : {}),
+    ...(pageUrl ? { url: `${pageUrl}#service-${id}` } : {}),
     ...(/^\d[\d ]* грн$/.test(item.price)
       ? { price: Number(item.price.replace(/ грн$/, '').replaceAll(' ', '')), priceCurrency: 'UAH' }
       : {}),
@@ -17,49 +17,46 @@ function offers(prices: PriceDocument['prices'], id: string, origin?: string) {
   }));
 }
 
-export function studioSeo(contacts: ContactData, origin?: string, prices?: PriceDocument['prices']) {
-  const local = contacts.city === 'Софіївська Борщагівка';
-  const title = local
-    ? 'Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya'
-    : `Манікюр і педикюр · ${contacts.city} | Beauty Space Victoriya`;
-  const description = local
-    ? `Манікюр зі зміцненням і дизайном, педикюр та ламінування вій. ${contacts.city}, ${contacts.address}. Для мешканців ЖК «Софія» та Вишневого. Ціни й запис.`
-    : `Манікюр, педикюр, брови та вії · ${contacts.city}, ${contacts.address}. Ціни, фото робіт і запис у Beauty Space Victoriya.`;
+export function studioSeo(contacts: ContactData, origin?: string, prices?: PriceDocument['prices'], path: PublicPath = '/') {
+  const page = publicPages[path];
+  const studio = contactView(contacts);
+  const title = `${page.name} · ${contacts.city} | Beauty Space Victoriya`;
+  const first = prices?.[page.category]?.items[0];
+  const description = `${page.name}: ${first ? `${first.name.toLowerCase()} — ${first.price}. ` : ''}${contacts.city}, ${contacts.address}. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.`;
   const home = origin ? `${origin}/` : undefined;
-  const url = home;
+  const url = origin ? `${origin}${path}` : undefined;
   const image = origin ? `${origin}/images/social-preview.jpg` : undefined;
+  const visibleServices = path === '/' ? services : services.filter((item) => item.id === page.category || (path === '/laminuvannia-vii' && item.id === 'sets'));
   const catalog = prices ? {
-    '@type': 'OfferCatalog', name: 'Послуги та ціни Beauty Space Victoriya',
-    itemListElement: services.map((item) => ({
-      '@type': 'OfferCatalog', name: item.name, itemListElement: offers(prices, item.id, origin),
+    '@type': 'OfferCatalog', name: `Послуги та ціни · ${page.name}`,
+    itemListElement: visibleServices.map((item) => ({
+      '@type': 'OfferCatalog', name: item.name, itemListElement: offers(prices, item.id, url),
     })),
   } : undefined;
+  // Free-form/non-daily schedules remain visible, but aren't guessed into schema.
+  const hours = studio.hours.match(/^Щодня, ([0-2]\d:[0-5]\d)[–-]([0-2]\d:[0-5]\d)$/);
   const schema = {
     '@context': 'https://schema.org', '@type': 'BeautySalon',
     ...(home ? { '@id': `${home}#studio`, url: home, image } : {}),
     name: 'Beauty Space Victoriya', telephone: contacts.phone,
-    description,
     address: { '@type': 'PostalAddress', streetAddress: contacts.address, addressLocality: contacts.city, addressCountry: 'UA' },
-    openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: studioHours.days, opens: studioHours.opens, closes: studioHours.closes }],
-    sameAs: [contacts.instagram, contacts.telegram],
-    currenciesAccepted: 'UAH',
+    ...(hours && hours[1] < hours[2] && hours[2] < '24:00' ? { openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: hours[1], closes: hours[2] }] } : {}),
+    sameAs: [contacts.instagram], currenciesAccepted: 'UAH',
     ...(catalog ? { hasOfferCatalog: catalog } : {}),
-    hasMap: studioMapLinks(contacts).mapProfile,
+    hasMap: studio.mapProfile,
   };
   const pageSchemas = home && url ? [
     { '@type': 'WebSite', '@id': `${home}#website`, url: home, name: 'Beauty Space Victoriya', inLanguage: 'uk', publisher: { '@id': `${home}#studio` } },
-    { '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'uk', isPartOf: { '@id': `${home}#website` }, about: { '@id': `${home}#studio` } },
-    ...[
-      ['manicure-guide', 'Манікюр', 'Манікюр без покриття, зі зміцненням, реставрацією та дизайном'],
-      ['pedicure-guide', 'Педикюр', 'Гігієнічний педикюр, комплекси з покриттям та обробка стопи'],
-      ['lashes-guide', 'Ламінування та фарбування вій', 'Ламінування вій без фарбування або з фарбуванням і доглядом'],
-    ].map(([id, name, serviceDescription]) => ({
-      '@type': 'Service', '@id': `${home}#${id}`, url: `${home}#services`,
-      name, description: serviceDescription, serviceType: name,
-      provider: { '@id': `${home}#studio` },
-      areaServed: (local ? [contacts.city, 'Вишневе'] : [contacts.city])
-        .map((name) => ({ '@type': 'City', name })),
-    })),
+    { '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'uk', isPartOf: { '@id': `${home}#website` }, about: { '@id': `${home}#studio` }, mainEntity: { '@id': `${url}#service` } },
+    { '@type': 'Service', '@id': `${url}#service`, url, name: pageHeading(path, contacts.city), serviceType: page.name,
+      ...(prices?.[page.category] ? { description: categoryContent(prices[page.category], page.category).overview } : {}),
+      provider: { '@id': `${home}#studio` }, areaServed: { '@type': 'Place', name: contacts.city },
+      ...(prices ? { offers: offers(prices, page.category, url) } : {}),
+    },
+    ...(path === '/' ? [] : [{ '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Beauty Space Victoriya', item: home },
+      { '@type': 'ListItem', position: 2, name: page.name, item: url },
+    ] }]),
   ] : [];
   return { title, description, url, image, schema, pageSchemas };
 }

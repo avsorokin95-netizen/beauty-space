@@ -1,15 +1,27 @@
 import { useContacts } from "../hooks/useContacts";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Plus, Minus, ArrowUpRight } from "lucide-react";
 import { services } from "../data/studio";
-import { serviceContent } from "../../shared/service-content";
+import { categoryContent } from "../../shared/pricing";
+import { publicPages, type PublicPath } from "../../shared/pages";
 import { usePrices } from "../hooks/usePrices";
 import { Eyebrow, Reveal } from "./ui";
 const subscribeToClient = () => () => {};
 
-export function Services() {
+export function Services({ path = "/" }: { path?: PublicPath }) {
+  const page = publicPages[path];
   const studio = useContacts();
-  const [active, setActive] = useState<string | null>(null);
+  const [active, setActive] = useState<string | null>(page.category);
+  useEffect(() => {
+    const followFragment = () => {
+      const id = window.location.hash.replace(/^#service-/, '');
+      const visible = services.some((service) => service.id === id && (path === '/' || id === page.category || (path === '/laminuvannia-vii' && id === 'sets')));
+      if (visible) setActive(id);
+    };
+    followFragment();
+    window.addEventListener('hashchange', followFragment);
+    return () => window.removeEventListener('hashchange', followFragment);
+  }, [path, page.category]);
   const enhanced = useSyncExternalStore(subscribeToClient, () => true, () => false);
   const { prices, error, retry } = usePrices();
   return (
@@ -17,11 +29,9 @@ export function Services() {
       <div className="shell">
         <Reveal className="section-heading">
           <div>
-            <Eyebrow>МЕНЮ ТВОЄЇ КРАСИ</Eyebrow>
+            <Eyebrow>ПРОЦЕДУРИ ТА ВАРТІСТЬ</Eyebrow>
             <h2>
-              Маленькі деталі.
-              <br />
-              <em>Особливе відчуття.</em>
+              {path === '/' ? 'Послуги та ціни' : `${page.name}: послуги та ціни`}
             </h2>
           </div>
           <p>
@@ -47,12 +57,17 @@ export function Services() {
         )}
         {prices && (
           <div className="service-list">
-            {services.map((service) => (
+            {services.filter((service) => path === "/" || service.id === page.category || (path === "/laminuvannia-vii" && service.id === "sets")).map((service) => (
               <Reveal key={service.id}>
                 <details
+                  id={`category-${service.id}`}
                   className="service-row"
                   open={active === service.id}
                   data-open={active === service.id}
+                  onToggle={(event) => {
+                    if (event.currentTarget.open) setActive(service.id);
+                    else setActive((current) => current === service.id ? null : current);
+                  }}
                 >
                   <summary
                     className="service-toggle"
@@ -70,10 +85,10 @@ export function Services() {
                       <small>{service.english}</small>
                     </span>
                     <span className="service-teaser">
-                      {service.description}
+                      {prices[service.id].items[0]?.name}
                     </span>
                     <span className="service-price">
-                      {prices[service.id].summary}
+                      {prices[service.id].items[0]?.price}
                     </span>
                     <span className="service-plus">
                       {active === service.id ? (
@@ -90,11 +105,11 @@ export function Services() {
                     <div className="service-guide">
                       <p>
                         <strong>Що обрати</strong>
-                        {serviceContent[service.id].overview}
+                        {categoryContent(prices[service.id], service.id).overview}
                       </p>
                       <p>
                         <strong>Перед записом</strong>
-                        {serviceContent[service.id].booking}
+                        {categoryContent(prices[service.id], service.id).booking}
                       </p>
                     </div>
                     <dl className="price-list">
@@ -131,13 +146,7 @@ export function Services() {
         <p className="price-note">
           Ціни в гривнях. Варіанти через «/» та тривалість процедури уточнюй під
           час запису.{" "}
-          <a
-            href="https://www.instagram.com/stories/highlights/18113905729937258/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Прайс в Instagram <ArrowUpRight size={13} />
-          </a>
+          Потрібна допомога з вибором? Напиши, яку процедуру плануєш.
         </p>
       </div>
     </section>

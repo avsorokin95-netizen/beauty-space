@@ -1,3 +1,4 @@
+import { isPublicPath } from '../shared/pages';
 import { lazy, Suspense, useEffect } from 'react';
 import type { PublicSnapshot } from '../shared/public-snapshot';
 import App from './App';
@@ -31,6 +32,6 @@ export function ClientApp({ path, initialSnapshot }: { path: string; initialSnap
   if (path.replace(/\/$/, '') === '/admin') {
     return <Suspense fallback={<main role="status" style={{ padding: 40 }}>Завантажуємо адмінку…</main>}><Admin /></Suspense>;
   }
-  if (path !== '/') return <NotFound />;
-  return <App initialSnapshot={initialSnapshot} />;
+  if (!isPublicPath(path)) return <NotFound />;
+  return <App initialSnapshot={initialSnapshot} path={path} />;
 }

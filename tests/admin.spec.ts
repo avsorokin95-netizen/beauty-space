@@ -21,7 +21,6 @@ test("admin publishes prices for other visitors, preserves them and discards dra
   ).toBeVisible();
   try {
     await page.getByLabel("Манікюр без покриття").fill("675 грн");
-    await page.getByLabel("Ціна на картці категорії").fill("від 675 грн");
     await page
       .getByRole("button", { name: "Зберегти зміни", exact: true })
       .click();
@@ -92,6 +91,5 @@ test("public price failure shows recovery instead of invented prices", async ({
   );
   await page.unroute("**/api/prices");
   await services.getByRole("button", { name: "Спробувати ще раз" }).click();
-  await page.locator('[aria-controls="service-nails"]').click();
   await expect(page.locator("#service-nails")).toBeVisible();
 });

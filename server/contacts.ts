@@ -23,7 +23,8 @@ export function registerContacts(app: Express, db: DatabaseSync) {
       for (const { key } of contactFields) {
         const value = input.contacts[key];
         if (!validContact(key, value)) throw new Error('validation');
-        contacts[key] = value.trim();
+        if (value !== undefined) contacts[key] = value.trim();
+        else if (current.contacts[key] !== undefined) contacts[key] = current.contacts[key];
       }
       const result = { revision: current.revision + 1, updatedAt: new Date().toISOString(), contacts };
       db.prepare('INSERT INTO contact_revisions VALUES (?, ?, ?)').run(result.revision, result.updatedAt, JSON.stringify(contacts));

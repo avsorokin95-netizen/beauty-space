@@ -19,6 +19,8 @@ interface Options {
 
 export function createApp(options: Options) {
   const app = express();
+  app.set("case sensitive routing", true);
+  app.set("strict routing", true);
   const store = new PricingStore(join(options.directory, "studio.sqlite"));
   const cookie = "beauty_session";
   const cookieOptions = {

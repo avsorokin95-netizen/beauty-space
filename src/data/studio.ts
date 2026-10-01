@@ -1,5 +1,9 @@
 export const studio = {
   name: "Beauty Space Victoriya",
+  hours: "Щодня, 09:00–18:00",
+  floor: "Поверх −1 (підвальне приміщення)",
+  directionsVideo: "https://www.instagram.com/p/DJKIbxLokSO/",
+  introduction: "Beauty Space Victoriya — простір манікюру, педикюру та догляду за бровами й віями. Переглянь роботи, порівняй процедури й напиши нам, щоб узгодити візит.",
   phone: "+380939314056",
   phoneDisplay: "+380 93 931 40 56",
   instagram: "https://www.instagram.com/beauty.space.victoriya/",
@@ -11,10 +15,12 @@ export const studio = {
 };
 
 export const navigation = [
-  { href: "#about", label: "Про простір" },
-  { href: "#services", label: "Послуги" },
+  { href: "", label: "Манікюр" },
+  { href: "pedicure", label: "Педикюр" },
+  { href: "laminuvannia-vii", label: "Вії" },
+  { href: "#services", label: "Ціни" },
   { href: "#gallery", label: "Наші роботи" },
-  { href: "#reviews", label: "Відгуки" },
+
   { href: "#contacts", label: "Контакти" },
 ];
 

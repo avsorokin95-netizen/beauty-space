@@ -37,6 +37,8 @@ test('owner replaces gallery photo and publishes it for visitors', async ({ page
     await expect(page.getByText('Роботи збережено й опубліковано.', { exact: true })).toBeVisible();
     const context = await browser.newContext();
     try {
+      // The gallery integration must not wait for Google's map/consent network.
+      await context.route(/^https:\/\/(?:maps|www)\.google\.com\/maps/, (route) => route.fulfill({ contentType: 'text/html', body: '<html lang="uk"><title>Карта</title><main>Карта</main></html>' }));
       const visitor = await context.newPage();
       await visitor.goto('http://127.0.0.1:4173/#gallery');
       await expect(visitor.locator('#gallery h3').first()).toHaveText('Тестова робота');

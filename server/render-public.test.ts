@@ -26,7 +26,7 @@ test('SSR renders the published public page with visible content and native pric
   assert.match(html, /Опублікована робота/);
   assert.match(html, /<details/);
   assert.match(html, /href="tel:\+380939314056"/);
-  assert.match(html, /<h1[^>]*>Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»<\/h1>/);
+  assert.match(html, /<h1[^>]*>Манікюр у Софіївській Борщагівці<\/h1>/);
 
   assert.doesNotMatch(html, /opacity:\s*0(?:;|"|\})/);
   assert.doesNotMatch(html, /Відкриваємо beauty-простір|Завантажуємо роботи/);
@@ -81,8 +81,8 @@ test('homepage explains service choices in server HTML while keeping published p
     const detail = html.split(`id="service-${category}"`)[1]?.split('</details>')[0];
     assert.ok(detail?.includes(explanation), `${category}: explanation must be present inside its native price accordion`);
   }
-  assert.match(html, /Манікюр — від 625 грн/);
-  assert.match(html, /У розділі «Педикюр» послуги — від 250 грн/);
+  assert.match(html, /Манікюр без покриття/);
+  assert.doesNotMatch(html, /Педикюр — від 250 грн/);
   assert.match(html, /975 грн/);
   assert.match(html, /650\/750 грн/);
   const manicure = html.split('id="service-nails"')[1].split('</details>')[0];

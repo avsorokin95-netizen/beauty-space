@@ -7,6 +7,8 @@ export interface PriceItem {
 export interface ServicePricing {
   summary: string;
   note?: string;
+  overview?: string;
+  booking?: string;
   items: PriceItem[];
 }
 

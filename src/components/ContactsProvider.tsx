@@ -1,3 +1,4 @@
+import type { PublicPath } from '../../shared/pages';
 import { studioSeo } from '../../shared/seo';
 import { ContactsContext } from '../hooks/useContacts';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -6,7 +7,7 @@ import { contactView, type ContactDocument } from '../../shared/contacts';
 import { readBootstrap } from '../lib/bootstrap';
 import { usePrices } from '../hooks/usePrices';
 
-export function ContactsProvider({ children, initialSnapshot }: { children: ReactNode; initialSnapshot?: ContactDocument }) {
+export function ContactsProvider({ children, initialSnapshot, path = "/" }: { children: ReactNode; initialSnapshot?: ContactDocument; path?: PublicPath }) {
   const [snapshot, setSnapshot] = useState<ContactDocument | null>(() => initialSnapshot ?? readBootstrap<ContactDocument>('studio-contacts'));
   const { prices } = usePrices();
   const [error, setError] = useState(false);
@@ -34,7 +35,7 @@ export function ContactsProvider({ children, initialSnapshot }: { children: Reac
   useEffect(() => {
     if (!snapshot) return;
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    const seo = studioSeo(snapshot.contacts, canonical ? new URL(canonical.href).origin : undefined, prices);
+    const seo = studioSeo(snapshot.contacts, canonical ? new URL(canonical.href).origin : undefined, prices, path);
     document.title = seo.title;
     for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
       const meta = document.querySelector<HTMLMetaElement>(selector);
@@ -53,7 +54,7 @@ export function ContactsProvider({ children, initialSnapshot }: { children: Reac
       }
       script.textContent = JSON.stringify(schema);
     }
-  }, [snapshot, prices]);
+  }, [snapshot, prices, path]);
   if (!snapshot) return <main className="shell section" role="status">{error ? <>Не вдалося завантажити сайт. <button className="text-link" onClick={() => setAttempt((n) => n + 1)}>Спробувати ще раз</button></> : 'Відкриваємо beauty-простір…'}</main>;
   return <ContactsContext.Provider value={contactView(snapshot.contacts)}>{children}</ContactsContext.Provider>;
 }

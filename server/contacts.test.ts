@@ -30,7 +30,7 @@ test('contacts require session and origin, validate input, reject conflicts and 
     for (const patch of [{ phone: '123' }, { address: '' }, { city: 'x'.repeat(101) }, { instagram: 'javascript:alert(1)' }, { direct: 'https://evil.example/m/test' }, { telegram: 'https://t.me.evil.example/test' }, { reviews: 'https://www.instagram.com/p/test/' }]) {
       assert.equal((await save({ ...initial, contacts: { ...initial.contacts, ...patch } })).status, 400);
     }
-    const draft = { ...initial, contacts: { ...initial.contacts, phone: '+380501234567', city: 'Київ' } };
+    const draft = { ...initial, contacts: { ...initial.contacts, phone: '+380501234567', city: 'Київ', introduction: 'Про студію\nНаступний абзац', hours: '', floor: '', directionsVideo: '' } };
     assert.equal((await save(draft)).status, 200);
     assert.equal((await save(draft)).status, 409);
     const current = await (await fetch(base + '/api/contacts')).json() as ContactDocument;

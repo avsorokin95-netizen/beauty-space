@@ -1,3 +1,4 @@
+import { ServiceCopyEditor } from "./ServiceCopyEditor";
 import { Analytics } from "./Analytics";
 import { BrandStar } from "../BrandStar";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { services } from "../../data/studio";
 import { api, ApiError } from "../../lib/api";
-import { validPrice, type PriceDocument } from "../../../shared/pricing";
+import { validPrice, validatePrices, type PriceDocument } from "../../../shared/pricing";
 import { cn } from "../../lib/utils";
 import { GalleryEditor, type GalleryModel } from "./GalleryEditor";
 import { ContactsEditor, type ContactsModel } from "./ContactsEditor";
@@ -49,13 +50,11 @@ export default function Admin() {
   const dirty =
     !!published &&
     JSON.stringify(draft?.prices) !== JSON.stringify(published.prices);
-  const invalid =
-    draft &&
-    Object.values(draft.prices).some(
-      (item) =>
-        !validPrice(item.summary, true) ||
-        item.items.some((entry) => !validPrice(entry.price)),
-    );
+  const invalid = (() => {
+    if (!draft || !published) return false;
+    try { validatePrices(draft.prices, published.prices); return false; }
+    catch { return true; }
+  })();
 
   useEffect(() => {
     document.title = "Керування студією — Beauty Space Victoriya";
@@ -122,12 +121,11 @@ export default function Admin() {
     }
   }
 
-  function update(value: string, index?: number) {
+  function update(value: string, index: number) {
     setDraft((current) => {
       if (!current) return current;
       const next = structuredClone(current);
-      if (index === undefined) next.prices[category].summary = value;
-      else next.prices[category].items[index].price = value;
+      next.prices[category].items[index].price = value;
       return next;
     });
     setSaved(false);
@@ -276,22 +274,9 @@ export default function Admin() {
     );
 
   const selected = services.find((item) => item.id === category)!;
-  const changedCount =
-    draft && published
-      ? services.reduce(
-          (count, service) =>
-            count +
-            Number(
-              draft.prices[service.id].summary !==
-                published.prices[service.id].summary,
-            ) +
-            draft.prices[service.id].items.filter(
-              (item, index) =>
-                item.price !== published.prices[service.id].items[index].price,
-            ).length,
-          0,
-        )
-      : 0;
+  const changedCount = draft && published
+    ? services.filter((service) => JSON.stringify(draft.prices[service.id]) !== JSON.stringify(published.prices[service.id])).length
+    : 0;
 
   return (
     <div className="admin-shell">
@@ -389,34 +374,10 @@ export default function Admin() {
                   </div>
                   <span>{draft.prices[category].items.length} позицій</span>
                 </div>
-                <div className="summary-field">
-                  <div>
-                    <label htmlFor="summary-price">
-                      Ціна на картці категорії
-                    </label>
-                    <p>
-                      Наприклад: від 550 грн. Онови її, якщо змінюєш початкову
-                      вартість.
-                    </p>
-                  </div>
-                  <div>
-                    <input
-                      id="summary-price"
-                      value={draft.prices[category].summary}
-                      maxLength={40}
-                      aria-invalid={
-                        !validPrice(draft.prices[category].summary, true)
-                      }
-                      aria-describedby="summary-hint"
-                      onChange={(event) => update(event.target.value)}
-                    />
-                    <small id="summary-hint">
-                      {!validPrice(draft.prices[category].summary, true)
-                        ? "Вкажи суму від 1 до 100 000 грн."
-                        : "Відображається перед розкриттям прайсу"}
-                    </small>
-                  </div>
-                </div>
+                <ServiceCopyEditor category={category} value={draft.prices[category]} onChange={(value) => {
+                  setDraft({ ...draft, prices: { ...draft.prices, [category]: value } });
+                  setSaved(false); setConfirmDiscard(false);
+                }} />
                 <div className="editor-table-head">
                   <span>ПОСЛУГА</span>
                   <span>ВАРТІСТЬ</span>
@@ -456,7 +417,7 @@ export default function Admin() {
             <div>
               <strong>
                 {changedCount
-                  ? `Змінено полів: ${changedCount}`
+                  ? `Змінено категорій: ${changedCount}`
                   : "Усі зміни збережено"}
               </strong>
               <span>

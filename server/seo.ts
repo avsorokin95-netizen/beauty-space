@@ -1,3 +1,4 @@
+import { publicPages, type PublicPath } from '../shared/pages.ts';
 import type { Express } from 'express';
 import type { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
@@ -33,16 +34,17 @@ export function registerSeo(app: Express, db: DatabaseSync, directory: string, o
       .replace('</head>', '<meta name="robots" content="noindex, nofollow, noarchive"></head>');
     res.set({ 'X-Robots-Tag': 'noindex, nofollow, noarchive', 'Cache-Control': 'no-store' }).type('html').send(html);
   });
-  app.get('/', async (_req, res) => {
+  app.get(Object.keys(publicPages), async (req, res) => {
+    const path = req.path as PublicPath;
     const snapshot = readContacts();
     const row = db.prepare('SELECT * FROM revisions ORDER BY revision DESC LIMIT 1').get()!;
     const galleryRow = db.prepare('SELECT * FROM gallery_revisions ORDER BY revision DESC LIMIT 1').get()!;
     const prices = { revision: Number(row.revision), updatedAt: String(row.updated_at), prices: JSON.parse(String(row.prices)) };
     const gallery = { revision: Number(galleryRow.revision), updatedAt: String(galleryRow.updated_at), items: JSON.parse(String(galleryRow.items)) };
-    const body = await renderPublicApp({ contacts: snapshot, prices, gallery });
+    const body = await renderPublicApp({ contacts: snapshot, prices, gallery }, path);
     const html = renderSeo(readFileSync(join(directory, 'index.html'), 'utf8'), snapshot, prices.prices, origin, {
       prices, gallery,
-    }, body);
+    }, body, path);
     res.set('Cache-Control', 'no-cache');
     if (!origin) res.set('X-Robots-Tag', 'noindex, nofollow');
     res.type('html').send(html);

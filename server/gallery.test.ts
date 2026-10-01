@@ -1,3 +1,4 @@
+import { validGalleryCategory } from '../shared/gallery.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -85,4 +86,9 @@ test('gallery upload, validation, publication, conflict and disk persistence', a
     await new Promise<void>((resolve) => server.close(() => resolve()));
     store.db.close(); rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test('gallery categories reject malformed values and preserve legacy omission', () => {
+  for (const value of [undefined, 'nails', 'pedicure', 'lashes', 'other']) assert.equal(validGalleryCategory(value), true);
+  for (const value of [null, ['nails'], {}, 1, true, 'unknown']) assert.equal(validGalleryCategory(value), false);
 });

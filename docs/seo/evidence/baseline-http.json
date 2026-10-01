@@ -1,0 +1,106 @@
+[
+  {
+    "url": "https://victoriya-beauty.space/",
+    "status": 200,
+    "location": null,
+    "robots": null,
+    "cache": "no-cache",
+    "bytes": 81214
+  },
+  {
+    "url": "https://victoriya-beauty.space/robots.txt",
+    "status": 200,
+    "location": null,
+    "robots": null,
+    "cache": null,
+    "bytes": 190
+  },
+  {
+    "url": "https://victoriya-beauty.space/sitemap.xml",
+    "status": 200,
+    "location": null,
+    "robots": null,
+    "cache": null,
+    "bytes": 160
+  },
+  {
+    "url": "https://victoriya-beauty.space/index.html?source=audit",
+    "status": 301,
+    "location": "https://victoriya-beauty.space/?source=audit",
+    "robots": null,
+    "cache": null,
+    "bytes": 0
+  },
+  {
+    "url": "https://victoriya-beauty.space/unknown-seo-audit",
+    "status": 404,
+    "location": null,
+    "robots": null,
+    "cache": null,
+    "bytes": 0
+  },
+  {
+    "url": "https://victoriya-beauty.space/pedicure",
+    "status": 404,
+    "location": null,
+    "robots": null,
+    "cache": null,
+    "bytes": 0
+  },
+  {
+    "url": "https://victoriya-beauty.space/manicure",
+    "status": 404,
+    "location": null,
+    "robots": null,
+    "cache": null,
+    "bytes": 0
+  },
+  {
+    "url": "https://victoriya-beauty.space/admin",
+    "status": 302,
+    "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space [query redacted]",
+    "robots": null,
+    "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "bytes": 143
+  },
+  {
+    "url": "https://victoriya-beauty.space/api/admin/session",
+    "status": 302,
+    "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space [query redacted]",
+    "robots": null,
+    "cache": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "bytes": 143
+  },
+  {
+    "url": "http://victoriya-beauty.space/",
+    "status": 301,
+    "location": "https://victoriya-beauty.space/"
+  },
+  {
+    "url": "https://www.victoriya-beauty.space/",
+    "status": 301,
+    "location": "https://victoriya-beauty.space/"
+  },
+  {
+    "viewport": "mobile",
+    "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+    "h1": [
+      "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+    ],
+    "canonical": "https://victoriya-beauty.space/",
+    "overflow": false,
+    "errors": [],
+    "blockedAnalyticsAndMaps": 1
+  },
+  {
+    "viewport": "desktop",
+    "title": "Манікюр · ЖК «Софія», Софіївська Борщагівка | Beauty Space Victoriya",
+    "h1": [
+      "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
+    ],
+    "canonical": "https://victoriya-beauty.space/",
+    "overflow": false,
+    "errors": [],
+    "blockedAnalyticsAndMaps": 1
+  }
+]

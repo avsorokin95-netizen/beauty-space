@@ -1,3 +1,4 @@
+import { isPublicPath } from '../shared/pages';
 import { analyticsHtml, collectClick, clickReport } from './analytics';
 import { authenticate } from './auth';
 import type { Env } from './env';
@@ -74,14 +75,14 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (!origin) throw new HttpError(404, 'Домен ще не налаштовано.');
     return text(sitemapXml(origin), 'application/xml');
   }
-  if (path === '/') {
+  if (isPublicPath(path)) {
     const [template, contacts, prices, gallery] = await Promise.all([
       env.ASSETS.fetch(new Request(new URL('/index.html', url))).then((res) => res.text()),
       readDocument(env.DB, 'contacts'), readDocument(env.DB, 'prices'), readDocument(env.DB, 'gallery'),
     ]);
     const snapshot = { contacts: contacts as unknown as ContactDocument, prices: prices as unknown as PriceDocument, gallery: gallery as unknown as GalleryDocument };
-    const body = renderPublicApp(snapshot);
-    return text(analyticsHtml(renderSeo(template, snapshot.contacts, snapshot.prices.prices, origin, snapshot, body), env.WEB_ANALYTICS_TOKEN));
+    const body = renderPublicApp(snapshot, path);
+    return text(analyticsHtml(renderSeo(template, snapshot.contacts, snapshot.prices.prices, origin, snapshot, body, path), env.WEB_ANALYTICS_TOKEN));
   }
   return env.ASSETS.fetch(request);
 }
@@ -99,7 +100,7 @@ export default {
     if (path.startsWith('/api/') || path.startsWith('/admin')) {
       if (!path.startsWith('/api/media/')) response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
       if (!path.startsWith('/api/media/')) response.headers.set('Cache-Control', 'no-store');
-    } else if (path === '/') {
+    } else if (isPublicPath(path)) {
       response.headers.set('Cache-Control', 'no-cache');
       if (!env.APP_ORIGIN) response.headers.set('X-Robots-Tag', 'noindex, nofollow');
     }

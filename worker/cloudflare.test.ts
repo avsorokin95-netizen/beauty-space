@@ -1,7 +1,7 @@
 import { linkEvent } from '../shared/analytics.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { build } from 'esbuild';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { generateKeyPair, exportJWK, SignJWT } from 'jose';
@@ -76,6 +76,11 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     }
     jwt = await token('studio@example.com');
     assert.equal((await send('/api/admin/session')).status, 200);
+    const beforeMigration = await (await send('/api/contacts')).json();
+    assert.equal((await send('/api/admin/contacts', 'PUT', beforeMigration)).status, 200, 'New writer must work before additive migration during safe rollout');
+    await db.exec(readFileSync('worker/migrations/0004_document_history.sql', 'utf8').replace(/--[^\n]*/g, '').replaceAll('\n', ' '));
+    assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM document_history').first<{ n: number }>())!.n, 3, 'Migration snapshots every existing document');
+
     assert.equal((await send('/api/login', 'POST', { password: 'unused' })).status, 404);
     assert.equal((await send('/api/admin/password', 'PUT', {})).status, 404);
     assert.equal((await mf.dispatchFetch(origin + '/api/admin/analytics')).status, 401);
@@ -130,7 +135,7 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
     assert.equal(schema.hasOfferCatalog.itemListElement[0].itemListElement[0].price, 777);
     for (const catalog of schema.hasOfferCatalog.itemListElement) {
-      for (const offer of catalog.itemListElement) assert.equal(offer.url, `${origin}/#services`);
+      for (const offer of catalog.itemListElement) assert.ok(offer.url.startsWith(`${origin}/#service-`));
     }
     const admin = await send('/admin');
     assert.equal(admin.headers.get('cache-control'), 'no-store');
@@ -139,15 +144,25 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
     assert.match(await (await send('/sitemap.xml')).text(), /studio.example/);
     const sitemap = await (await send('/sitemap.xml')).text();
     assert.ok(sitemap.includes(`<loc>${origin}/</loc>`));
-    assert.equal((sitemap.match(/<loc>/g) ?? []).length, 1);
-    for (const slug of ['manicure', 'pedicure', 'brows', 'lashes']) {
-      assert.ok(!html.includes(`href="/${slug}`), `The homepage must not link to the removed ${slug} route`);
-      assert.ok(!sitemap.includes(`/${slug}`));
-      for (const path of [`/${slug}`, `/${slug}/`, `/${slug}/index.html`]) {
-        const response = await mf.dispatchFetch(origin + path + '?ref=test', { redirect: 'manual' });
-        assert.equal(response.status, 404, `${path} must not serve or redirect to a removed page`);
-      }
+    assert.equal((sitemap.match(/<loc>/g) ?? []).length, 3);
+    for (const path of ['/pedicure', '/laminuvannia-vii']) {
+      const response = await send(path);
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get('cache-control'), 'no-cache');
+      const content = await response.text();
+      assert.ok(content.includes(`rel="canonical" href="${origin}${path}"`));
+      assert.equal((content.match(/beacon.min.js/g) ?? []).length, 1);
+      assert.ok(sitemap.includes(`<loc>${origin}${path}</loc>`));
     }
+    for (const [old, target] of [['/manicure', '/'], ['/lashes/index.html', '/laminuvannia-vii'], ['/pedicure/', '/pedicure'], ['/laminuvannia-vii/index.html', '/laminuvannia-vii']]) {
+      const response = await mf.dispatchFetch(origin + old + '?ref=test', { redirect: 'manual' });
+      assert.equal(response.status, 301);
+      assert.equal(response.headers.get('location'), origin + target + '?ref=test');
+    }
+    assert.equal((await send('/brows')).status, 404);
+    const history = await db.prepare("SELECT data FROM document_history WHERE kind = 'prices' AND revision = 1").first<{ data: string }>();
+    assert.equal(JSON.parse(history!.data).nails.items[0].price, '550 грн');
+    assert.equal((await db.prepare("SELECT COUNT(*) AS n FROM document_history WHERE kind = 'prices'").first<{ n: number }>())!.n, 2);
     assert.equal((await send('/nonexistent-page/')).status, 404);
     assert.equal((await send('/manicure/nonexistent-page/')).status, 404);
     const photo = await sharp({ create: { width: 800, height: 600, channels: 3, background: '#ddbbcc' } }).webp().toBuffer();
@@ -201,8 +216,14 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       assert.equal(await staticPage.locator('h1').evaluate((element) => getComputedStyle(element.parentElement!).opacity), '1');
       assert.ok(await staticPage.getByRole('link', { name: /Записатися/ }).first().isVisible());
       assert.ok(await staticPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      await staticPage.locator('[aria-controls="service-nails"]').click();
-      assert.ok(await staticPage.getByText('777 грн', { exact: true }).isVisible());
+      assert.ok(await staticPage.locator('#service-nails dd').first().isVisible());
+      for (const [path, category] of [['/pedicure', 'pedicure'], ['/laminuvannia-vii', 'lashes']]) {
+        await staticPage.goto(origin + path);
+        assert.ok(await staticPage.locator(`#service-${category}`).isVisible());
+        assert.ok(await staticPage.locator(`#service-${category} dd`).first().isVisible());
+        assert.equal(await staticPage.locator('link[rel="canonical"]').getAttribute('href'), origin + path);
+        assert.ok(await staticPage.locator('.hero-photo').isVisible());
+      }
       await noScript.close();
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       const hydrationErrors: string[] = [];
@@ -230,10 +251,9 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       for (const font of ['Manrope:normal', 'Cormorant Garamond:normal', 'Cormorant Garamond:italic']) {
         assert.ok(loadedFonts.includes(font), `${font} must load in the Worker-rendered page with external requests blocked`);
       }
-      assert.match(await page.title(), /Манікюр і педикюр.*Київ/);
+      assert.match(await page.title(), /Манікюр.*Київ/);
       assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), origin + '/');
-      await page.getByRole('button', { name: /01 Манікюр/ }).click();
-      await page.getByText('777 грн', { exact: true }).waitFor();
+      await page.locator('#service-nails dd').first().waitFor();
       assert.ok(await page.locator('.gallery-slide').count() >= initialGallery.length);
       await page.locator('.gallery-slide img').first().evaluate((image: HTMLImageElement) => image.decode());
       assert.deepEqual(hydrationErrors, [], 'Server and browser must render the same public content');
@@ -241,10 +261,20 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       const clickResponse = page.waitForResponse('**/api/analytics');
       await page.locator('.hero [data-analytics="booking"]').click();
       assert.equal((await clickResponse).status(), 204);
+      for (const [path, category] of [['/pedicure', 'pedicure'], ['/laminuvannia-vii', 'lashes']]) {
+        await page.goto(origin + path);
+        assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), origin + path);
+        await page.locator(`#service-${category} dd`).first().waitFor();
+        const response = page.waitForResponse('**/api/analytics');
+        await page.locator('.hero [data-analytics="booking"]').click();
+        assert.equal((await response).status(), 204);
+        assert.equal(await page.locator('script[src*="beacon.min.js"]').count(), 1);
+      }
+      assert.deepEqual(hydrationErrors, [], 'Every service page must hydrate its own SSR snapshot');
       await page.goto(origin + '/admin');
       await page.getByRole('button', { name: 'Статистика', exact: true }).click();
       await page.getByRole('table').first().waitFor();
-      assert.ok((await page.locator('.analytics-totals').last().innerText()).includes('Записатися\n3'));
+      assert.ok((await page.locator('.analytics-totals').last().innerText()).includes('Записатися\n5'));
       assert.ok((await page.locator('.analytics-totals').first().innerText()).includes('Візити\n8'));
       await page.getByText('За даними Cloudflare, цей звіт отримано без вибірки.').waitFor();
       await page.getByLabel('Період').selectOption('30');
@@ -253,9 +283,10 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.getByLabel('Період').selectOption('7');
       await page.getByRole('table').first().waitFor();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-      await page.screenshot({ path: 'output/analytics-visits-mobile.png', fullPage: true });
+      mkdirSync('test-results/worker', { recursive: true });
+      await page.screenshot({ path: 'test-results/worker/analytics-visits-mobile.png', fullPage: true });
       await page.setViewportSize({ width: 1440, height: 1000 });
-      await page.screenshot({ path: 'output/analytics-visits-desktop.png', fullPage: true });
+      await page.screenshot({ path: 'test-results/worker/analytics-visits-desktop.png', fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
       await page.getByRole('button', { name: 'Безпека', exact: true }).click();
       await page.getByText('Вхід за одноразовим кодом на дозволену пошту.', { exact: false }).waitFor();
@@ -282,6 +313,10 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.locator('#price-nails-0').waitFor();
       assert.equal(await page.locator('#price-nails-0').inputValue(), '888 грн');
     } finally { await browser.close(); }
+    const triggerWrite = await db.prepare("UPDATE documents SET revision = revision + 1 WHERE kind = 'contacts'").run();
+    assert.ok(triggerWrite.meta.changes > 1, 'Legacy meta.changes === 1 check is incompatible with history triggers; rollback must remove triggers or retain RETURNING writer');
+    const afterMigration = await (await send('/api/contacts')).json();
+    assert.equal((await send('/api/admin/contacts', 'PUT', afterMigration)).status, 200);
     for (let n = 0; n < 30; n++) await send('/api/analytics', 'POST', { event: 'booking' });
     assert.equal((await send('/api/analytics', 'POST', { event: 'booking' })).status, 429);
   } finally { await mf.dispose(); }

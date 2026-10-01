@@ -1,3 +1,5 @@
+> **Історичний документ.** Цей план замінено незалежним дослідженням і реалізацією від 2026-10-01: [docs/seo/README.md](seo/README.md). Збережено як історію, не як чинну вимогу до структури.
+
 # SEO Beauty Space Victoriya
 
 Аудит: 22 вересня 2026. Сайт: https://victoriya-beauty.space/. Конкурент: https://sofia-nails.kiev.ua/.

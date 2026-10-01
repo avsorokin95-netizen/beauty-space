@@ -1,72 +1,34 @@
-import { BrandStar } from "./BrandStar";
-import { useRef } from "react";
-import { useHeroParallax } from "../hooks/useHeroParallax";
-import { ArrowDown, MapPin } from "lucide-react";
-import { BookingLink, Eyebrow, Reveal } from "./ui";
-import { useContacts } from "../hooks/useContacts";
+import { ArrowDown, MapPin, Phone } from 'lucide-react';
+import { BookingLink, Eyebrow } from './ui';
+import { useContacts } from '../hooks/useContacts';
+import { usePrices } from '../hooks/usePrices';
+import { useGallery } from '../hooks/useGallery';
+import { galleryAlt } from '../../shared/gallery-descriptions';
+import { galleryCategory } from '../../shared/gallery';
+import { pageHeading, publicPages, type PublicPath } from '../../shared/pages';
 
-export function Hero() {
+export function Hero({ path = '/' }: { path?: PublicPath }) {
   const studio = useContacts();
-  const heading = studio.city === "Софіївська Борщагівка"
-    ? "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»"
-    : `Манікюр і педикюр · ${studio.city}`;
-  const ref = useRef<HTMLElement>(null);
-  const photo = useRef<HTMLImageElement>(null);
-  useHeroParallax(ref, photo);
-  return (
-    <section id="home" className="hero shell" ref={ref}>
-      <div className="hero-copy">
-        <Reveal>
-          <Eyebrow>ТВІЙ BEAUTY ПРОСТІР КРАСИ</Eyebrow>
-          <p className="hero-slogan">
-            Краса починається
-            <br />з <em>любові</em>
-            <br />
-            до себе<span className="rose-dot">.</span>
-          </p>
-          <h1 className="hero-heading">{heading}</h1>
-          <p className="hero-description">
-            Покриття, зміцнення та дизайн нігтів.
-            <br />
-            Також педикюр, брови та ламінування вій.
-          </p>
-          <BookingLink />
-          <p className="booking-note">
-            Твій час для себе — за одним повідомленням
-          </p>
-        </Reveal>
-        <a href="/#contacts" className="hero-location">
-          <MapPin size={16} />
-          <span>{studio.city} · {studio.address}</span>
-        </a>
-      </div>
-      <div className="hero-visual">
-        <img
-          ref={photo}
-          src="/images/manicure.webp"
-          srcSet="/images/manicure-480.webp 480w, /images/manicure-800.webp 800w, /images/manicure.webp 1200w"
-          sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) calc((100vw - 89px) / 2.05), (max-width: 1384px) calc((100vw - 149px) / 2.05), 603px"
-          width="1200"
-          height="1500"
-          alt="Манікюр у темних відтінках — атмосферне фото для настрою"
-          fetchPriority="high"
-          className="hero-photo"
-        />
-        <span className="photo-credit">BEAUTY MOOD · ФОТО ДЛЯ НАСТРОЮ</span>
-        <div className="image-word">
-          a little time
-          <br />
-          <em>for yourself</em>
-        </div>
-        <div className="round-badge">
-          <span>ТУРБОТА В КОЖНІЙ</span>
-          <span className="badge-star"><BrandStar /></span>
-          <span>МАЛЕНЬКІЙ ДЕТАЛІ</span>
-        </div>
-      </div>
-      <a className="scroll-link" href="#about">
-        <ArrowDown size={15} /> ПОЗНАЙОМИМОСЬ БЛИЖЧЕ
-      </a>
-    </section>
-  );
+  const { prices } = usePrices();
+  const { posts = [] } = useGallery();
+  const page = publicPages[path];
+  const photo = posts.find((post) => galleryCategory(post) === page.gallery);
+  const selected = prices?.[page.category]?.items.slice(0, 2) ?? [];
+  return <section id="home" className={`hero shell commercial-hero ${photo ? '' : 'hero-without-photo'}`}>
+    <div className="hero-copy">
+      {path !== '/' && <nav className="breadcrumbs" aria-label="Хлібні крихти"><a href="/">Головна</a><span aria-hidden="true"> / </span><span>{page.name}</span></nav>}
+      <Eyebrow>BEAUTY SPACE VICTORIYA</Eyebrow>
+      <h1 className="hero-heading">{pageHeading(path, studio.city)}</h1>
+      <a href="#contacts" className="hero-location"><MapPin size={18} /><span>{studio.city} · {studio.address}{studio.floor ? ` · ${studio.floor}` : ''}</span></a>
+      <p className="hero-description">Обери процедуру, переглянь наші роботи та напиши, щоб погодити час візиту.</p>
+      {selected.length > 0 && <dl className="hero-prices" aria-label="Приклади актуальних цін">{selected.map((item, index) => <div key={index}><dt>{item.name}{item.detail && <small>{item.detail}</small>}</dt><dd>{item.price}</dd></div>)}</dl>}
+      <div className="hero-actions"><BookingLink /><a className="text-link" href={`tel:${studio.phone}`}><Phone size={16} />{studio.phoneDisplay}</a></div>
+      <p className="booking-note">Запис у Direct або телефоном · час підтверджуємо особисто</p>
+      <div className="hero-jumps"><a href="#services">Усі ціни <ArrowDown size={15} /></a><a href="#gallery">Переглянути роботи <ArrowDown size={15} /></a></div>
+    </div>
+    {photo && <figure className="hero-visual work-hero">
+      <a href="#gallery" aria-label="Переглянути роботи студії"><img src={photo.src} width="1200" height="1600" alt={galleryAlt(photo)} fetchPriority="high" className="hero-photo" /></a>
+      <figcaption><span>РОБОТА BEAUTY SPACE VICTORIYA</span><span>{photo.title}</span></figcaption>
+    </figure>}
+  </section>;
 }

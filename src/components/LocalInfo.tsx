@@ -1,12 +1,13 @@
+import type { PublicPath } from '../../shared/pages';
 import { localStudioContent } from '../../shared/local-seo';
 import { useContacts } from '../hooks/useContacts';
 import { usePrices } from '../hooks/usePrices';
 import { Eyebrow } from './ui';
 
-export function LocalInfo() {
+export function LocalInfo({ path = "/" }: { path?: PublicPath }) {
   const studio = useContacts();
   const { prices } = usePrices();
-  const content = localStudioContent(studio, prices ?? undefined);
+  const content = localStudioContent(studio, prices ?? undefined, path);
   return (
     <section className="section shell local-info" aria-labelledby="local-info-title">
       <div>

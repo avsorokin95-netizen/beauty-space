@@ -1,0 +1,26 @@
+{
+  "label": "baseline-2026-10-01",
+  "environment": {
+    "browser": "153.0.8010.12",
+    "viewport": "390x844 DPR3",
+    "cpuSlowdown": 4,
+    "latencyMs": 150,
+    "downloadMbps": 1.6,
+    "server": "localhost with gzip and public seed snapshot",
+    "cache": "cold context per run",
+    "note": "Lab load measurements; not field Core Web Vitals or INP. External font network latency can vary."
+  },
+  "scripts": [
+    {
+      "path": "/assets/index-BrGWYj--.js",
+      "rawBytes": 326009,
+      "gzipBytes": 103590
+    }
+  ],
+  "median": {
+    "fcp": 564,
+    "lcp": 1752,
+    "cls": 0.03479947079091961,
+    "longTaskMs": 0
+  }
+}

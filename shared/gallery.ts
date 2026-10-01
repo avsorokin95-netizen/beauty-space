@@ -5,9 +5,22 @@ export interface GalleryItem {
   alt?: string;
   label: string;
   instagram: string;
+  category?: 'nails' | 'pedicure' | 'lashes' | 'other';
 }
 export const MAX_GALLERY_ITEMS = 30;
 export const MAX_GALLERY_ALT_LENGTH = 300;
+
+export function validGalleryCategory(value: unknown): value is GalleryItem['category'] {
+  return value === undefined || typeof value === 'string' && ['nails', 'pedicure', 'lashes', 'other'].includes(value);
+}
+
+export function galleryCategory(item: GalleryItem): NonNullable<GalleryItem['category']> {
+  if (item.category) return item.category;
+  if (/манікюр/i.test(item.label)) return 'nails';
+  if (/педикюр/i.test(item.label)) return 'pedicure';
+  if (/вії/i.test(item.label)) return 'lashes';
+  return 'other';
+}
 
 export interface GalleryDocument {
   revision: number;

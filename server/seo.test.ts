@@ -20,9 +20,9 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     const response = await fetch(base + '/');
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /<title>Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya<\/title>/);
-    assert.match(html, /property="og:title" content="Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya"/);
-    assert.match(html, /name="twitter:title" content="Манікюр · ЖК «Софія», Софіївська Борщагівка \| Beauty Space Victoriya"/);
+    assert.match(html, /<title>Манікюр · Софіївська Борщагівка \| Beauty Space Victoriya<\/title>/);
+    assert.match(html, /property="og:title" content="Манікюр · Софіївська Борщагівка \| Beauty Space Victoriya"/);
+    assert.match(html, /name="twitter:title" content="Манікюр · Софіївська Борщагівка \| Beauty Space Victoriya"/);
     assert.match(html, /rel="canonical" href="https:\/\/beauty.example\/"/);
     assert.match(html, /property="og:image" content="https:\/\/beauty.example\/images\/social-preview.jpg"/);
     assert.match(html, /name="twitter:card" content="summary_large_image"/);
@@ -35,27 +35,27 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     const bootGallery = JSON.parse(html.match(/id="studio-gallery">(.*?)<\/script>/)![1]);
     assert.ok(bootGallery.items.length > 0);
     assert.match(html, /Манікюр без покриття/);
-    assert.match(html, /запрошуємо мешканців ЖК «Софія» та Вишневого/);
+    assert.match(html, /Якщо ти їдеш із ЖК «Софія» або Вишневого/);
     assert.match(html, /ЖК «Софія»/);
-    assert.match(html, /Скільки коштує манікюр/);
-    assert.match(html, /Манікюр і педикюр у Софіївській Борщагівці/);
-    assert.match(html, /Як приїхати до студії з ЖК «Софія» або Вишневого/);
+    assert.match(html, /Де подивитися вартість/);
+    assert.match(html, /Манікюр у Софіївській Борщагівці/);
+    assert.match(html, /Як знайти студію/);
     const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
     assert.equal(schema['@type'], 'BeautySalon');
     assert.equal(schema.telephone, '+380939314056');
     assert.equal(schema.address.addressLocality, 'Софіївська Борщагівка');
     const graph = JSON.parse(html.match(/id="page-schema">(.*?)<\/script>/)![1])['@graph'];
     const serviceSchemas = graph.filter((item: { '@type': string }) => item['@type'] === 'Service');
-    assert.deepEqual(serviceSchemas.map((item: { name: string }) => item.name), ['Манікюр', 'Педикюр', 'Ламінування та фарбування вій']);
+    assert.deepEqual(serviceSchemas.map((item: { name: string }) => item.name), ['Манікюр у Софіївській Борщагівці']);
     for (const service of serviceSchemas) {
       assert.equal(service.provider['@id'], `${origin}/#studio`);
-      assert.deepEqual(service.areaServed.map((area: { name: string }) => area.name), ['Софіївська Борщагівка', 'Вишневе']);
-      assert.ok(html.includes(`id="${new URL(service.url).hash.slice(1)}"`));
+      assert.equal(service.areaServed.name, 'Софіївська Борщагівка');
+      assert.equal(service.url, origin + "/");
     }
     assert.equal(new URL(schema.hasMap).searchParams.get('query_place_id'), 'ChIJey2Ar-TL1EARuk3pdFrpkJ0');
     assert.match(html, /maps\/embed\?pb=/);
     assert.match(html, /0x40d4cbe4af802d7b%3A0x9d90e95a74e94dba/);
-    assert.match(schema.description, /Софіївська Борщагівка/);
+
     assert.equal(schema.aggregateRating, undefined);
     assert.equal(schema.openingHoursSpecification[0].dayOfWeek.length, 7);
     assert.equal(schema.openingHoursSpecification[0].opens, '09:00');
@@ -73,18 +73,25 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     const sitemap = await (await fetch(base + '/sitemap.xml')).text();
     assert.match(sitemap, /<loc>https:\/\/beauty.example\/<\/loc>/);
     assert.ok(!sitemap.includes('admin'));
-    assert.equal((sitemap.match(/<loc>/g) ?? []).length, 1);
+    assert.equal((sitemap.match(/<loc>/g) ?? []).length, 3);
     for (const catalog of schema.hasOfferCatalog.itemListElement) {
-      for (const offer of catalog.itemListElement) assert.equal(offer.url, `${origin}/#services`);
+      for (const offer of catalog.itemListElement) assert.ok(offer.url.startsWith(`${origin}/#service-`));
     }
-    for (const slug of ['manicure', 'pedicure', 'brows', 'lashes']) {
-      assert.ok(!html.includes(`href="/${slug}`), `The homepage must not link to the removed ${slug} route`);
-      assert.ok(!sitemap.includes(`/${slug}`));
-      for (const path of [`/${slug}`, `/${slug}/`, `/${slug}/index.html`]) {
-        const response = await fetch(base + path + '?utm_source=instagram', { redirect: 'manual' });
-        assert.equal(response.status, 404, `${path} must not serve or redirect to a removed page`);
-      }
+    for (const [path, heading] of [['/pedicure', 'Педикюр'], ['/laminuvannia-vii', 'Ламінування вій']]) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200);
+      const content = await response.text();
+      assert.ok(content.includes(`rel="canonical" href="${origin}${path}"`));
+      assert.ok(content.includes(`<h1 class="hero-heading">${heading}`));
+      assert.ok(html.includes(`href="${path}"`));
+      assert.ok(sitemap.includes(`<loc>${origin}${path}</loc>`));
     }
+    for (const [old, target] of [['/manicure', '/'], ['/lashes', '/laminuvannia-vii'], ['/pedicure/', '/pedicure'], ['/laminuvannia-vii/index.html', '/laminuvannia-vii']]) {
+      const response = await fetch(base + old + '?utm_source=instagram', { redirect: 'manual' });
+      assert.equal(response.status, 301);
+      assert.equal(response.headers.get('location'), target + '?utm_source=instagram');
+    }
+    assert.equal((await fetch(base + '/brows')).status, 404);
     for (const path of ['/admin', '/admin/']) {
       const admin = await fetch(base + path);
       assert.match(admin.headers.get('x-robots-tag')!, /noindex/);

@@ -1,3 +1,6 @@
+import type { PublicPath } from '../shared/pages';
+import { RelatedServices } from './components/RelatedServices';
+import { MobileBooking } from './components/MobileBooking';
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
@@ -11,24 +14,26 @@ import { PricesProvider } from "./components/PricesProvider";
 import type { PublicSnapshot } from "../shared/public-snapshot";
 import { PublicSnapshotContext } from "./lib/bootstrap";
 
-export default function App({ initialSnapshot }: { initialSnapshot?: PublicSnapshot }) {
+export default function App({ initialSnapshot, path = "/" }: { initialSnapshot?: PublicSnapshot; path?: PublicPath }) {
   return (
     <PublicSnapshotContext.Provider value={initialSnapshot ?? null}>
     <PricesProvider>
-    <ContactsProvider initialSnapshot={initialSnapshot?.contacts}>
+    <ContactsProvider initialSnapshot={initialSnapshot?.contacts} path={path}>
       <a className="skip-link" href="#main">
         Перейти до вмісту
       </a>
       <Header />
       <main id="main">
-        <Hero />
+        <Hero path={path} />
+        <Services path={path} />
+        <Gallery category={path === "/" ? undefined : path === "/pedicure" ? "pedicure" : "lashes"} />
+        <RelatedServices path={path} />
         <About />
-        <Services />
-        <Gallery />
         <Reviews />
-        <LocalInfo />
+        <LocalInfo path={path} />
         <Contacts />
       </main>
+      <MobileBooking />
     </ContactsProvider>
     </PricesProvider>
     </PublicSnapshotContext.Provider>

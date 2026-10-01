@@ -1,3 +1,4 @@
+import { galleryCategory, type GalleryItem } from "../../shared/gallery";
 import useEmblaCarousel from "embla-carousel-react";
 import { useMotionPreference } from "../hooks/useMotionPreference";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -8,9 +9,10 @@ import { galleryAlt } from "../../shared/gallery-descriptions";
 
 import { useGallery } from "../hooks/useGallery";
 
-export function Gallery() {
+export function Gallery({ category }: { category?: GalleryItem["category"] }) {
   const studio = useContacts();
-  const { posts = [], error, retry } = useGallery();
+  const { posts: allPosts = [], error, retry } = useGallery();
+  const posts = category ? allPosts.filter((post) => galleryCategory(post) === category) : allPosts;
   const [selected, setSelected] = useState<number | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const reduced = useMotionPreference();
@@ -78,11 +80,9 @@ export function Gallery() {
     <section id="gallery" className="section shell">
       <Reveal className="section-heading">
         <div>
-          <Eyebrow>BEAUTY В ДЕТАЛЯХ</Eyebrow>
+          <Eyebrow>ФОТО НАШИХ РОБІТ</Eyebrow>
           <h2>
-            Роботи, що говорять
-            <br />
-            <em>самі за себе.</em>
+            {category === 'pedicure' ? 'Роботи з педикюру' : category === 'lashes' ? 'Роботи з віями' : 'Роботи студії'}
           </h2>
         </div>
         <a
@@ -95,7 +95,7 @@ export function Gallery() {
         </a>
       </Reveal>
       {error && <p role="status">Не вдалося оновити роботи. <button className="text-link" onClick={retry}>Спробувати ще раз</button></p>}
-      {!posts.length && !error && <p role="status">Завантажуємо роботи…</p>}
+      {!posts.length && !error && <p role="status">Фото цієї послуги можна уточнити в Instagram.</p>}
       <div ref={region} className="gallery-carousel" role="region" aria-roledescription="карусель" aria-label="Роботи студії"
         onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(true); }} onPointerLeave={() => setHovered(false)}
         onPointerDownCapture={(event) => {

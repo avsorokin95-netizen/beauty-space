@@ -1,4 +1,3 @@
-import { studioHours } from '../../shared/hours';
 import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { ArrowUpRight, Camera, MapPin, Phone, Send } from "lucide-react";
@@ -13,11 +12,9 @@ export function Contacts() {
       <section id="contacts" className="contact-section section">
         <div className="shell contact-grid">
           <Reveal>
-            <Eyebrow>ЗАЛИШ ТРОХИ ЧАСУ ДЛЯ СЕБЕ</Eyebrow>
+            <Eyebrow>ДО ЗУСТРІЧІ У СТУДІЇ</Eyebrow>
             <h2>
-              Твій наступний
-              <br />
-              <em>beauty moment.</em>
+              Адреса<br /><em>та запис</em>
             </h2>
             <p>
               Напиши нам — підберемо послугу
@@ -30,7 +27,7 @@ export function Contacts() {
             </span>
           </Reveal>
           <Reveal className="contact-details">
-            <p className="contact-hours">{studioHours.display} · За попереднім записом</p>
+            <p className="contact-hours">{studio.hours ? `${studio.hours} · ` : ""}За попереднім записом</p>
             <a href={`tel:${studio.phone}`} className="contact-item">
               <Phone size={21} />
               <div>
@@ -73,7 +70,7 @@ export function Contacts() {
               </div>
             </a>
             <a
-              href={studio.telegram}
+              href={studio.telegramContact}
               target="_blank"
               rel="noopener noreferrer"
               className="contact-item"
@@ -98,7 +95,7 @@ export function Contacts() {
           {navigation
             .filter((item) => ["#services", "#contacts"].includes(item.href))
             .map((item) => (
-              <a key={item.href} href={`/${item.href}`}>
+              <a key={item.href} href={item.href.startsWith("#") ? item.href : `/${item.href}`}>
                 {item.label}
               </a>
             ))}

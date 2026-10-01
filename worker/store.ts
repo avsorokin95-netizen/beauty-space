@@ -1,6 +1,6 @@
-import { validPrice, normalizePrice, type PriceDocument } from '../shared/pricing';
+import { validatePrices, type PriceDocument } from '../shared/pricing';
 import { contactFields, validContact, type ContactData } from '../shared/contacts';
-import { MAX_GALLERY_ITEMS, validGalleryAlt, validInstagram, type GalleryItem } from '../shared/gallery';
+import { MAX_GALLERY_ITEMS, validGalleryCategory, validGalleryAlt, validInstagram, type GalleryItem } from '../shared/gallery';
 import { initialGallery } from '../src/data/gallery';
 
 export type Kind = 'prices' | 'contacts' | 'gallery';
@@ -24,25 +24,14 @@ export async function saveDocument(db: D1Database, media: R2Bucket, kind: Kind, 
   if (current.revision !== input.revision) throw new HttpError(409, 'Дані вже змінено. Завантаж опубліковану версію.');
   let data: unknown;
   if (kind === 'prices') {
-    const incoming = input.prices as PriceDocument['prices'];
-    const stored = current.prices as PriceDocument['prices'];
-    if (!incoming || typeof incoming !== 'object' || Object.keys(incoming).length !== Object.keys(stored).length) throw invalid();
-    for (const [id, category] of Object.entries(stored)) {
-      const value = incoming[id];
-      if (!value || !validPrice(value.summary, true) || !Array.isArray(value.items) || value.items.length !== category.items.length) throw invalid();
-      category.summary = normalizePrice(value.summary);
-      category.items.forEach((item, index) => {
-        if (!validPrice(value.items[index]?.price)) throw invalid();
-        item.price = normalizePrice(value.items[index].price);
-      });
-    }
-    data = stored;
+    try { data = validatePrices(input.prices, current.prices as PriceDocument['prices']); }
+    catch { throw invalid(); }
   } else if (kind === 'contacts') {
     const incoming = input.contacts as ContactData;
     if (!incoming || typeof incoming !== 'object') throw invalid();
     data = Object.fromEntries(contactFields.map(({ key }) => {
       if (!validContact(key, incoming[key])) throw invalid();
-      return [key, incoming[key].trim()];
+      return [key, incoming[key]?.trim() ?? (current.contacts as ContactData)[key]];
     }));
   } else {
     if (!Array.isArray(input.items) || input.items.length < 1 || input.items.length > MAX_GALLERY_ITEMS) throw invalid();
@@ -51,21 +40,22 @@ export async function saveDocument(db: D1Database, media: R2Bucket, kind: Kind, 
     for (const item of input.items) {
       if (!item || typeof item.id !== 'string' || !/^work-[A-Za-z0-9-]{1,64}$/.test(item.id) || ids.has(item.id) ||
         typeof item.src !== 'string' || typeof item.title !== 'string' || !item.title.trim() || item.title.length > 100 ||
-        !validGalleryAlt(item.alt) ||
+        !validGalleryAlt(item.alt) || !validGalleryCategory(item.category) ||
         typeof item.label !== 'string' || !item.label.trim() || item.label.length > 60 || !validInstagram(item.instagram)) throw invalid();
       if (!initialGallery.some((seed) => seed.src === item.src)) {
         const name = item.src.slice('/api/media/'.length);
         if (item.src !== `/api/media/${name}` || !mediaName.test(name) || !await media.head(name)) throw invalid();
       }
       ids.add(item.id);
-      items.push({ id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), label: item.label.trim(), instagram: item.instagram });
+      items.push({ id: item.id, src: item.src, title: item.title.trim(), ...(item.alt === undefined ? {} : { alt: item.alt.trim() }), ...(item.category === undefined ? {} : { category: item.category }), label: item.label.trim(), instagram: item.instagram });
     }
     data = items;
   }
   const updatedAt = new Date().toISOString();
   // One conditional SQL statement makes concurrent edits atomic across isolates.
-  const result = await db.prepare('UPDATE documents SET revision = revision + 1, updated_at = ?, data = ? WHERE kind = ? AND revision = ?')
-    .bind(updatedAt, JSON.stringify(data), kind, input.revision).run();
-  if (result.meta.changes !== 1) throw new HttpError(409, 'Дані вже змінено. Завантаж опубліковану версію.');
+  // RETURNING counts the document, independent of rows added by history triggers.
+  const result = await db.prepare('UPDATE documents SET revision = revision + 1, updated_at = ?, data = ? WHERE kind = ? AND revision = ? RETURNING revision')
+    .bind(updatedAt, JSON.stringify(data), kind, input.revision).first<{ revision: number }>();
+  if (!result) throw new HttpError(409, 'Дані вже змінено. Завантаж опубліковану версію.');
   return { revision: current.revision + 1, updatedAt, [fieldFor[kind]]: data };
 }

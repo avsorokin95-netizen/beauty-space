@@ -1,8 +1,9 @@
+import { isPublicPath } from '../../shared/pages';
 import { linkEvent } from '../../shared/analytics';
 
-// The production Worker opts in the public homepage. No cookies or IDs.
+// The production Worker opts in the public pages. No cookies or IDs.
 export function startAnalytics() {
-  if (location.pathname !== '/' || !document.querySelector('meta[name="beauty-analytics"]')) return;
+  if (!isPublicPath(location.pathname) || !document.querySelector('meta[name="beauty-analytics"]')) return;
   const lastClick = new Map<string, number>();
   document.addEventListener('click', (click) => {
     if (!click.isTrusted || !(click.target instanceof Element)) return;

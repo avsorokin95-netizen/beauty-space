@@ -1,3 +1,4 @@
+import type { PublicPath } from './pages.ts';
 import { studioSeo } from './seo.ts';
 import type { ContactDocument } from './contacts.ts';
 import type { PriceDocument } from './pricing.ts';
@@ -5,9 +6,9 @@ import type { GalleryDocument } from './gallery.ts';
 const escape = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c');
 
-export function renderSeo(template: string, snapshot: ContactDocument, prices: PriceDocument['prices'], origin: string | undefined, published: { prices: PriceDocument; gallery: GalleryDocument }, body: string) {
+export function renderSeo(template: string, snapshot: ContactDocument, prices: PriceDocument['prices'], origin: string | undefined, published: { prices: PriceDocument; gallery: GalleryDocument }, body: string, path: PublicPath = '/') {
     const { contacts } = snapshot;
-    const seo = studioSeo(contacts, origin, prices);
+    const seo = studioSeo(contacts, origin, prices, path);
     const meta = [
       `<title>${escape(seo.title)}</title>`,
       `<meta name="description" content="${escape(seo.description)}">`,

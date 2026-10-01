@@ -41,10 +41,10 @@ test("renders content without overflow and loads local imagery", async ({
   page,
 }, testInfo) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Манікюр у Софіївській Борщагівці для мешканців ЖК «Софія»",
+    "Манікюр у Софіївській Борщагівці",
   );
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".hero-slogan")).toContainText("Краса починається");
+  await expect(page.locator(".hero-prices")).toContainText("Манікюр комплекс з укріпленням");
   await expect(page.locator(".hero-photo")).toBeVisible();
   expect(
     await page
@@ -85,8 +85,8 @@ test("service disclosure and gallery keyboard lifecycle work", async ({
   page,
 }) => {
   await expect(page.locator(".service-toggle")).toHaveCount(6);
-  await expect(page.locator('.service-toggle[aria-expanded="true"]')).toHaveCount(0);
-  await expect(page.locator(".service-detail:visible")).toHaveCount(0);
+  await expect(page.locator('.service-toggle[aria-expanded="true"]')).toHaveCount(1);
+  await expect(page.locator(".service-detail:visible")).toHaveCount(1);
   const brows = page.getByRole("button", { name: /03 Брови/ });
   await brows.click();
   await expect(brows).toHaveAttribute("aria-expanded", "true");
@@ -138,7 +138,6 @@ test("all pricing categories remain readable on narrow screens", async ({
 }, testInfo) => {
   if (testInfo.project.name === "mobile")
     await page.setViewportSize({ width: 320, height: 844 });
-  await page.locator('[aria-controls="service-nails"]').click();
   await expect(page.locator("#service-nails .price-item")).toHaveCount(7);
   await expect(page.locator("#service-nails")).toContainText("50/70 грн");
   for (const id of ["pedicure", "brows", "lashes", "sets", "depilation"]) {

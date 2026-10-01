@@ -1,3 +1,4 @@
+import { galleryCategory, type GalleryItem as CategorizedItem } from '../../../shared/gallery';
 import { useEffect, useState, type FormEvent } from "react";
 import { ImagePlus, Save, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 import { api, ApiError } from "../../lib/api";
@@ -120,6 +121,10 @@ export function GalleryEditor({ model, onChange, busy, onBusy, onSessionExpired,
                 onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; void upload(index, file); }} />
               <label htmlFor={`title-${item.id}`}>Назва роботи {index + 1}</label>
               <input id={`title-${item.id}`} value={item.title} maxLength={100} required onChange={(event) => update(index, { title: event.target.value })} />
+              <label htmlFor={`category-${item.id}`}>Послуга на фото {index + 1}</label>
+              <select id={`category-${item.id}`} value={galleryCategory(item)} onChange={(event) => update(index, { category: event.target.value as CategorizedItem['category'] })}>
+                <option value="nails">Манікюр</option><option value="pedicure">Педикюр</option><option value="lashes">Вії</option><option value="other">Інше</option>
+              </select>
               <label htmlFor={`label-${item.id}`}>Категорія / підпис {index + 1}</label>
               <input id={`label-${item.id}`} value={item.label} maxLength={60} required onChange={(event) => update(index, { label: event.target.value })} />
               <label htmlFor={`alt-${item.id}`}>Опис фото {index + 1} <small>необов’язково</small></label>
