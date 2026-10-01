@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { analyticsDashboard, eventLabels, type AnalyticsReport } from '../../../shared/analytics';
 import { api, ApiError } from '../../lib/api';
 
-export function Analytics({ onSessionExpired }: { onSessionExpired: () => void }) {
+export function Analytics({ available, onSessionExpired }: { available: boolean; onSessionExpired: () => void }) {
   const [days, setDays] = useState(7);
   const [report, setReport] = useState<AnalyticsReport | null>(null);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
   useEffect(() => {
+    if (!available) return;
     let active = true;
     api<AnalyticsReport>(`/api/admin/analytics?days=${days}`).then((data) => {
       if (active) setReport(data);
@@ -17,7 +18,18 @@ export function Analytics({ onSessionExpired }: { onSessionExpired: () => void }
       else setError('Не вдалося завантажити статистику. Спробуй оновити.');
     });
     return () => { active = false; };
-  }, [days, revision, onSessionExpired]);
+  }, [available, days, revision, onSessionExpired]);
+  if (!available) return <section className="analytics-panel">
+    <div className="admin-page-heading"><div>
+      <p className="admin-eyebrow">ВІДВІДУВАННЯ ТА ЗВЕРНЕННЯ</p>
+      <h1>Статистика <em>сайту.</em></h1>
+      <p>Це локальна копія сайту. Реальна статистика доступна в онлайн-адмінці.</p>
+    </div></div>
+    <p>Увійди звичною поштою та відкрий «Статистика», щоб переглянути відвідування й натискання на контакти.</p>
+    <div className="analytics-controls">
+      <a className="button" href="https://victoriya-beauty.space/admin" target="_blank" rel="noopener noreferrer">Відкрити онлайн-адмінку ↗</a>
+    </div>
+  </section>;
   return <section className="analytics-panel">
     <div className="admin-page-heading"><div>
       <p className="admin-eyebrow">ВІДВІДУВАННЯ ТА ЗВЕРНЕННЯ</p>

@@ -12,7 +12,7 @@ test('owner changes password and signs back in', async ({ page }, testInfo) => {
   await page.goto('/admin');
   await page.getByLabel('Пароль', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Увійти в адмінку' }).click();
-  await page.getByRole('button', { name: 'Безпека', exact: true }).click();
+  await page.getByRole('button', { name: 'Локальний пароль', exact: true }).click();
   try {
     await page.getByLabel('Поточний пароль', { exact: true }).fill(password);
     await page.getByLabel('Новий пароль', { exact: true }).fill(replacement);

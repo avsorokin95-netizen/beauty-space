@@ -304,13 +304,13 @@ export default function Admin() {
           <button type="button" aria-pressed={section === "prices"} onClick={() => setSection("prices")}>Ціни{dirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "gallery"} onClick={() => setSection("gallery")}>Роботи{galleryDirty ? " •" : ""}</button>
           <button type="button" aria-pressed={section === "contacts"} onClick={() => setSection("contacts")}>Контакти{contactsDirty ? " •" : ""}</button>
-          <button type="button" aria-pressed={section === "security"} onClick={() => setSection("security")}>Безпека</button>
-          {accessMode && <button type="button" aria-pressed={section === "analytics"} onClick={() => setSection("analytics")}>Статистика</button>}
+          <button type="button" aria-pressed={section === "analytics"} onClick={() => setSection("analytics")}>Статистика</button>
+          {!accessMode && <button type="button" aria-pressed={section === "security"} onClick={() => setSection("security")}>Локальний пароль</button>}
         </nav>
-        {section === "analytics" && accessMode && <Analytics onSessionExpired={analyticsSessionExpired} />}
-        <div hidden={section !== "security"}>
-          {accessMode ? <section className="admin-page-heading"><div><h1>Захищений <em>доступ.</em></h1><p>Вхід за одноразовим кодом на дозволену пошту. Пароль для цього сайту не потрібен.</p><p>Щоб змінити список людей із доступом, звернися до власника сайту.</p></div></section> : <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />}
-        </div>
+        {section === "analytics" && <Analytics available={accessMode} onSessionExpired={analyticsSessionExpired} />}
+        {!accessMode && <div hidden={section !== "security"}>
+          <PasswordEditor hasDrafts={dirty || galleryDirty || contactsDirty} busy={passwordBusy || busy || galleryBusy || contactsBusy} onBusy={setPasswordBusy} onSessionExpired={() => setAuthenticated(false)} onChanged={() => { setPasswordChanged(true); setError(""); setPassword(""); setAuthenticated(false); }} />
+        </div>}
         <div hidden={section !== "contacts"}>
           <ContactsEditor model={contactsModel} onChange={setContactsModel} busy={contactsBusy} onBusy={setContactsBusy} onSessionExpired={() => setAuthenticated(false)} />
         </div>

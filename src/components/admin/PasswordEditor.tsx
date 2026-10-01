@@ -30,8 +30,8 @@ export function PasswordEditor({ hasDrafts, busy, onBusy, onChanged, onSessionEx
       else setError(cause instanceof ApiError ? cause.message : 'Не вдалося підтвердити зміну. Перевір підключення; якщо сесія завершилась, увійди з новим паролем.');
     } finally { onBusy(false); }
   }
-  return <section aria-label="Безпека облікового запису">
-    <div className="admin-page-heading"><div><p className="admin-eyebrow">ДОСТУП ДО ТВОГО ПРОСТОРУ</p><h1>Твоя <em>безпека.</em></h1><p>Після зміни пароля потрібно буде увійти знову на всіх пристроях.</p></div></div>
+  return <section aria-label="Локальний пароль">
+    <div className="admin-page-heading"><div><p className="admin-eyebrow">ДОСТУП ДО ЛОКАЛЬНОЇ КОПІЇ</p><h1>Локальний <em>пароль.</em></h1><p>Цей пароль використовується лише для локального запуску. Вхід на основний сайт залишається через код на пошту.</p><p>Після зміни пароля потрібно буде знову увійти в локальну адмінку.</p></div></div>
     <form className="password-editor admin-editor" onSubmit={submit}>
       <fieldset disabled={busy || hasDrafts}>
         <legend className="sr-only">Зміна пароля</legend>

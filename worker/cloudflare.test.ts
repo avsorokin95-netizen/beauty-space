@@ -288,9 +288,9 @@ test('Worker: Access signatures, permissions, D1 conflicts, R2 uploads and SEO',
       await page.setViewportSize({ width: 1440, height: 1000 });
       await page.screenshot({ path: 'test-results/worker/analytics-visits-desktop.png', fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
-      await page.getByRole('button', { name: 'Безпека', exact: true }).click();
-      await page.getByText('Вхід за одноразовим кодом на дозволену пошту.', { exact: false }).waitFor();
-      assert.equal(await page.locator('input[type=password]:visible').count(), 0);
+      assert.equal(await page.getByRole('button', { name: 'Безпека', exact: true }).count(), 0);
+      assert.equal(await page.getByRole('button', { name: 'Локальний пароль', exact: true }).count(), 0);
+      assert.equal(await page.locator('input[type=password]').count(), 0);
       await page.getByRole('button', { name: 'Роботи', exact: true }).click();
       const png = await sharp(photo).png().toBuffer();
       const uploadResponse = page.waitForResponse('**/api/admin/gallery/upload');
