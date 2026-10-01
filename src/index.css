@@ -990,6 +990,7 @@ h1 em,
   .service-detail p {
     font-size: 11px;
   }
+  .gallery-carousel { width: 100%; max-width: 320px; }
   .gallery-grid { margin-left: -16px; }
   .gallery-slide { flex-basis: 100%; padding-left: 16px; }
   .gallery-controls { gap: 18px; }
@@ -1047,8 +1048,8 @@ h1 em,
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 8 / 9;
-  max-height: 360px;
+  aspect-ratio: 4 / 5;
+  max-height: 400px;
   position: relative;
   overflow: hidden;
   padding: 0;
@@ -1059,11 +1060,7 @@ h1 em,
 .gallery-image-button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-.gallery-image-button:hover img {
-  transform: scale(1.045);
+  object-fit: contain;
 }
 .gallery-image-icon {
   position: absolute;
@@ -1079,12 +1076,6 @@ h1 em,
   object-fit: contain;
   margin-block: 15px;
 }
-@media (max-width: 767px) {
-  .gallery-image-button {
-    max-height: 320px;
-  }
-}
-
 .price-list {
   margin: 0 0 24px;
 }
