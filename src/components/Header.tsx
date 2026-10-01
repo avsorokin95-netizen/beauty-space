@@ -1,7 +1,7 @@
 import { BrandStar } from "./BrandStar";
 import { useContacts } from "../hooks/useContacts";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import { serviceNavigation, studioNavigation } from "../data/studio";
 import type { PublicPath } from "../../shared/pages";
 
@@ -10,6 +10,57 @@ function ServiceSwitcher({ path }: { path: PublicPath }) {
     {serviceNavigation.map((item) => <a key={item.href} href={item.href} aria-current={path === item.href ? 'page' : undefined}>
       <span className="service-current-dot" aria-hidden="true" />{item.label}
     </a>)}
+  </div>;
+}
+
+function MobileServiceSwitcher({ path }: { path: PublicPath }) {
+  const [expanded, setExpanded] = useState(false);
+  const container = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const current = serviceNavigation.find((item) => item.href === path)!;
+  useEffect(() => {
+    if (!expanded) return;
+    const closeOutside = (event: Event) => {
+      if (event.target instanceof Node && !container.current?.contains(event.target)) setExpanded(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setExpanded(false);
+        trigger.current?.focus({ preventScroll: true });
+      }
+    };
+    const desktop = window.matchMedia("(min-width: 1101px)");
+    const closeOnDesktop = () => { if (desktop.matches) setExpanded(false); };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("focusin", closeOutside);
+    document.addEventListener("keydown", onKeyDown);
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("focusin", closeOutside);
+      document.removeEventListener("keydown", onKeyDown);
+      desktop.removeEventListener("change", closeOnDesktop);
+    };
+  }, [expanded]);
+  return <div className="mobile-service-switcher" ref={container}>
+    <button ref={trigger} type="button" className="header-current-service"
+      aria-expanded={expanded} aria-controls="other-services"
+      aria-label={`${current.label} — змінити послугу`}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setExpanded(true);
+          requestAnimationFrame(() => container.current?.querySelector<HTMLAnchorElement>("a")?.focus());
+        }
+      }}
+      onClick={() => setExpanded((value) => !value)}>
+      {current.label}<ChevronDown size={14} aria-hidden="true" />
+    </button>
+    <nav id="other-services" className="other-services" aria-label="Інші послуги" hidden={!expanded}>
+      {serviceNavigation.filter((item) => item.href !== path).map((item) =>
+        <a key={item.href} href={item.href} onClick={() => setExpanded(false)}>{item.label}<ArrowUpRight size={14} aria-hidden="true" /></a>
+      )}
+    </nav>
   </div>;
 }
 
@@ -35,52 +86,57 @@ export function Header({ path }: { path: PublicPath }) {
     if (!open) return;
     const element = dialog.current;
     const previousOverflow = document.body.style.overflow;
+    const scrollY = window.scrollY;
     element?.showModal();
+    // Preserve the page position when native dialog focus moves.
+    window.scrollTo({ top: scrollY, behavior: "instant" });
     document.body.style.overflow = "hidden";
     const desktop = window.matchMedia("(min-width: 1101px)");
     const closeOnDesktop = () => { if (desktop.matches) setOpen(false); };
     desktop.addEventListener("change", closeOnDesktop);
     return () => {
+      const currentY = window.scrollY;
       element?.close();
       document.body.style.overflow = previousOverflow;
+      window.scrollTo({ top: currentY, behavior: "instant" });
       desktop.removeEventListener("change", closeOnDesktop);
     };
   }, [open]);
   return (
-    <header className="header">
-      <div className="shell header-inner">
-        <Logo />
-        <nav className="desktop-nav" aria-label="Основна навігація">
-          <ServiceSwitcher path={path} />
-          <div className="studio-links" role="group" aria-label="Інформація про студію">
-          {studioNavigation.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-          </div>
-        </nav>
-        <a
-          className="header-book"
-          data-analytics="booking" href={studio.direct}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Записатися <ArrowUpRight size={16} />
-        </a>
-        <button
-          className="menu-button"
-          aria-label="Відкрити меню"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          onClick={() => setOpen(true)}
-        >
-          <Menu />
-        </button>
-      </div>
-      <nav className="shell service-bar" aria-label="Послуги студії">
-        <ServiceSwitcher path={path} />
-      </nav>
+    <>
+      <header className="header">
+        <div className="shell header-inner">
+          <Logo />
+          <nav className="desktop-nav" aria-label="Основна навігація">
+            <ServiceSwitcher path={path} />
+            <div className="studio-links" role="group" aria-label="Інформація про студію">
+            {studioNavigation.map((item) => (
+              <a key={item.href} href={item.href}>
+                {item.label}
+              </a>
+            ))}
+            </div>
+          </nav>
+          <a
+            className="header-book"
+            data-analytics="booking" href={studio.direct}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Записатися <ArrowUpRight size={16} />
+          </a>
+          <MobileServiceSwitcher key={path} path={path} />
+          <button
+            className="menu-button"
+            aria-label="Відкрити меню"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            onClick={() => setOpen(true)}
+          >
+            <Menu />
+          </button>
+        </div>
+      </header>
       <dialog
         ref={dialog}
         id="mobile-nav"
@@ -121,6 +177,6 @@ export function Header({ path }: { path: PublicPath }) {
           <p>{studio.city}<br />{studio.address}</p>
         </div>
       </dialog>
-    </header>
+    </>
   );
 }

@@ -63,5 +63,5 @@ test('contacts fetch can recover from an unavailable API', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText('Не вдалося завантажити сайт.');
   await page.unroute('**/api/contacts');
   await page.getByRole('button', { name: 'Спробувати ще раз' }).click();
-  await expect(page.locator('.header-book')).toBeVisible();
+  await expect(page.locator('.header')).toBeVisible();
 });

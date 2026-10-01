@@ -9,11 +9,17 @@ test('grouped navigation identifies the current service and opens sections on th
     await page.goto(`${path}?ref=navigation#home`);
     for (const width of widths) {
       await page.setViewportSize({ width, height: 844 });
-      const nav = page.getByRole('navigation', { name: compact ? 'Послуги студії' : 'Основна навігація', exact: true });
-      await expect(nav).toBeVisible();
-      await expect(nav.locator('[aria-current="page"]')).toHaveCount(1);
-      await expect(nav.locator('[aria-current="page"]')).toHaveText(label);
-      await expect(nav.locator('[aria-current="page"]')).toHaveAttribute('href', path);
+      if (compact) {
+        await expect(page.locator('.header-current-service')).toBeVisible();
+        await expect(page.locator('.header-current-service')).toHaveText(label);
+        await expect(page.locator('.header-book')).toBeHidden();
+      } else {
+        const nav = page.getByRole('navigation', { name: 'Основна навігація', exact: true });
+        await expect(nav).toBeVisible();
+        await expect(nav.locator('[aria-current="page"]')).toHaveCount(1);
+        await expect(nav.locator('[aria-current="page"]')).toHaveText(label);
+        await expect(nav.locator('[aria-current="page"]')).toHaveAttribute('href', path);
+      }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     }
     const priceCategories = await page.locator('.service-row').evaluateAll((rows) => rows.map((row) => row.id));
