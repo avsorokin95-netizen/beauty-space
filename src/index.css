@@ -1541,10 +1541,10 @@ h1 em,
   .hero-prices dd { font-size: 25px; }
   .commercial-hero .work-hero { max-width: 230px; align-self: start; }
   .commercial-hero .hero-photo { max-height: 360px; border-radius: 28px 6px 6px 6px; }
-  /* Below the photo and prices, short captions may use the spare row width. */
-  .work-hero figcaption { width: max-content; max-width: calc(100vw - 40px); padding-top: 10px; justify-self: start; text-align: left; overflow-wrap: anywhere; }
+  /* Center beneath the photo, with a little room for captions beyond its edges. */
+  .work-hero figcaption { width: max-content; max-width: calc(100% + 32px); padding-top: 10px; justify-self: center; text-align: center; overflow-wrap: anywhere; }
   .work-hero figcaption span:first-child { letter-spacing: 0.5px; }
-  .work-hero figcaption span:last-child { font-size: 20px; line-height: 1.15; }
+  .work-hero figcaption span:last-child { font-size: clamp(18px, 5vw, 20px); line-height: 1.15; }
   .hero-booking { padding-top: 4px; }
   .commercial-hero .booking-note { max-width: 300px; }
   .services-section.section { padding-block: 40px; }

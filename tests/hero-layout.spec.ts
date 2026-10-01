@@ -11,13 +11,17 @@ async function expectSeparatedCaption(page: Page, oneLine: boolean) {
     range.selectNodeContents(title);
     return {
       photoBottom: photo.bottom, photoRight: photo.right, photoHeight: photo.height,
-      captionTop: caption.top, captionBottom: caption.bottom, captionRight: caption.right,
+      photoCenter: photo.x + photo.width / 2,
+      captionTop: caption.top, captionBottom: caption.bottom, captionLeft: caption.left, captionRight: caption.right,
+      captionCenter: caption.x + caption.width / 2,
       offerLeft: offer.left, offerBottom: offer.bottom, bookingTop: booking.top,
       lines: range.getClientRects().length, width: innerWidth, scrollWidth: document.documentElement.scrollWidth,
     };
   });
   expect(geometry.photoHeight).toBeGreaterThan(0);
   expect(geometry.captionTop).toBeGreaterThanOrEqual(geometry.photoBottom - 1);
+  expect(Math.abs(geometry.captionCenter - geometry.photoCenter)).toBeLessThanOrEqual(1);
+  expect(geometry.captionLeft).toBeGreaterThanOrEqual(0);
   expect(geometry.captionRight).toBeLessThanOrEqual(geometry.width);
   expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.width);
   if (oneLine) expect(geometry.lines).toBe(1);
