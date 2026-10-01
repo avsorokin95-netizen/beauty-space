@@ -1,0 +1,1040 @@
+{
+  "at": "2026-10-01T20:42:21.576Z",
+  "origin": "https://victoriya-beauty.space",
+  "label": "before",
+  "http": [
+    {
+      "url": "https://victoriya-beauty.space/",
+      "status": 200,
+      "location": null,
+      "canonical": "https://victoriya-beauty.space/",
+      "robotsHeader": null,
+      "robotsMeta": "index, follow, max-image-preview:large",
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "https://victoriya-beauty.space/pedicure",
+      "status": 200,
+      "location": null,
+      "canonical": "https://victoriya-beauty.space/pedicure",
+      "robotsHeader": null,
+      "robotsMeta": "index, follow, max-image-preview:large",
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "https://victoriya-beauty.space/laminuvannia-vii",
+      "status": 200,
+      "location": null,
+      "canonical": "https://victoriya-beauty.space/laminuvannia-vii",
+      "robotsHeader": null,
+      "robotsMeta": "index, follow, max-image-preview:large",
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "https://victoriya-beauty.space/robots.txt",
+      "status": 200,
+      "location": null,
+      "robotsHeader": null,
+      "type": "text/plain; charset=utf-8",
+      "body": "User-agent: *\nAllow: /\nDisallow: /api/\nAllow: /api/prices$\nAllow: /api/contacts$\nAllow: /api/gallery$\nAllow: /api/media/\nDisallow: /admin\nSitemap: https://victoriya-beauty.space/sitemap.xml\n"
+    },
+    {
+      "url": "https://victoriya-beauty.space/sitemap.xml",
+      "status": 200,
+      "location": null,
+      "robotsHeader": null,
+      "type": "application/xml",
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://victoriya-beauty.space/</loc></url><url><loc>https://victoriya-beauty.space/pedicure</loc></url><url><loc>https://victoriya-beauty.space/laminuvannia-vii</loc></url></urlset>"
+    },
+    {
+      "url": "https://victoriya-beauty.space/manicure",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/lashes",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/laminuvannia-vii",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/pedicure/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/pedicure",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/pedicure/index.html",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/pedicure",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/index.html",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/laminuvannia-vii/",
+      "status": 301,
+      "location": "https://victoriya-beauty.space/laminuvannia-vii",
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/?utm_source=seo-audit",
+      "status": 200,
+      "location": null,
+      "canonical": "https://victoriya-beauty.space/",
+      "robotsHeader": null,
+      "robotsMeta": "index, follow, max-image-preview:large",
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "https://victoriya-beauty.space/seo-audit-missing-page",
+      "status": 404,
+      "location": null,
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/brows",
+      "status": 404,
+      "location": null,
+      "robotsHeader": null,
+      "type": null
+    },
+    {
+      "url": "https://victoriya-beauty.space/admin",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robotsHeader": null,
+      "type": "text/html; charset=UTF-8"
+    },
+    {
+      "url": "https://victoriya-beauty.space/api/admin/session",
+      "status": 302,
+      "location": "https://bold-moon-f565.cloudflareaccess.com/cdn-cgi/access/login/victoriya-beauty.space",
+      "robotsHeader": null,
+      "type": "text/html; charset=UTF-8"
+    },
+    {
+      "url": "http://victoriya-beauty.space/",
+      "hops": [
+        {
+          "url": "http://victoriya-beauty.space/",
+          "status": 301,
+          "location": "https://victoriya-beauty.space/"
+        },
+        {
+          "url": "https://victoriya-beauty.space/",
+          "status": 200,
+          "location": null
+        }
+      ]
+    },
+    {
+      "url": "https://www.victoriya-beauty.space/",
+      "hops": [
+        {
+          "url": "https://www.victoriya-beauty.space/",
+          "status": 301,
+          "location": "https://victoriya-beauty.space/"
+        },
+        {
+          "url": "https://victoriya-beauty.space/",
+          "status": 200,
+          "location": null
+        }
+      ]
+    },
+    {
+      "url": "http://www.victoriya-beauty.space/pedicure/",
+      "hops": [
+        {
+          "url": "http://www.victoriya-beauty.space/pedicure/",
+          "status": 301,
+          "location": "https://victoriya-beauty.space/pedicure"
+        },
+        {
+          "url": "https://victoriya-beauty.space/pedicure",
+          "status": 200,
+          "location": null
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "mobile": true,
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Манікюр: манікюр без покриття — 550 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Послуги та ціни",
+        "Роботи студії",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/pink-floral.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pink-floral.webp",
+          "alt": "Рожевий манікюр на мигдалеподібних нігтях із дрібним квітковим декором.",
+          "width": "900",
+          "height": "1600",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 900,
+          "renderedWidth": 161
+        },
+        {
+          "src": "/images/DMH0_1XIG6e.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DMH0_1XIG6e.webp",
+          "alt": "Французький манікюр на коротких квадратних нігтях із рожевою основою та білими кінчиками.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DI3Rq7-AO6U.webp",
+          "alt": "Вії з виразним вигином на крупному плані ока збоку.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/pink-floral.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pink-floral.webp",
+          "alt": "Рожевий манікюр на мигдалеподібних нігтях із дрібним квітковим декором.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 900,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/Daz8xsnCN4f.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/Daz8xsnCN4f.webp",
+          "alt": "Однотонний світло-рожевий манікюр на овальних нігтях із глянцевим покриттям.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 720,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/DNm6R3Qo2oO.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DNm6R3Qo2oO.webp",
+          "alt": "Мигдалеподібні нігті з червоним і молочним покриттям та чорними крапками на світлих нігтях.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 973,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/lashes-detail.webp",
+          "alt": "Крупний план ока з темними підкрученими верхніми віями.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 916,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "currentSrc": "",
+          "alt": "Педикюр на коротких нігтях природного відтінку без кольорового покриття.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 0,
+          "renderedWidth": 350
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "https://victoriya-beauty.space/images/pink-floral.webp",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 23,
+      "works": 7,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 789.59375
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service"
+        ]
+      ]
+    },
+    {
+      "path": "/pedicure",
+      "mobile": true,
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Педикюр: педикюр гігієнічний зі стопою / без — 600/700 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Педикюр у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Педикюр: послуги та ціни",
+        "Роботи з педикюру",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/pedicure",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/hero/pedicure-800.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/hero/pedicure-800.webp",
+          "alt": "Ілюстративне зображення стоп із ніжно-рожевим педикюром на світлій тканині",
+          "width": "1120",
+          "height": "1400",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 160,
+          "renderedWidth": 161
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pedicure-care.webp",
+          "alt": "Педикюр на коротких нігтях природного відтінку без кольорового покриття.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 556,
+          "renderedWidth": 350
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 4,
+      "works": 1,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 790.03125
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service",
+          "BreadcrumbList"
+        ]
+      ]
+    },
+    {
+      "path": "/laminuvannia-vii",
+      "mobile": true,
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Ламінування вій: ламінування вій + фарбування — 800 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Ламінування вій у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Ламінування вій: послуги та ціни",
+        "Роботи з віями",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/laminuvannia-vii",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/hero/lashes-800.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/hero/lashes-800.webp",
+          "alt": "Ілюстративний портрет жінки з опущеними повіками та виразними віями",
+          "width": "1120",
+          "height": "1400",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 160,
+          "renderedWidth": 161
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DI3Rq7-AO6U.webp",
+          "alt": "Вії з виразним вигином на крупному плані ока збоку.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 350
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/lashes-detail.webp",
+          "alt": "Крупний план ока з темними підкрученими верхніми віями.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 916,
+          "renderedWidth": 350
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 6,
+      "works": 2,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 790.03125
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service",
+          "BreadcrumbList"
+        ]
+      ]
+    },
+    {
+      "path": "/",
+      "mobile": false,
+      "title": "Манікюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Манікюр: манікюр без покриття — 550 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Манікюр у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Послуги та ціни",
+        "Роботи студії",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/pink-floral.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pink-floral.webp",
+          "alt": "Рожевий манікюр на мигдалеподібних нігтях із дрібним квітковим декором.",
+          "width": "900",
+          "height": "1600",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 900,
+          "renderedWidth": 538
+        },
+        {
+          "src": "/images/DMH0_1XIG6e.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DMH0_1XIG6e.webp",
+          "alt": "Французький манікюр на коротких квадратних нігтях із рожевою основою та білими кінчиками.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DI3Rq7-AO6U.webp",
+          "alt": "Вії з виразним вигином на крупному плані ока збоку.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/pink-floral.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pink-floral.webp",
+          "alt": "Рожевий манікюр на мигдалеподібних нігтях із дрібним квітковим декором.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 900,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/Daz8xsnCN4f.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/Daz8xsnCN4f.webp",
+          "alt": "Однотонний світло-рожевий манікюр на овальних нігтях із глянцевим покриттям.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 720,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/DNm6R3Qo2oO.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DNm6R3Qo2oO.webp",
+          "alt": "Мигдалеподібні нігті з червоним і молочним покриттям та чорними крапками на світлих нігтях.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 973,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/lashes-detail.webp",
+          "alt": "Крупний план ока з темними підкрученими верхніми віями.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 916,
+          "renderedWidth": 411
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pedicure-care.webp",
+          "alt": "Педикюр на коротких нігтях природного відтінку без кольорового покриття.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 556,
+          "renderedWidth": 411
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "https://victoriya-beauty.space/images/pink-floral.webp",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 23,
+      "works": 7,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 1025.234375
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service"
+        ]
+      ]
+    },
+    {
+      "path": "/pedicure",
+      "mobile": false,
+      "title": "Педикюр · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Педикюр: педикюр гігієнічний зі стопою / без — 600/700 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Педикюр у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Педикюр: послуги та ціни",
+        "Роботи з педикюру",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/pedicure",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/hero/pedicure-800.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/hero/pedicure-800.webp",
+          "alt": "Ілюстративне зображення стоп із ніжно-рожевим педикюром на світлій тканині",
+          "width": "1120",
+          "height": "1400",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 600,
+          "renderedWidth": 593
+        },
+        {
+          "src": "/images/pedicure-care.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/pedicure-care.webp",
+          "alt": "Педикюр на коротких нігтях природного відтінку без кольорового покриття.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 556,
+          "renderedWidth": 420
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 4,
+      "works": 1,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 1052.703125
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service",
+          "BreadcrumbList"
+        ]
+      ]
+    },
+    {
+      "path": "/laminuvannia-vii",
+      "mobile": false,
+      "title": "Ламінування вій · Софіївська Борщагівка | Beauty Space Victoriya",
+      "description": "Ламінування вій: ламінування вій + фарбування — 800 грн. Софіївська Борщагівка, вул. Боголюбова, 6. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.",
+      "h1": [
+        "Ламінування вій у Софіївській Борщагівці"
+      ],
+      "h2": [
+        "Ламінування вій: послуги та ціни",
+        "Роботи з віями",
+        "Ще трохи часу для себе",
+        "Beauty SpaceVictoriya",
+        "Краса в деталях.Тепло у відгуках.",
+        "Перед візитом",
+        "Адресата запис"
+      ],
+      "canonical": "https://victoriya-beauty.space/laminuvannia-vii",
+      "hasPrices": true,
+      "hasAddress": true,
+      "hasPhone": true,
+      "overflow": false,
+      "duplicateIds": [],
+      "brokenFragments": [],
+      "beaconScripts": 1,
+      "images": [
+        {
+          "src": "/images/hero/lashes-800.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/hero/lashes-800.webp",
+          "alt": "Ілюстративний портрет жінки з опущеними повіками та виразними віями",
+          "width": "1120",
+          "height": "1400",
+          "loading": "auto",
+          "priority": "high",
+          "naturalWidth": 600,
+          "renderedWidth": 593
+        },
+        {
+          "src": "/images/DI3Rq7-AO6U.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/DI3Rq7-AO6U.webp",
+          "alt": "Вії з виразним вигином на крупному плані ока збоку.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 1200,
+          "renderedWidth": 420
+        },
+        {
+          "src": "/images/lashes-detail.webp",
+          "currentSrc": "https://victoriya-beauty.space/images/lashes-detail.webp",
+          "alt": "Крупний план ока з темними підкрученими верхніми віями.",
+          "width": "1200",
+          "height": "1600",
+          "loading": "lazy",
+          "priority": "auto",
+          "naturalWidth": 916,
+          "renderedWidth": 420
+        }
+      ],
+      "assets": [
+        "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+        "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+        "",
+        "https://static.cloudflareinsights.com/beacon.min.js"
+      ],
+      "priceItems": 6,
+      "works": 2,
+      "bookingVisible": true,
+      "pricesJump": {
+        "top": 1052.703125
+      },
+      "galleryOpens": true,
+      "errors": [],
+      "schemaTypes": [
+        "BeautySalon",
+        [
+          "WebSite",
+          "WebPage",
+          "Service",
+          "BreadcrumbList"
+        ]
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "url": "https://victoriya-beauty.space/assets/index-BCr_arOU.js",
+      "status": 200,
+      "type": "text/javascript",
+      "bytes": 332683
+    },
+    {
+      "url": "https://victoriya-beauty.space/assets/index-DqgKQtWK.css",
+      "status": 200,
+      "type": "text/css",
+      "bytes": 46289
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/pink-floral.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 63360
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/DMH0_1XIG6e.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 44888
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/DI3Rq7-AO6U.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 88046
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/Daz8xsnCN4f.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 30568
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/DNm6R3Qo2oO.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 38620
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/lashes-detail.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 44030
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/pedicure-care.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 49074
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/hero/pedicure-800.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 81250
+    },
+    {
+      "url": "https://victoriya-beauty.space/images/hero/lashes-800.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 41972
+    }
+  ],
+  "content": {
+    "contacts": {
+      "revision": 1,
+      "updatedAt": "2026-09-11T15:16:31.946Z",
+      "sha256": "6bdb30678fb4bfcdbfc7433826b928461bed40e87c61a2d49c9587b90b5b3f2b"
+    },
+    "prices": {
+      "revision": 1,
+      "updatedAt": "2026-09-11T14:13:09.527Z",
+      "sha256": "bad6f056551587fe9a1dc0a4c6c513e0f850775716da5e8db3f38192293dab76"
+    },
+    "gallery": {
+      "revision": 4,
+      "updatedAt": "2026-09-11T15:51:59.509Z",
+      "sha256": "3a84e437c1fab92e3870e215a1bd354f2047b16417d3190110317be3f233ce71"
+    }
+  },
+  "lab": [
+    {
+      "mobile": true,
+      "path": "/",
+      "run": 1,
+      "lcp": 1864,
+      "cls": 0.0004975810739018868,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/pink-floral.webp"
+      },
+      "fcp": 788,
+      "ttfb": 152.39999999850988
+    },
+    {
+      "mobile": true,
+      "path": "/",
+      "run": 2,
+      "lcp": 1856,
+      "cls": 0.0004975810739018868,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/pink-floral.webp"
+      },
+      "fcp": 768,
+      "ttfb": 142.70000000298023
+    },
+    {
+      "mobile": true,
+      "path": "/",
+      "run": 3,
+      "lcp": 1824,
+      "cls": 0.0004975810739018868,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/pink-floral.webp"
+      },
+      "fcp": 760,
+      "ttfb": 127.20000000298023
+    },
+    {
+      "mobile": true,
+      "path": "/pedicure",
+      "run": 1,
+      "lcp": 2120,
+      "cls": 0.00042941198674105967,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/pedicure-800.webp"
+      },
+      "fcp": 748,
+      "ttfb": 168.20000000298023
+    },
+    {
+      "mobile": true,
+      "path": "/pedicure",
+      "run": 2,
+      "lcp": 2152,
+      "cls": 0.00042941198674105967,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/pedicure-800.webp"
+      },
+      "fcp": 768,
+      "ttfb": 130.10000000149012
+    },
+    {
+      "mobile": true,
+      "path": "/pedicure",
+      "run": 3,
+      "lcp": 2148,
+      "cls": 0.00042941198674105967,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/pedicure-800.webp"
+      },
+      "fcp": 760,
+      "ttfb": 165.79999999701977
+    },
+    {
+      "mobile": true,
+      "path": "/laminuvannia-vii",
+      "run": 1,
+      "lcp": 1396,
+      "cls": 0.010971011312221429,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/lashes-800.webp"
+      },
+      "fcp": 1052,
+      "ttfb": 502.29999999701977
+    },
+    {
+      "mobile": true,
+      "path": "/laminuvannia-vii",
+      "run": 2,
+      "lcp": 1052,
+      "cls": 0.010971011312221429,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/lashes-800.webp"
+      },
+      "fcp": 772,
+      "ttfb": 149.60000000149012
+    },
+    {
+      "mobile": true,
+      "path": "/laminuvannia-vii",
+      "run": 3,
+      "lcp": 1104,
+      "cls": 0.010971011312221429,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/lashes-800.webp"
+      },
+      "fcp": 756,
+      "ttfb": 118.69999999552965
+    },
+    {
+      "mobile": false,
+      "path": "/",
+      "run": 1,
+      "lcp": 304,
+      "cls": 0.03447060891233844,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/pink-floral.webp"
+      },
+      "fcp": 304,
+      "ttfb": 166.70000000298023
+    },
+    {
+      "mobile": false,
+      "path": "/pedicure",
+      "run": 1,
+      "lcp": 284,
+      "cls": 0.017184838166413485,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/pedicure-800.webp"
+      },
+      "fcp": 248,
+      "ttfb": 152.89999999850988
+    },
+    {
+      "mobile": false,
+      "path": "/laminuvannia-vii",
+      "run": 1,
+      "lcp": 224,
+      "cls": 0.016377746016890914,
+      "longTaskMs": 0,
+      "lcpElement": {
+        "tag": "IMG",
+        "text": "",
+        "url": "https://victoriya-beauty.space/images/hero/lashes-800.webp"
+      },
+      "fcp": 224,
+      "ttfb": 117.10000000149012
+    }
+  ],
+  "errors": [],
+  "labEnvironment": {
+    "browser": "153.0.8010.12",
+    "mobile": "390x844 DPR3; CPU4; 150ms; 1.6Mbps; cold context; 3 runs per page",
+    "desktop": "1440x1000 DPR1; no throttling; one run per page",
+    "note": "Production lab measurements, not field CWV or INP. RUM submissions intercepted to avoid polluting owner analytics."
+  }
+}

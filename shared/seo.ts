@@ -3,6 +3,7 @@ import type { PriceDocument } from './pricing.ts';
 import { categoryContent } from './pricing.ts';
 import { services } from '../src/data/studio.ts';
 import { pageHeading, publicPages, type PublicPath } from './pages.ts';
+import { verifiedStudioLocation } from './maps.ts';
 
 /** Slash variants keep their exact published text, without guessing a price. */
 function offers(prices: PriceDocument['prices'], id: string, pageUrl?: string) {
@@ -21,8 +22,15 @@ export function studioSeo(contacts: ContactData, origin?: string, prices?: Price
   const page = publicPages[path];
   const studio = contactView(contacts);
   const title = `${page.name} · ${contacts.city} | Beauty Space Victoriya`;
-  const first = prices?.[page.category]?.items[0];
-  const description = `${page.name}: ${first ? `${first.name.toLowerCase()} — ${first.price}. ` : ''}${contacts.city}, ${contacts.address}. Актуальні ціни, фото робіт і запис у Beauty Space Victoriya.`;
+  const items = prices?.[page.category]?.items ?? [];
+  // Use the same published examples as the hero, including the scope of
+  // identically named complexes. Never turn an add-on into a service minimum.
+  const examples = items.slice(0, 2).map((item) => {
+    const detail = item.detail && items.some((other) => other !== item && other.name === item.name)
+      ? ` (${item.detail})` : '';
+    return `${item.name}${detail} — ${item.price}`;
+  }).join('; ');
+  const description = `${examples || page.name}. ${contacts.city}, ${contacts.address}. Фото робіт і запис.`;
   const home = origin ? `${origin}/` : undefined;
   const url = origin ? `${origin}${path}` : undefined;
   const image = origin ? `${origin}/images/social-preview.jpg` : undefined;
@@ -35,11 +43,13 @@ export function studioSeo(contacts: ContactData, origin?: string, prices?: Price
   } : undefined;
   // Free-form/non-daily schedules remain visible, but aren't guessed into schema.
   const hours = studio.hours.match(/^Щодня, ([0-2]\d:[0-5]\d)[–-]([0-2]\d:[0-5]\d)$/);
+  const location = verifiedStudioLocation(contacts);
   const schema = {
     '@context': 'https://schema.org', '@type': 'BeautySalon',
     ...(home ? { '@id': `${home}#studio`, url: home, image } : {}),
     name: 'Beauty Space Victoriya', telephone: contacts.phone,
-    address: { '@type': 'PostalAddress', streetAddress: contacts.address, addressLocality: contacts.city, addressCountry: 'UA' },
+    address: { '@type': 'PostalAddress', streetAddress: contacts.address, addressLocality: contacts.city, addressCountry: 'UA', ...(location ? { postalCode: location.postalCode } : {}) },
+    ...(location ? { geo: { '@type': 'GeoCoordinates', latitude: location.latitude, longitude: location.longitude } } : {}),
     ...(hours && hours[1] < hours[2] && hours[2] < '24:00' ? { openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: hours[1], closes: hours[2] }] } : {}),
     sameAs: [contacts.instagram], currenciesAccepted: 'UAH',
     ...(catalog ? { hasOfferCatalog: catalog } : {}),

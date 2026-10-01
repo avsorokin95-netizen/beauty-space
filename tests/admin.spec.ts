@@ -34,7 +34,7 @@ test("admin publishes prices for other visitors, preserves them and discards dra
     await expect(
       landing.locator("#service-nails .price-item dd").first(),
     ).toHaveText("675 грн");
-    await expect(landing.locator("#service-nails .service-summary")).toHaveText("Ціна категорії: від 625 грн");
+    await expect(landing.locator("#service-nails .service-summary")).toHaveText("Окремі процедури та доповнення: від 625 грн. Вартість обраної послуги — у прайсі нижче.");
     await visitor.close();
     await page.reload();
     await expect(page.getByLabel("Ціна категорії", { exact: true })).toHaveValue("від 625 грн");

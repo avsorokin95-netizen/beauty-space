@@ -57,6 +57,8 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.match(html, /0x40d4cbe4af802d7b%3A0x9d90e95a74e94dba/);
 
     assert.equal(schema.aggregateRating, undefined);
+    assert.deepEqual(schema.geo, { '@type': 'GeoCoordinates', latitude: 50.3999287, longitude: 30.375247 });
+    assert.equal(schema.address.postalCode, '08131');
     assert.equal(schema.openingHoursSpecification[0].dayOfWeek.length, 7);
     assert.equal(schema.openingHoursSpecification[0].opens, '09:00');
     assert.equal(schema.openingHoursSpecification[0].closes, '18:00');
@@ -85,6 +87,11 @@ test('production SEO uses published data in HTML and excludes admin from indexin
       assert.equal(content.match(/<h1\b[^>]*>(.*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ''), `${heading} у Софіївській Борщагівці`);
       assert.ok(html.includes(`href="${path}"`));
       assert.ok(sitemap.includes(`<loc>${origin}${path}</loc>`));
+      const description = content.match(/<meta name="description" content="([^"]+)"/)?.[1];
+      assert.ok(description?.includes(path === '/pedicure'
+        ? 'Комплекс педикюр (Стопа + покриття) — 1 000 грн'
+        : 'Ламінування вій — 700 грн'), 'Description includes the second published procedure and disambiguates complexes');
+      if (path === '/pedicure') assert.ok(description?.includes('600/700 грн'), 'Do not guess the price of slash-separated variants');
       assert.match(content, new RegExp(`href="${path}" aria-current="page"`), 'Active service is present in initial HTML');
       assert.ok(content.includes('href="#services"') && content.includes('href="#gallery"'), 'Section links remain on the current service page');
       const navigation = content.match(/<nav\b[^>]*aria-label="Основна навігація"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
@@ -117,13 +124,22 @@ test('production SEO uses published data in HTML and excludes admin from indexin
     assert.ok(!updated.includes('Вишневе'));
     assert.ok(!updated.includes('ЖК «Софія»'));
     assert.ok(!updated.includes('ChIJey2Ar-TL1EARuk3pdFrpkJ0'));
+    const movedSchema = JSON.parse(updated.match(/<script type="application\/ld\+json" id="studio-schema">([\s\S]*?)<\/script>/)![1]);
+    assert.equal(movedSchema.geo, undefined, 'An edited location must not inherit the old coordinates');
+    assert.equal(movedSchema.address.postalCode, undefined, 'An edited location must not inherit the old postal code');
     const priceRow = store.db.prepare('SELECT * FROM revisions ORDER BY revision DESC LIMIT 1').get()!;
     const prices = JSON.parse(String(priceRow.prices));
     prices.nails.items[0].price = '777 грн';
+    prices.nails.items[1].name = 'Новий комплекс манікюру';
+    prices.nails.items[1].price = '975 грн';
     store.db.prepare('INSERT INTO revisions VALUES (?, ?, ?)').run(Number(priceRow.revision) + 1, new Date().toISOString(), JSON.stringify(prices));
     const updatedPrices = await (await fetch(base + '/')).text();
     assert.match(updatedPrices, /777 грн/);
     assert.match(updatedPrices, /"price":777/);
+    const updatedDescription = updatedPrices.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    assert.ok(updatedDescription?.includes('Манікюр без покриття — 777 грн'));
+    assert.ok(updatedDescription?.includes('Новий комплекс манікюру — 975 грн'), 'Metadata must follow owner edits to both example procedures');
+    assert.ok(!updatedDescription?.includes('900 грн'), 'Metadata must not retain the old complex price');
     assert.ok(!updatedPrices.includes('<script>alert(1)</script>'));
     assert.match(updatedPrices, /Київ/);
   } finally {

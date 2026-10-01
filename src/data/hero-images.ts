@@ -12,6 +12,7 @@ interface HeroImage {
 export const heroImages: Record<'nails' | 'pedicure' | 'lashes', HeroImage> = {
   nails: {
     src: '/images/pink-floral.webp',
+    srcSet: '/images/hero/manicure-pink-floral-480.webp 480w, /images/hero/manicure-pink-floral-640.webp 640w, /images/pink-floral.webp 900w',
     width: 900,
     height: 1600,
     caption: 'РОБОТА BEAUTY SPACE VICTORIYA',
@@ -20,7 +21,7 @@ export const heroImages: Record<'nails' | 'pedicure' | 'lashes', HeroImage> = {
   },
   pedicure: {
     src: '/images/hero/pedicure-800.webp',
-    srcSet: '/images/hero/pedicure-480.webp 480w, /images/hero/pedicure-800.webp 800w, /images/hero/pedicure-1120.webp 1120w',
+    srcSet: '/images/hero/pedicure-480.webp 480w, /images/hero/pedicure-640.webp 640w, /images/hero/pedicure-800.webp 800w, /images/hero/pedicure-1120.webp 1120w',
     width: 1120,
     height: 1400,
     caption: 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ',
@@ -29,7 +30,7 @@ export const heroImages: Record<'nails' | 'pedicure' | 'lashes', HeroImage> = {
   },
   lashes: {
     src: '/images/hero/lashes-800.webp',
-    srcSet: '/images/hero/lashes-480.webp 480w, /images/hero/lashes-800.webp 800w, /images/hero/lashes-1120.webp 1120w',
+    srcSet: '/images/hero/lashes-480.webp 480w, /images/hero/lashes-640.webp 640w, /images/hero/lashes-800.webp 800w, /images/hero/lashes-1120.webp 1120w',
     width: 1120,
     height: 1400,
     caption: 'АТМОСФЕРНЕ ЗОБРАЖЕННЯ',

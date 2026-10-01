@@ -6,13 +6,23 @@ const studioPlace = {
   name: 'Beauty Space Victoriya',
   address: 'вул. Боголюбова, 6',
   city: 'Софіївська Борщагівка',
+  latitude: 50.3999287,
+  longitude: 30.375247,
+  postalCode: '08131',
   // Copied from Google Maps → Share → Embed a map for this business.
   embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2543.2097377285636!2d30.375246999999998!3d50.399928700000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4cbe4af802d7b%3A0x9d90e95a74e94dba!2sBeauty%20Space%20Victoriya!5e0!3m2!1suk!2sua!4v1790105757772!5m2!1suk!2sua',
 };
 
+/** Do not carry the existing Maps coordinates over to an owner-edited address. */
+export function verifiedStudioLocation(contacts: Pick<ContactData, 'address' | 'city'>) {
+  return contacts.address === studioPlace.address && contacts.city === studioPlace.city
+    ? { latitude: studioPlace.latitude, longitude: studioPlace.longitude, postalCode: studioPlace.postalCode }
+    : undefined;
+}
+
 export function studioMapLinks(contacts: Pick<ContactData, 'address' | 'city'>) {
   const address = `${contacts.address}, ${contacts.city}, Україна`;
-  const knownLocation = contacts.address === studioPlace.address && contacts.city === studioPlace.city;
+  const knownLocation = !!verifiedStudioLocation(contacts);
   const label = knownLocation ? `${studioPlace.name}, ${address}` : address;
   const profile = new URL('https://www.google.com/maps/search/');
   profile.searchParams.set('api', '1');

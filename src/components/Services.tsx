@@ -103,7 +103,7 @@ export function Services({ path = "/" }: { path?: PublicPath }) {
                     id={`service-${service.id}`}
                     className="service-detail"
                   >
-                    <p className="service-note service-summary">Ціна категорії: {prices[service.id].summary}</p>
+                    <p className="service-note service-summary">Окремі процедури та доповнення: {prices[service.id].summary}. Вартість обраної послуги — у прайсі нижче.</p>
                     <div className="service-guide">
                       <p>
                         <strong>Що обрати</strong>

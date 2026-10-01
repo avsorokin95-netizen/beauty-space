@@ -1,0 +1,527 @@
+{
+  "retrievedAt": "2026-10-01T20:37:58.839Z",
+  "property": "sc-domain:victoriya-beauty.space",
+  "permissionLevel": "siteFullUser",
+  "sitemaps": {
+    "sitemap": [
+      {
+        "path": "https://victoriya-beauty.space/sitemap.xml",
+        "lastSubmitted": "2026-09-12T20:05:59.585Z",
+        "isPending": false,
+        "isSitemapsIndex": false,
+        "type": "sitemap",
+        "lastDownloaded": "2026-09-27T22:35:32.044Z",
+        "warnings": "0",
+        "errors": "0",
+        "contents": [
+          {
+            "type": "web",
+            "submitted": "1",
+            "indexed": "0"
+          }
+        ]
+      }
+    ]
+  },
+  "range": {
+    "startDate": "2025-06-01",
+    "endDate": "2026-09-30",
+    "dataState": "final",
+    "type": "web"
+  },
+  "analytics": {
+    "total": {
+      "rows": [
+        {
+          "clicks": 25,
+          "impressions": 124,
+          "ctr": 0.20161290322580644,
+          "position": 7.717741935483871
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    },
+    "date": {
+      "rows": [
+        {
+          "keys": [
+            "2026-09-11"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-09-12"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 12
+        },
+        {
+          "keys": [
+            "2026-09-13"
+          ],
+          "clicks": 4,
+          "impressions": 10,
+          "ctr": 0.4,
+          "position": 5.1
+        },
+        {
+          "keys": [
+            "2026-09-14"
+          ],
+          "clicks": 6,
+          "impressions": 16,
+          "ctr": 0.375,
+          "position": 2.875
+        },
+        {
+          "keys": [
+            "2026-09-15"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 4.8
+        },
+        {
+          "keys": [
+            "2026-09-16"
+          ],
+          "clicks": 1,
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 6
+        },
+        {
+          "keys": [
+            "2026-09-17"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "2026-09-18"
+          ],
+          "clicks": 3,
+          "impressions": 6,
+          "ctr": 0.5,
+          "position": 8.166666666666668
+        },
+        {
+          "keys": [
+            "2026-09-19"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "2026-09-20"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 6.25
+        },
+        {
+          "keys": [
+            "2026-09-21"
+          ],
+          "clicks": 1,
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 2.333333333333333
+        },
+        {
+          "keys": [
+            "2026-09-22"
+          ],
+          "clicks": 6,
+          "impressions": 34,
+          "ctr": 0.17647058823529413,
+          "position": 14.176470588235293
+        },
+        {
+          "keys": [
+            "2026-09-23"
+          ],
+          "clicks": 1,
+          "impressions": 7,
+          "ctr": 0.14285714285714285,
+          "position": 8.714285714285715
+        },
+        {
+          "keys": [
+            "2026-09-24"
+          ],
+          "clicks": 2,
+          "impressions": 11,
+          "ctr": 0.18181818181818182,
+          "position": 3.272727272727273
+        },
+        {
+          "keys": [
+            "2026-09-25"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 5.333333333333333
+        },
+        {
+          "keys": [
+            "2026-09-26"
+          ],
+          "clicks": 1,
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 13.333333333333334
+        },
+        {
+          "keys": [
+            "2026-09-27"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 3.8333333333333335
+        },
+        {
+          "keys": [
+            "2026-09-28"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 5.333333333333333
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    },
+    "query": {
+      "rows": [
+        {
+          "keys": [
+            "манікюр жк софія"
+          ],
+          "clicks": 9,
+          "impressions": 33,
+          "ctr": 0.2727272727272727,
+          "position": 15.424242424242424
+        },
+        {
+          "keys": [
+            "the beauty space"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "виктория маникюр"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 14
+        },
+        {
+          "keys": [
+            "маникюр софиевская борщаговка"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 4.5
+        },
+        {
+          "keys": [
+            "манікюр софіївська борщагівка"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 11.666666666666666
+        },
+        {
+          "keys": [
+            "салон вікторія"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 6.333333333333333
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    },
+    "page": {
+      "rows": [
+        {
+          "keys": [
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 24,
+          "impressions": 124,
+          "ctr": 0.1935483870967742,
+          "position": 7.717741935483871
+        },
+        {
+          "keys": [
+            "https://victoriya-beauty.space/#services"
+          ],
+          "clicks": 1,
+          "impressions": 16,
+          "ctr": 0.0625,
+          "position": 5.4375
+        }
+      ],
+      "responseAggregationType": "byPage"
+    },
+    "query_page": {
+      "rows": [
+        {
+          "keys": [
+            "манікюр жк софія",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 9,
+          "impressions": 33,
+          "ctr": 0.2727272727272727,
+          "position": 15.424242424242424
+        },
+        {
+          "keys": [
+            "the beauty space",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "виктория маникюр",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 14
+        },
+        {
+          "keys": [
+            "маникюр софиевская борщаговка",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 4.5
+        },
+        {
+          "keys": [
+            "манікюр софіївська борщагівка",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 11.666666666666666
+        },
+        {
+          "keys": [
+            "манікюр софіївська борщагівка",
+            "https://victoriya-beauty.space/#services"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "салон вікторія",
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 6.333333333333333
+        }
+      ],
+      "responseAggregationType": "byPage"
+    },
+    "device": {
+      "rows": [
+        {
+          "keys": [
+            "DESKTOP"
+          ],
+          "clicks": 16,
+          "impressions": 54,
+          "ctr": 0.2962962962962963,
+          "position": 9.75925925925926
+        },
+        {
+          "keys": [
+            "MOBILE"
+          ],
+          "clicks": 9,
+          "impressions": 70,
+          "ctr": 0.12857142857142856,
+          "position": 6.142857142857143
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    },
+    "country": {
+      "rows": [
+        {
+          "keys": [
+            "ukr"
+          ],
+          "clicks": 25,
+          "impressions": 117,
+          "ctr": 0.21367521367521367,
+          "position": 7.7094017094017095
+        },
+        {
+          "keys": [
+            "bih"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "fra"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 13
+        },
+        {
+          "keys": [
+            "nld"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 1.5
+        },
+        {
+          "keys": [
+            "usa"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 11
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    },
+    "searchAppearance": {
+      "responseAggregationType": "byPage"
+    },
+    "image": {
+      "rows": [
+        {
+          "keys": [
+            "https://victoriya-beauty.space/"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 13
+        }
+      ],
+      "responseAggregationType": "byPage"
+    },
+    "video": {
+      "responseAggregationType": "byPage"
+    }
+  },
+  "inspections": {
+    "/": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "robotsTxtState": "ALLOWED",
+          "indexingState": "INDEXING_ALLOWED",
+          "lastCrawlTime": "2026-09-24T16:45:05Z",
+          "pageFetchState": "SUCCESSFUL",
+          "googleCanonical": "https://victoriya-beauty.space/",
+          "userCanonical": "https://victoriya-beauty.space/",
+          "referringUrls": [
+            "https://victoriya-beauty.space/sitemap.xml"
+          ],
+          "crawledAs": "MOBILE"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/pedicure": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/laminuvannia-vii": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    },
+    "/manicure": {
+      "inspectionResult": {
+        "indexStatusResult": {
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+          "indexingState": "INDEXING_STATE_UNSPECIFIED",
+          "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+        },
+        "mobileUsabilityResult": {
+          "verdict": "VERDICT_UNSPECIFIED"
+        }
+      }
+    }
+  }
+}

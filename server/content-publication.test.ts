@@ -43,7 +43,7 @@ test('owner service edits remain synchronized in SSR, metadata, schema and revis
       assert.ok(html.includes('811 грн'));
       assert.ok(html.includes('Опис власниці: &lt;тест&gt; &amp; догляд.'));
       assert.ok(html.includes('Тестова примітка.'));
-      assert.match(html, /class="service-note service-summary">Ціна категорії: <!-- -->від 711 грн/);
+      assert.match(html, /class="service-note service-summary">Окремі процедури та доповнення: <!-- -->від 711 грн/);
       const schema = JSON.parse(html.match(/id="studio-schema">(.*?)<\/script>/)![1]);
       const pedicure = schema.hasOfferCatalog.itemListElement.find((item: { name: string }) => item.name === 'Педикюр');
       assert.equal(pedicure.itemListElement.length, 1);

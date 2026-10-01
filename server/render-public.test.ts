@@ -21,6 +21,7 @@ test('each hero identifies its image source and separates editable covers from t
     const fallback = await renderPublicApp(published, path as PublicPath);
     const hero = fallback.split('id="home"')[1].split('</section>')[0];
     assert.ok(hero.includes(category === 'nails' ? '/images/pink-floral.webp' : `/images/hero/${image}-800.webp`));
+    assert.ok(hero.includes(category === 'nails' ? '/images/hero/manicure-pink-floral-640.webp 640w' : `/images/hero/${image}-640.webp 640w`));
     if (category === 'nails') {
       assert.match(hero, /РОБОТА BEAUTY SPACE VICTORIYA/);
       assert.doesNotMatch(hero, /АТМОСФЕРНЕ ЗОБРАЖЕННЯ/);
@@ -32,6 +33,7 @@ test('each hero identifies its image source and separates editable covers from t
     published.gallery.items.push({ ...published.gallery.items[0], id: `work-cover-${category}`, src: source, title: 'Моя обкладинка', placement: `hero-${category}` });
     const html = await renderPublicApp(published, path);
     assert.ok(html.split('id="home"')[1].split('</section>')[0].includes(source));
+    assert.doesNotMatch(html.split('id="home"')[1].split('</section>')[0], /srcSet=/, 'An owner cover must not load a default image variant');
     assert.match(html.split('id="home"')[1].split('</section>')[0], /ГОЛОВНЕ ФОТО/);
     assert.doesNotMatch(html.split('id="home"')[1].split('</section>')[0], /АТМОСФЕРНЕ ЗОБРАЖЕННЯ|РОБОТА BEAUTY SPACE/);
     assert.ok(!html.split('id="gallery"')[1].split('</section>')[0].includes(source));
