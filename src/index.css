@@ -1391,7 +1391,6 @@ h1 em,
 .work-hero figcaption { position: relative; padding: 18px 24px; display: grid; gap: 7px; background: #eee4d8; color: #4f4136; }
 .work-hero figcaption span:first-child { font-size: 9px; letter-spacing: 1px; }
 .work-hero figcaption span:last-child { font: 400 26px/1.1 var(--font-serif); }
-.work-hero:has(.hero-photo-manicure) figcaption > span:first-child { display: none; }
 .hero-without-photo { grid-template-columns: 1fr; }
 .breadcrumbs { margin-bottom: 24px; font-size: 12px; line-height: 1.7; }
 .breadcrumbs a { text-decoration: underline; }
@@ -1520,7 +1519,8 @@ h1 em,
 }
 @media (max-width: 767px) {
   .commercial-hero:has(.hero-offer) {
-    grid-template-areas: "intro intro" "photo offer" "photo ." "booking booking";
+    grid-template-areas: "intro intro" "photo offer" "photo ." "photo ." "booking booking";
+    grid-template-rows: auto 20fr 3fr auto auto;
     row-gap: 0;
   }
   .commercial-hero:has(.hero-offer) .hero-intro { margin-bottom: 24px; }
@@ -1531,8 +1531,9 @@ h1 em,
     align-self: stretch;
     max-width: 100%;
   }
-  /* Prices determine the image height; its caption occupies the next row. */
+  /* The photo spans 23 parts to the offer's 20 (115%); the caption follows. */
   .commercial-hero:has(.hero-offer) .hero-photo {
+    grid-row: 1 / span 2;
     contain: size;
     width: auto;
     height: 100%;
@@ -1542,6 +1543,7 @@ h1 em,
     justify-self: center;
     object-position: top;
   }
+  .commercial-hero:has(.hero-offer) figcaption { grid-row: 3; }
   .commercial-hero:has(.hero-offer) .hero-photo-manicure { aspect-ratio: 2 / 3; object-position: center; }
   .commercial-hero:has(.hero-offer) .hero-booking { margin-top: 24px; }
 }
