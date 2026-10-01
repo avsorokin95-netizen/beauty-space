@@ -1,0 +1,154 @@
+{
+  "checked_at_utc": "2026-10-01T10:56:51.470624+00:00",
+  "scope": "Independent read-only final release provenance; no deploy, migrations, edits, commits, browser scripts or analytics events",
+  "git": {
+    "remote_main": "9114ed19bfb8c6d8cdfcba6809d88883c09d05ce",
+    "runtime_commit_short": "8a2e739",
+    "unrelated_dirty_paths_excluded": [
+      "CLOUDFLARE.md",
+      "output/"
+    ],
+    "local_head": "9114ed19bfb8c6d8cdfcba6809d88883c09d05ce",
+    "runtime_commit": "8a2e73962ab48de335c5ce31360b0ea59450a662",
+    "runtime_to_main_changes": [
+      "docs/seo/evidence/local-navigation-production.json",
+      "docs/seo/reaudit-2026-10-01.md"
+    ],
+    "runtime_code_matches_main": true
+  },
+  "cloudflare": {
+    "deployment_id": "227b0a3c-f995-4b2d-a8e8-7fec90a64333",
+    "deployment_created_on": "2026-10-01T10:52:07.543797Z",
+    "source": "wrangler",
+    "version_id": "eaecb2c8-76a4-4680-b237-fff1298c0ea9",
+    "version_number": 35,
+    "version_created_on": "2026-10-01T10:52:06.087024Z",
+    "version_tag": "8a2e739",
+    "traffic_percentage": 100,
+    "message": "Restore local section navigation 8a2e739"
+  },
+  "assets": {
+    "checked_at": "2026-10-01T10:55:48.955380+00:00",
+    "assets": [
+      {
+        "path": "/assets/index-Bf_qn3eM.js",
+        "bytes": 332468,
+        "sha256": "f9df21f7470e67dc42a873dc87880e904c92a11050b8565bb8e340a44a7dea10",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/Admin-GnsfWYwq.js",
+        "bytes": 44272,
+        "sha256": "1aa8f757d15b9fd320c0305eec6306dd23048aece57f170a0bbea875ab4f42ff",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/Admin-zfTY5aRL.css",
+        "bytes": 12379,
+        "sha256": "314767c31b79dda856bff86028aa16d855f4db788e2b169b689298bd0268ef91",
+        "local_exists": true,
+        "local_match": true
+      },
+      {
+        "path": "/assets/index-DX2ofj9h.css",
+        "bytes": 46169,
+        "sha256": "e4b1bf6d9534850f0f0a101894c3fe293c22e1ed1512e5549bcf57406967574f",
+        "local_exists": true,
+        "local_match": true
+      }
+    ]
+  },
+  "d1": {
+    "pending_migrations": [],
+    "documents": [
+      {
+        "kind": "contacts",
+        "revision": 1,
+        "json_valid": true
+      },
+      {
+        "kind": "gallery",
+        "revision": 4,
+        "json_valid": true
+      },
+      {
+        "kind": "prices",
+        "revision": 1,
+        "json_valid": true
+      }
+    ],
+    "history_triggers": [
+      "document_history_delete",
+      "document_history_insert",
+      "document_history_update"
+    ],
+    "history": [
+      {
+        "kind": "contacts",
+        "snapshots": 1,
+        "oldest_revision": 1,
+        "newest_revision": 1,
+        "all_json_valid": true
+      },
+      {
+        "kind": "gallery",
+        "snapshots": 1,
+        "oldest_revision": 4,
+        "newest_revision": 4,
+        "all_json_valid": true
+      },
+      {
+        "kind": "prices",
+        "snapshots": 1,
+        "oldest_revision": 1,
+        "newest_revision": 1,
+        "all_json_valid": true
+      }
+    ],
+    "analytics_daily": {
+      "rows": 5,
+      "total_click_events": 9
+    },
+    "analytics_cache_rows": 1,
+    "applied_migrations": [
+      {
+        "name": "0001_documents.sql",
+        "applied_at": "2026-09-11 16:40:21"
+      },
+      {
+        "name": "0002_analytics.sql",
+        "applied_at": "2026-09-14 09:24:19"
+      },
+      {
+        "name": "0003_analytics_cache.sql",
+        "applied_at": "2026-09-14 09:37:39"
+      },
+      {
+        "name": "0004_document_history.sql",
+        "applied_at": "2026-10-01 10:18:07"
+      }
+    ],
+    "all_read_queries": {
+      "success": true,
+      "changes": 0,
+      "rows_written": 0,
+      "changed_db": false
+    }
+  },
+  "methods": [
+    "git ls-remote origin refs/heads/main",
+    "wrangler deployments status --json",
+    "wrangler versions view eaecb2c8-76a4-4680-b237-fff1298c0ea9 --json",
+    "HTTP GET HTML and four JS/CSS assets with SHA256 comparison to existing local dist",
+    "wrangler d1 migrations list beauty-space --remote",
+    "wrangler d1 execute --remote --json with SELECT-only schema/document metadata/history/aggregate analytics queries"
+  ],
+  "limitations": [
+    "Frontend artifact equality compares the current root dist; root agent independently verifies build/tests.",
+    "Worker runtime Git reference is confirmed by deployed version tag; Worker source bundle was not independently fetched during this final pass.",
+    "Aggregate analytics values are point-in-time; real traffic may subsequently increase them.",
+    "No full private document contents or secrets are included."
+  ]
+}

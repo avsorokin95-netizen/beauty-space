@@ -97,7 +97,7 @@ export function Contacts() {
                 {item.label}
               </a>
             ))}
-          <a href="/#home" aria-label="На початок головної сторінки">
+          <a href="#home" aria-label="На початок сторінки">
             Нагору ↑
           </a>
         </nav>

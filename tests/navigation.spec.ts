@@ -35,6 +35,8 @@ test('grouped navigation identifies the current service and opens sections on th
       if (compact && href !== '#contacts') await page.getByRole('button', { name: 'Відкрити меню' }).click();
     }
     expect(await page.locator('.service-row').evaluateAll((rows) => rows.map((row) => row.id))).toEqual(priceCategories);
+    await page.getByRole('navigation', { name: 'Навігація в підвалі' }).getByRole('link', { name: 'На початок сторінки', exact: true }).click();
+    await expect(page).toHaveURL((url) => url.pathname === path && url.hash === '#home' && url.search === '?ref=navigation');
   }
   if (compact) {
     await page.setViewportSize({ width: 820, height: 844 });
